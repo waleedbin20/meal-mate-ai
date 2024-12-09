@@ -11,6 +11,14 @@ interface QuoteDetails {
   mealsPerDay: number;
   dietaryRequirements: number;
   pricePerMeal: number;
+  careHomeName?: string;
+  diningRooms?: {
+    name: string;
+    standardMeals: number;
+    allergyFreeMeals: number;
+    fingerMeals: number;
+  }[];
+  menuType?: "Silver" | "Platinum";
 }
 
 const initialQuoteDetails: QuoteDetails = {
@@ -18,6 +26,9 @@ const initialQuoteDetails: QuoteDetails = {
   mealsPerDay: 3,
   dietaryRequirements: 0,
   pricePerMeal: 5,
+  careHomeName: "",
+  diningRooms: [],
+  menuType: "Silver",
 };
 
 const Index = () => {
@@ -28,29 +39,51 @@ const Index = () => {
 
   const steps = [
     {
-      question: "Welcome to the Care Home Meal Plan Quote Generator! How many residents do you need to cater for?",
+      question: "👋 Welcome to the Care Home Meal Plan Quote Generator! To get started, what's the name of your care home?",
       handler: (message: string) => {
-        const residents = parseInt(message);
-        if (isNaN(residents) || residents <= 0) {
-          return "Please enter a valid number of residents.";
+        if (!message.trim()) {
+          return "Please enter a valid care home name.";
         }
-        setQuoteDetails(prev => ({ ...prev, residents }));
+        setQuoteDetails(prev => ({ ...prev, careHomeName: message.trim() }));
         return null;
       }
     },
     {
-      question: "How many meals per day do you need? (Default is 3)",
+      question: "🏢 How many dining rooms do you have in your facility?",
       handler: (message: string) => {
-        const meals = parseInt(message);
-        if (isNaN(meals) || meals <= 0 || meals > 5) {
-          return "Please enter a number between 1 and 5.";
+        const rooms = parseInt(message);
+        if (isNaN(rooms) || rooms <= 0 || rooms > 10) {
+          return "Please enter a number between 1 and 10.";
         }
-        setQuoteDetails(prev => ({ ...prev, mealsPerDay: meals }));
+        setQuoteDetails(prev => ({
+          ...prev,
+          diningRooms: Array(rooms).fill({
+            name: "",
+            standardMeals: 0,
+            allergyFreeMeals: 0,
+            fingerMeals: 0
+          })
+        }));
         return null;
       }
     },
     {
-      question: "What percentage of residents have special dietary requirements? (Enter 0-100)",
+      question: "🍽️ What type of menu would you prefer? Reply with 'Silver' or 'Platinum'",
+      handler: (message: string) => {
+        const type = message.toLowerCase();
+        if (type !== "silver" && type !== "platinum") {
+          return "Please choose either Silver or Platinum menu type.";
+        }
+        setQuoteDetails(prev => ({
+          ...prev,
+          menuType: type.charAt(0).toUpperCase() + type.slice(1) as "Silver" | "Platinum",
+          pricePerMeal: type === "silver" ? 5 : 7
+        }));
+        return null;
+      }
+    },
+    {
+      question: "🥗 What percentage of residents have special dietary requirements? (Enter 0-100)",
       handler: (message: string) => {
         const percentage = parseInt(message);
         if (isNaN(percentage) || percentage < 0 || percentage > 100) {
@@ -83,13 +116,18 @@ const Index = () => {
       setCurrentStep(prev => prev + 1);
       setMessages(prev => [...prev, { content: steps[currentStep + 1].question, isAi: true }]);
     } else {
-      // Final message
+      // Final message with summary
+      const summary = `
+📋 Quote Summary for ${quoteDetails.careHomeName}:
+• Menu Type: ${quoteDetails.menuType}
+• Dining Rooms: ${quoteDetails.diningRooms?.length || 0}
+• Dietary Requirements: ${quoteDetails.dietaryRequirements}%
+
+You can now download your quote or start over to make adjustments.`;
+      
       setMessages(prev => [
         ...prev,
-        {
-          content: "Thank you! I've generated your quote below. You can export it or start over.",
-          isAi: true,
-        },
+        { content: summary, isAi: true },
       ]);
     }
   };
@@ -113,6 +151,10 @@ const Index = () => {
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 bg-white rounded-lg shadow-sm h-[600px] flex flex-col">
+            <div className="p-4 border-b">
+              <h1 className="text-2xl font-semibold text-primary">Care Home Meal Plan Quote</h1>
+              <p className="text-sm text-muted-foreground">Chat with our AI to generate your custom quote</p>
+            </div>
             <div className="flex-1 overflow-y-auto p-4">
               {messages.map((message, index) => (
                 <ChatMessage
@@ -129,6 +171,20 @@ const Index = () => {
             />
           </div>
           <div className="space-y-4">
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <h2 className="text-xl font-semibold mb-2">Progress</h2>
+              <div className="space-y-2">
+                <div className="h-2 bg-secondary rounded-full">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all duration-300"
+                    style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Step {currentStep + 1} of {steps.length}
+                </p>
+              </div>
+            </div>
             <QuoteCalculator details={quoteDetails} />
             <div className="flex gap-2">
               <Button
