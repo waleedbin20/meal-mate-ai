@@ -38,11 +38,15 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
     },
   });
 
+  const diningRooms = form.watch('diningRooms') || [];
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-6">
         <CareHomeDetails form={form} />
-        <DiningRoomFields form={form} />
+        {diningRooms.map((_, index) => (
+          <DiningRoomFields key={index} form={form} index={index} />
+        ))}
         <LaborCostFields form={form} />
         <Button type="submit" disabled={isLoading} className="w-full">
           Generate Quote
