@@ -24,7 +24,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         totalResidents: 0,
         mealCategories: ["Standard" as MealCategory],
         menuType: "A",
-        offeringTiers: ["Silver"],
+        offeringTiers: ["Silver" as "Silver" | "Gold" | "Platinum"],
         menuCycle: "4"
       }],
       offeringTier: "Silver",
@@ -47,7 +47,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         totalResidents: 0,
         mealCategories: ["Standard" as MealCategory],
         menuType: "A",
-        offeringTiers: ["Silver"],
+        offeringTiers: ["Silver" as "Silver" | "Gold" | "Platinum"],
         menuCycle: "4"
       };
     });
@@ -64,7 +64,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         totalResidents: 42,
         mealCategories: ["Standard", "Large", "Allergy Free"] as MealCategory[],
         menuType: "A",
-        offeringTiers: ["Silver"],
+        offeringTiers: ["Silver", "Gold"] as ("Silver" | "Gold" | "Platinum")[],
         menuCycle: "4"
       }],
       offeringTier: "Silver",
