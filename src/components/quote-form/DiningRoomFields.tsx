@@ -20,6 +20,9 @@ const mealCategories: MealCategory[] = [
 ];
 
 export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
+  // Get the current dining room's meal categories, defaulting to empty array if undefined
+  const currentMealCategories = form.getValues(`diningRooms.${index}.mealCategories`) || [];
+
   return (
     <div className="space-y-4 p-4 border rounded-lg">
       <FormField
@@ -62,7 +65,10 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                 value: category
               }))}
               selected={field.value || []}
-              onChange={field.onChange}
+              onChange={(value) => {
+                field.onChange(value);
+                form.setValue(`diningRooms.${index}.mealCategories`, value);
+              }}
               placeholder="Select meal categories"
             />
             <FormMessage />
