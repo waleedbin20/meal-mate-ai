@@ -31,15 +31,19 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-secondary">
+    <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 bg-white rounded-lg shadow-sm h-[600px] flex flex-col">
-            <div className="p-4 border-b">
-              <h1 className="text-2xl font-semibold text-primary">Care Home Meal Plan Quote</h1>
-              <p className="text-sm text-muted-foreground">Chat with our AI to generate your custom quote</p>
+          <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl h-[600px] flex flex-col">
+            <div className="p-6 border-b border-purple-100">
+              <h1 className="text-2xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                Care Home Meal Plan Quote
+              </h1>
+              <p className="text-sm text-gray-600">
+                Chat with our AI to generate your custom quote
+              </p>
             </div>
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((message, index) => (
                 <ChatMessage
                   key={index}
@@ -63,7 +67,7 @@ const Index = () => {
             <div className="flex gap-2">
               <Button
                 onClick={() => {}} // TODO: Implement export functionality
-                className="flex-1"
+                className="flex-1 bg-white hover:bg-gray-50 text-purple-700 border border-purple-200"
                 variant="outline"
               >
                 <FileDown className="mr-2 h-4 w-4" />
@@ -71,8 +75,7 @@ const Index = () => {
               </Button>
               <Button
                 onClick={() => setMessages([])}
-                className="flex-1"
-                variant="secondary"
+                className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
               >
                 Start Over
               </Button>
