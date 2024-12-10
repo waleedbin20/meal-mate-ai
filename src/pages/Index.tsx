@@ -62,25 +62,28 @@ const Index = () => {
     }
   };
 
+  const handleClearForm = () => {
+    setMessages([]); // Clear messages when form is cleared
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className={`lg:col-span-${messages.length > 0 ? '3' : '6 lg:col-start-4'}`}>
+          <div className={`lg:col-span-${messages.length > 0 ? '6' : '6 lg:col-start-4'}`}>
             <QuoteForm 
               onSubmit={handleQuoteSubmit} 
               isLoading={isProcessing}
+              onClearForm={handleClearForm}
             />
           </div>
 
           {messages.length > 0 && (
-            <>
-              <ChatSection
-                messages={messages}
-                isProcessing={isProcessing}
-                onSendMessage={handleChatMessage}
-              />
-            </>
+            <ChatSection
+              messages={messages}
+              isProcessing={isProcessing}
+              onSendMessage={handleChatMessage}
+            />
           )}
         </div>
       </div>

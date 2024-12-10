@@ -62,9 +62,10 @@ interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
   isLoading?: boolean;
   defaultValues?: Partial<QuoteFormData>;
+  onClearForm?: () => void;
 }
 
-const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValues }) => {
+const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValues, onClearForm }) => {
   const form = useForm<QuoteFormData>({
     defaultValues: defaultValues || {
       careHomeName: "",
@@ -140,6 +141,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
       currentFoodSpend: 0,
       estimatedNonApetitoSpend: 0,
     });
+    onClearForm?.();
     toast({
       title: "Form Cleared",
       description: "All form fields have been reset.",
