@@ -47,15 +47,10 @@ const exampleData: Partial<QuoteFormData> = {
       fingerFoodResidents: 0
     }
   ],
-  offeringTier: "Silver",
   menuCycle: "4",
-  breakfastIncluded: true,
-  teaIncluded: true,
   priceListNumber: "PL2024",
   currentLabourHours: 40,
-  currentLabourCost: 50000,
-  currentFoodSpend: 75000,
-  estimatedNonApetitoSpend: 25000
+  currentLabourCost: 50000
 };
 
 const Index = () => {

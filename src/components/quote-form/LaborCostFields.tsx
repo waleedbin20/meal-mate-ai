@@ -37,32 +37,6 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name="currentFoodSpend"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Current Food Spend (£ per year)</FormLabel>
-            <FormControl>
-              <Input {...field} type="number" min="0" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="estimatedNonApetitoSpend"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Estimated Non-Apetito Spend (£ per year)</FormLabel>
-            <FormControl>
-              <Input {...field} type="number" min="0" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
     </div>
   );
 };
