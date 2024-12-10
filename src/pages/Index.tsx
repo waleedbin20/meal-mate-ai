@@ -64,7 +64,7 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [quoteDetails, setQuoteDetails] = useState<any>(null);
   const [showChatAndSummary, setShowChatAndSummary] = useState(false);
-  const [formKey, setFormKey] = useState(0); // Add this to force form reset
+  const [formKey, setFormKey] = useState(0);
 
   const handleQuoteSubmit = async (formData: any) => {
     setIsProcessing(true);
@@ -118,6 +118,9 @@ const Index = () => {
 
   const handleClear = () => {
     setFormKey(prev => prev + 1);
+    setQuoteDetails(null);
+    setShowChatAndSummary(false);
+    setMessages([]);
     toast({
       title: "Form Cleared",
       description: "All form fields have been reset.",
@@ -153,7 +156,7 @@ const Index = () => {
                 key={formKey} 
                 onSubmit={handleQuoteSubmit} 
                 isLoading={isProcessing}
-                defaultValues={exampleData}
+                defaultValues={formKey % 2 === 1 ? exampleData : undefined}
               />
             </div>
           </div>

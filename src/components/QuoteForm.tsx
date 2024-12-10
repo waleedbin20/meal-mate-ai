@@ -48,7 +48,11 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           <DiningRoomFields key={index} form={form} index={index} />
         ))}
         <LaborCostFields form={form} />
-        <Button type="submit" disabled={isLoading} className="w-full">
+        <Button 
+          type="submit" 
+          disabled={isLoading} 
+          className="w-full bg-primary hover:bg-primary/90"
+        >
           Generate Quote
         </Button>
       </form>
