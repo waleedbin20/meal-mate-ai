@@ -66,8 +66,8 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
               }))}
               selected={field.value || []}
               onChange={(value) => {
-                field.onChange(value);
-                form.setValue(`diningRooms.${index}.mealCategories`, value);
+                field.onChange(value as MealCategory[]);
+                form.setValue(`diningRooms.${index}.mealCategories`, value as MealCategory[]);
               }}
               placeholder="Select meal categories"
             />
