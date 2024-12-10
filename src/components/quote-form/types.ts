@@ -1,12 +1,10 @@
+export type MealCategory = "Standard" | "Large" | "Allergy Free" | "Energy Dense" | "Finger Food";
+
 export interface DiningRoom {
   name: string;
   totalResidents: number;
-  standardMeals: number;
-  allergyFreeMeals: number;
-  energyDenseMeals: number;
-  fingerMeals: number;
+  mealCategories: MealCategory[];
   menuType: string;
-  portionSize: "standard" | "large";
   offeringTiers: ("Silver" | "Gold" | "Platinum")[];
   menuCycle: "4" | "6";
 }
@@ -14,6 +12,7 @@ export interface DiningRoom {
 export interface QuoteFormData {
   careHomeName: string;
   careHomeAddress: string;
+  numberOfDiningRooms: number;
   diningRooms: DiningRoom[];
   offeringTier: "Silver" | "Gold" | "Platinum";
   menuCycle: string;

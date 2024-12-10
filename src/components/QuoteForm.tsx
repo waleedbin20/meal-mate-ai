@@ -3,11 +3,12 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import { CareHomeDetails } from "./quote-form/CareHomeDetails";
 import { DiningRoomFields } from "./quote-form/DiningRoomFields";
 import { LaborCostFields } from "./quote-form/LaborCostFields";
 import type { QuoteFormData } from "./quote-form/types";
-import { PlusCircle } from "lucide-react";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -17,15 +18,12 @@ interface QuoteFormProps {
 const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
   const form = useForm<QuoteFormData>({
     defaultValues: {
-      diningRooms: [{ 
+      numberOfDiningRooms: 1,
+      diningRooms: [{
         name: "Main Dining Room",
         totalResidents: 0,
-        standardMeals: 0,
-        allergyFreeMeals: 0,
-        energyDenseMeals: 0,
-        fingerMeals: 0,
+        mealCategories: ["Standard"],
         menuType: "A",
-        portionSize: "standard",
         offeringTiers: ["Silver"],
         menuCycle: "4"
       }],
@@ -41,38 +39,31 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
     },
   });
 
-  const addDiningRoom = () => {
-    const currentDiningRooms = form.getValues("diningRooms");
-    form.setValue("diningRooms", [
-      ...currentDiningRooms,
-      {
-        name: `Dining Room ${currentDiningRooms.length + 1}`,
+  const updateDiningRooms = (numberOfRooms: number) => {
+    const currentRooms = form.getValues("diningRooms");
+    const newRooms = Array(numberOfRooms).fill(null).map((_, index) => {
+      return currentRooms[index] || {
+        name: `Dining Room ${index + 1}`,
         totalResidents: 0,
-        standardMeals: 0,
-        allergyFreeMeals: 0,
-        energyDenseMeals: 0,
-        fingerMeals: 0,
+        mealCategories: ["Standard"],
         menuType: "A",
-        portionSize: "standard",
         offeringTiers: ["Silver"],
         menuCycle: "4"
-      }
-    ]);
+      };
+    });
+    form.setValue("diningRooms", newRooms);
   };
 
   const loadExampleData = () => {
     form.reset({
       careHomeName: "Sample Care Home",
       careHomeAddress: "123 Care Street, London",
+      numberOfDiningRooms: 1,
       diningRooms: [{
         name: "Main Dining Room",
         totalResidents: 42,
-        standardMeals: 25,
-        allergyFreeMeals: 5,
-        energyDenseMeals: 8,
-        fingerMeals: 4,
+        mealCategories: ["Standard", "Large", "Allergy Free"],
         menuType: "A",
-        portionSize: "standard",
         offeringTiers: ["Silver"],
         menuCycle: "4"
       }],
@@ -97,16 +88,30 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-purple-700">Dining Information</h3>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={addDiningRoom}
-              className="flex items-center gap-2"
-            >
-              <PlusCircle className="h-4 w-4" />
-              Add Dining Room
-            </Button>
           </div>
+
+          <FormField
+            control={form.control}
+            name="numberOfDiningRooms"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Number of Dining Rooms</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    min="1" 
+                    {...field} 
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value);
+                      field.onChange(value);
+                      updateDiningRooms(value);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           
           {form.getValues().diningRooms.map((_, index) => (
             <DiningRoomFields key={index} form={form} index={index} />
