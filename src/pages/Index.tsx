@@ -1,89 +1,41 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { FileDown, RefreshCw, FileText } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { generateAiResponse } from "@/services/azureAi";
-import { QuoteFormData } from "@/components/quote-form/types";
-import QuoteCalculator from "@/components/QuoteCalculator";
 import QuoteForm from "@/components/QuoteForm";
 import ChatSection from "@/components/ChatSection";
+import { QuoteFormData } from "@/components/quote-form/types";
+import { transformQuoteData } from "@/utils/transformQuoteData";
+import { submitQuote } from "@/services/quoteService";
+import { useToast } from "@/components/ui/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
-
-const exampleData: Partial<QuoteFormData> = {
-  careHomeName: "Sunshine Care Home",
-  careHomeAddress: "123 Care Street, London, UK",
-  numberOfDiningRooms: 2,
-  diningRooms: [
-    {
-      name: "Main Dining Hall",
-      totalResidents: 30,
-      mealCategories: ["Standard", "Allergy Free"],
-      menuType: "Silver",
-      offeringTiers: ["Silver"],
-      menuCycle: "4",
-      allergyFreeMeals: 5,
-      energyDenseMeals: 0,
-      fingerMeals: 0,
-      standardResidents: 25,
-      largeResidents: 0,
-      allergyFreeResidents: 5,
-      energyDenseResidents: 0,
-      fingerFoodResidents: 0
-    },
-    {
-      name: "Special Care Unit",
-      totalResidents: 15,
-      mealCategories: ["Standard", "Energy Dense"],
-      menuType: "Gold",
-      offeringTiers: ["Gold"],
-      menuCycle: "6",
-      allergyFreeMeals: 0,
-      energyDenseMeals: 5,
-      fingerMeals: 0,
-      standardResidents: 10,
-      largeResidents: 0,
-      allergyFreeResidents: 0,
-      energyDenseResidents: 5,
-      fingerFoodResidents: 0
-    }
-  ],
-  menuCycle: "4",
-  priceListNumber: "PL2024",
-  currentLabourHours: 40,
-  currentLabourCost: 50000,
-  currentFoodSpend: 75000,
-  estimatedNonApetitoSpend: 25000
-};
 
 const Index = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
-  const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [quoteDetails, setQuoteDetails] = useState<any>(null);
-  const [showChatAndSummary, setShowChatAndSummary] = useState(false);
-  const [formKey, setFormKey] = useState(0);
+  const { toast } = useToast();
 
-  const handleQuoteSubmit = async (formData: QuoteFormData) => {
+  const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
     try {
-      setQuoteDetails(formData);
-      setShowChatAndSummary(true);
+      const transformedData = transformQuoteData(data);
+      await submitQuote(transformedData);
       
-      // Add the summary message first
-      const summary = formatQuoteSummary(formData);
+      // Add the summary message
+      const summary = formatQuoteSummary(data);
       setMessages([
         { content: summary, isAi: false },
-        { content: "I've analyzed your requirements. How can I help you understand the quote better?", isAi: true }
+        { 
+          content: "Thank you for submitting your quote request. I've analyzed your requirements and I'm here to help you understand the details better. What specific aspects would you like to know more about?", 
+          isAi: true 
+        }
       ]);
-      
+
       toast({
         title: "Success",
-        description: "Quote details submitted successfully!",
+        description: "Quote submitted successfully!",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to generate quote. Please try again later.",
+        description: "Failed to submit quote. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -91,106 +43,43 @@ const Index = () => {
     }
   };
 
-  const handleMessage = async (message: string) => {
+  const handleChatMessage = async (message: string) => {
     setIsProcessing(true);
     setMessages(prev => [...prev, { content: message, isAi: false }]);
 
     try {
-      const response = await generateAiResponse(message);
-      setMessages(prev => [...prev, { content: response, isAi: true }]);
+      // Simulate AI response - replace with actual API call
+      const aiResponse = "I understand your question about the quote. Let me help you with that...";
+      setMessages(prev => [...prev, { content: aiResponse, isAi: true }]);
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to generate AI response. Please try again later.",
+        description: "Failed to get AI response. Please try again.",
         variant: "destructive",
       });
     } finally {
       setIsProcessing(false);
     }
-  };
-
-  const handleLoadExample = () => {
-    setFormKey(prev => prev + 1);
-    toast({
-      title: "Example Loaded",
-      description: "The form has been populated with example data.",
-    });
-  };
-
-  const handleClear = () => {
-    setFormKey(prev => prev + 1);
-    setQuoteDetails(null);
-    setShowChatAndSummary(false);
-    setMessages([]);
-    toast({
-      title: "Form Cleared",
-      description: "All form fields have been reset.",
-    });
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className={`lg:col-span-${showChatAndSummary ? '3' : '6 lg:col-start-4'}`}>
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl">
-              <div className="p-4 flex gap-2 justify-end border-b">
-                <Button
-                  variant="outline"
-                  onClick={handleLoadExample}
-                  className="flex items-center gap-2"
-                >
-                  <FileText className="h-4 w-4" />
-                  Load Example
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleClear}
-                  className="flex items-center gap-2"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  Clear
-                </Button>
-              </div>
-              <QuoteForm 
-                key={formKey} 
-                onSubmit={handleQuoteSubmit} 
-                isLoading={isProcessing}
-                defaultValues={formKey % 2 === 1 ? exampleData : undefined}
-              />
-            </div>
+          <div className={`lg:col-span-${messages.length > 0 ? '3' : '6 lg:col-start-4'}`}>
+            <QuoteForm 
+              onSubmit={handleQuoteSubmit} 
+              isLoading={isProcessing}
+            />
           </div>
 
-          {showChatAndSummary && (
+          {messages.length > 0 && (
             <>
               <ChatSection
                 messages={messages}
                 isProcessing={isProcessing}
-                onSendMessage={handleMessage}
+                onSendMessage={handleChatMessage}
               />
-              <div className="lg:col-span-3 space-y-4">
-                <QuoteCalculator details={quoteDetails} />
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => {}} // TODO: Implement export functionality
-                    className="flex-1 bg-white hover:bg-gray-50/90 text-purple-700 hover:text-purple-800 border border-purple-200 inline-flex items-center justify-center gap-2 px-4 py-2"
-                    variant="outline"
-                  >
-                    <FileDown className="h-4 w-4" />
-                    Export
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setMessages([]);
-                      setQuoteDetails(null);
-                      setShowChatAndSummary(false);
-                    }}
-                    className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-                  >
-                    Start Over
-                  </Button>
-                </div>
-              </div>
             </>
           )}
         </div>
