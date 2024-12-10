@@ -1,6 +1,5 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UseFormReturn } from "react-hook-form";
 import { QuoteFormData, MealCategory } from "./types";
@@ -56,28 +55,50 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           {mealCategories.map((category) => (
-            <FormField
-              key={category}
-              control={form.control}
-              name={`diningRooms.${index}.mealCategories`}
-              render={({ field }) => (
-                <FormItem className="flex items-center space-x-2">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value?.includes(category)}
-                      onCheckedChange={(checked) => {
-                        const currentValue = field.value || [];
-                        const newValue = checked
-                          ? [...currentValue, category]
-                          : currentValue.filter((v) => v !== category);
-                        field.onChange(newValue);
-                      }}
-                    />
-                  </FormControl>
-                  <FormLabel className="font-normal">{category}</FormLabel>
-                </FormItem>
+            <div key={category} className="space-y-2">
+              <FormField
+                control={form.control}
+                name={`diningRooms.${index}.mealCategories`}
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value?.includes(category)}
+                        onCheckedChange={(checked) => {
+                          const currentValue = field.value || [];
+                          const newValue = checked
+                            ? [...currentValue, category]
+                            : currentValue.filter((v) => v !== category);
+                          field.onChange(newValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal">{category}</FormLabel>
+                  </FormItem>
+                )}
+              />
+              
+              {form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
+                <FormField
+                  control={form.control}
+                  name={`diningRooms.${index}.${category.toLowerCase().replace(' ', '')}Residents`}
+                  render={({ field }) => (
+                    <FormItem className="ml-6">
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          min="0"
+                          placeholder={`Number of ${category} residents`}
+                          className="w-full max-w-xs"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
+            </div>
           ))}
         </CardContent>
       </Card>
@@ -161,28 +182,6 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                   />
                 ))}
               </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name={`diningRooms.${index}.menuCycle`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Menu Cycle</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select menu cycle" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="4">4 Weeks</SelectItem>
-                  <SelectItem value="6">6 Weeks</SelectItem>
-                </SelectContent>
-              </Select>
               <FormMessage />
             </FormItem>
           )}
