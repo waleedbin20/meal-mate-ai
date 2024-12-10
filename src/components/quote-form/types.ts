@@ -7,6 +7,9 @@ export interface DiningRoom {
   menuType: string;
   offeringTiers: ("Silver" | "Gold" | "Platinum")[];
   menuCycle: "4" | "6";
+  allergyFreeMeals: number;
+  energyDenseMeals: number;
+  fingerMeals: number;
 }
 
 export interface QuoteFormData {

@@ -20,7 +20,6 @@ const mealCategories: MealCategory[] = [
 ];
 
 export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
-  // Get the current dining room's meal categories, defaulting to empty array if undefined
   const currentMealCategories = form.getValues(`diningRooms.${index}.mealCategories`) || [];
 
   return (
@@ -75,6 +74,50 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
           </FormItem>
         )}
       />
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <FormField
+          control={form.control}
+          name={`diningRooms.${index}.allergyFreeMeals`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Allergy Free Meals</FormLabel>
+              <FormControl>
+                <Input {...field} type="number" min="0" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name={`diningRooms.${index}.energyDenseMeals`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Energy Dense Meals</FormLabel>
+              <FormControl>
+                <Input {...field} type="number" min="0" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name={`diningRooms.${index}.fingerMeals`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Finger Meals</FormLabel>
+              <FormControl>
+                <Input {...field} type="number" min="0" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <div className="space-y-4 mt-6 pt-6 border-t">
         <h4 className="font-medium">Menu Information</h4>
