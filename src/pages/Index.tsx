@@ -16,7 +16,7 @@ const Index = () => {
     setIsProcessing(true);
     try {
       const transformedData = transformQuoteData(data);
-      await submitQuote(transformedData);
+      const response = await submitQuote(transformedData);
       
       // Add the summary message
       const summary = formatQuoteSummary(data);

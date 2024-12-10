@@ -1,17 +1,14 @@
 import { TransformedQuoteData } from "@/utils/transformQuoteData";
 
 export const submitQuote = async (quoteData: TransformedQuoteData) => {
-  const response = await fetch("/api/quotes", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(quoteData),
+  // Simulating API call with a delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        success: true,
+        message: "Quote submitted successfully",
+        data: quoteData
+      });
+    }, 1000);
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to submit quote");
-  }
-
-  return response.json();
 };
