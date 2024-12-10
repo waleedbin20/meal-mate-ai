@@ -121,12 +121,12 @@ const QuoteCalculator: React.FC<QuoteCalculatorProps> = ({ details }) => {
         <Separator />
 
         {/* Export Options */}
-        <div className="flex gap-4">
-          <Button variant="outline" className="flex-1">
+        <div className="flex gap-4 flex-wrap">
+          <Button variant="outline" className="flex-1 min-w-[120px]">
             <FileText className="mr-2 h-4 w-4" />
             Export Proposal
           </Button>
-          <Button variant="outline" className="flex-1">
+          <Button variant="outline" className="flex-1 min-w-[120px]">
             <FileDown className="mr-2 h-4 w-4" />
             Export PDF
           </Button>
