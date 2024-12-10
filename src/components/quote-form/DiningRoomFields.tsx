@@ -1,9 +1,10 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { UseFormReturn } from "react-hook-form";
-import { QuoteFormData, MealCategory, DiningRoom } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UseFormReturn } from "react-hook-form";
+import { QuoteFormData, MealCategory } from "./types";
+import { MenuInformation } from "./MenuInformation";
 
 interface DiningRoomFieldsProps {
   form: UseFormReturn<QuoteFormData>;
@@ -34,7 +35,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
     <div className="space-y-4 p-4 border rounded-lg">
       <FormField
         control={form.control}
-        name={`diningRooms.${index}.name`}
+        name={`diningRooms.${index}.name` as const}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Dining Room Name</FormLabel>
@@ -48,7 +49,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
       
       <FormField
         control={form.control}
-        name={`diningRooms.${index}.totalResidents`}
+        name={`diningRooms.${index}.totalResidents` as const}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Total Residents</FormLabel>
@@ -76,7 +77,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
             <div key={category} className="space-y-2">
               <FormField
                 control={form.control}
-                name={`diningRooms.${index}.mealCategories`}
+                name={`diningRooms.${index}.mealCategories` as const}
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2">
                     <FormControl>
@@ -124,46 +125,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
         </CardContent>
       </Card>
 
-      <div className="space-y-4 mt-6 pt-6 border-t">
-        <h4 className="font-medium">Menu Information</h4>
-        
-        <FormField
-          control={form.control}
-          name={`diningRooms.${index}.offeringTiers`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Offering Tiers</FormLabel>
-              <div className="space-y-2">
-                {["Silver", "Gold", "Platinum"].map((tier) => (
-                  <FormField
-                    key={tier}
-                    control={form.control}
-                    name={`diningRooms.${index}.offeringTiers`}
-                    render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value?.includes(tier as any)}
-                            onCheckedChange={(checked) => {
-                              const currentValue = field.value || [];
-                              const newValue = checked
-                                ? [...currentValue, tier]
-                                : currentValue.filter((t) => t !== tier);
-                              field.onChange(newValue);
-                            }}
-                          />
-                        </FormControl>
-                        <FormLabel className="font-normal">{tier}</FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                ))}
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+      <MenuInformation form={form} index={index} />
     </div>
   );
 };

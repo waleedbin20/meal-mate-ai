@@ -85,39 +85,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
     form.setValue("diningRooms", newRooms);
   };
 
-  const loadExampleData = () => {
-    form.reset({
-      careHomeName: "Sample Care Home",
-      careHomeAddress: "123 Care Street, London",
-      numberOfDiningRooms: 1,
-      diningRooms: [{
-        name: "Main Dining Room",
-        totalResidents: 42,
-        mealCategories: ["Standard", "Large", "Allergy Free"] as MealCategory[],
-        menuType: "A",
-        offeringTiers: ["Silver", "Gold"] as ("Silver" | "Gold" | "Platinum")[],
-        menuCycle: "4" as "4" | "6",
-        allergyFreeMeals: 5,
-        energyDenseMeals: 3,
-        fingerMeals: 2,
-        standardResidents: 30,
-        largeResidents: 5,
-        allergyFreeResidents: 5,
-        energyDenseResidents: 0,
-        fingerFoodResidents: 2
-      }],
-      offeringTier: "Silver",
-      menuCycle: "4" as "4" | "6",
-      breakfastIncluded: true,
-      teaIncluded: true,
-      currentLabourHours: 10,
-      currentLabourCost: 15000,
-      currentFoodSpend: 25000,
-      estimatedNonApetitoSpend: 2000,
-      priceListNumber: "PL001"
-    });
-  };
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6">
@@ -188,14 +155,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
             className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
           >
             Start Quote
-          </Button>
-          <Button 
-            type="button"
-            variant="outline"
-            onClick={loadExampleData}
-            className="flex-1"
-          >
-            Load Example
           </Button>
         </div>
       </form>
