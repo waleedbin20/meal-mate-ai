@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
-import { QuoteFormData, MealCategory } from "./types";
+import { QuoteFormData, MealCategory, DiningRoom } from "./types";
 import { MenuInformation } from "./MenuInformation";
 
 interface DiningRoomFieldsProps {
@@ -35,7 +35,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
     <div className="space-y-4 p-4 border rounded-lg">
       <FormField
         control={form.control}
-        name={`diningRooms.${index}.name` as const}
+        name={`diningRooms.${index}.name`}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Dining Room Name</FormLabel>
@@ -49,7 +49,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
       
       <FormField
         control={form.control}
-        name={`diningRooms.${index}.totalResidents` as const}
+        name={`diningRooms.${index}.totalResidents`}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Total Residents</FormLabel>
@@ -57,7 +57,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
               <Input 
                 type="number" 
                 min="0" 
-                onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
                 value={field.value || ''}
                 onBlur={field.onBlur}
                 name={field.name}
@@ -77,7 +77,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
             <div key={category} className="space-y-2">
               <FormField
                 control={form.control}
-                name={`diningRooms.${index}.mealCategories` as const}
+                name={`diningRooms.${index}.mealCategories`}
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2">
                     <FormControl>
@@ -100,14 +100,14 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
               {form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <FormField
                   control={form.control}
-                  name={`diningRooms.${index}.${getResidentFieldName(category)}` as const}
+                  name={`diningRooms.${index}.${getResidentFieldName(category)}`}
                   render={({ field }) => (
                     <FormItem className="ml-6">
                       <FormControl>
                         <Input
                           type="number"
                           min="0"
-                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                          onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
                           value={field.value || ''}
                           onBlur={field.onBlur}
                           name={field.name}
