@@ -67,6 +67,8 @@ interface QuoteFormProps {
 const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValues }) => {
   const form = useForm<QuoteFormData>({
     defaultValues: defaultValues || {
+      careHomeName: "",
+      careHomeAddress: "",
       numberOfDiningRooms: 1,
       diningRooms: [
         {
@@ -90,6 +92,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
       priceListNumber: "",
       currentLabourHours: 0,
       currentLabourCost: 0,
+      currentFoodSpend: 0,
+      estimatedNonApetitoSpend: 0,
     },
   });
 
@@ -107,7 +111,35 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
   };
 
   const handleClearForm = () => {
-    form.reset();
+    form.reset({
+      careHomeName: "",
+      careHomeAddress: "",
+      numberOfDiningRooms: 1,
+      diningRooms: [
+        {
+          name: "",
+          totalResidents: 0,
+          mealCategories: [],
+          menuType: "",
+          offeringTiers: [],
+          menuCycle: "4",
+          allergyFreeMeals: 0,
+          energyDenseMeals: 0,
+          fingerMeals: 0,
+          standardResidents: 0,
+          largeResidents: 0,
+          allergyFreeResidents: 0,
+          energyDenseResidents: 0,
+          fingerFoodResidents: 0,
+        },
+      ],
+      menuCycle: "4",
+      priceListNumber: "",
+      currentLabourHours: 0,
+      currentLabourCost: 0,
+      currentFoodSpend: 0,
+      estimatedNonApetitoSpend: 0,
+    });
     toast({
       title: "Form Cleared",
       description: "All form fields have been reset.",
