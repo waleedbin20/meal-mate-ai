@@ -148,85 +148,89 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-6 bg-white rounded-lg shadow-md">
-        <div className="flex gap-4 mb-6">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleLoadSample}
-            className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all"
-          >
-            <Upload className="w-4 h-4" />
-            Load Sample
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClearForm}
-            className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all"
-          >
-            <Trash2 className="w-4 h-4" />
-            Clear Form
-          </Button>
-        </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white rounded-lg shadow-md">
+        <div className="p-6 space-y-6">
+          <div className="flex gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleLoadSample}
+              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all"
+            >
+              <Upload className="w-4 h-4" />
+              Load Sample
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClearForm}
+              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all"
+            >
+              <Trash2 className="w-4 h-4" />
+              Clear Form
+            </Button>
+          </div>
 
-        <CareHomeDetails form={form} />
-        
-        <FormField
-          control={form.control}
-          name="numberOfDiningRooms"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Number of Dining Rooms</FormLabel>
-              <FormControl>
-                <Input 
-                  type="number" 
-                  min="1"
-                  onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
-                  value={field.value}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {diningRooms.map((_, index) => (
-          <DiningRoomFields key={index} form={form} index={index} />
-        ))}
-
-        <div className="space-y-4">
+          <CareHomeDetails form={form} />
+          
           <FormField
             control={form.control}
-            name="menuCycle"
+            name="numberOfDiningRooms"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Menu Cycle</FormLabel>
+                <FormLabel>Number of Dining Rooms</FormLabel>
                 <FormControl>
-                  <select 
-                    className="w-full p-2 border rounded"
-                    {...field}
-                  >
-                    <option value="4">4 Week</option>
-                    <option value="6">6 Week</option>
-                  </select>
+                  <Input 
+                    type="number" 
+                    min="1"
+                    onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
+                    value={field.value}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        </div>
 
-        <PricingInformation form={form} />
-        <LaborCostFields form={form} />
+          {diningRooms.map((_, index) => (
+            <DiningRoomFields key={index} form={form} index={index} />
+          ))}
+
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="menuCycle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Menu Cycle</FormLabel>
+                  <FormControl>
+                    <select 
+                      className="w-full p-2 border rounded"
+                      {...field}
+                    >
+                      <option value="4">4 Week</option>
+                      <option value="6">6 Week</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <PricingInformation form={form} />
+          <LaborCostFields form={form} />
+        </div>
         
-        <Button 
-          type="submit" 
-          disabled={isLoading}
-          className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl"
-        >
-          Generate Quote
-        </Button>
+        <div className="p-6 bg-gray-50 rounded-b-lg">
+          <Button 
+            type="submit" 
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl"
+          >
+            Generate Quote
+          </Button>
+        </div>
       </form>
     </Form>
   );
