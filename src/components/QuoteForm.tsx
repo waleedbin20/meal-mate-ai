@@ -25,7 +25,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         energyDenseMeals: 0,
         fingerMeals: 0,
         menuType: "A",
-        portionSize: "standard"
+        portionSize: "standard",
+        offeringTiers: ["Silver"],
+        menuCycle: "4"
       }],
       offeringTier: "Silver",
       menuCycle: "4",
@@ -51,7 +53,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         energyDenseMeals: 0,
         fingerMeals: 0,
         menuType: "A",
-        portionSize: "standard"
+        portionSize: "standard",
+        offeringTiers: ["Silver"],
+        menuCycle: "4"
       }
     ]);
   };
@@ -68,7 +72,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         energyDenseMeals: 8,
         fingerMeals: 4,
         menuType: "A",
-        portionSize: "standard"
+        portionSize: "standard",
+        offeringTiers: ["Silver"],
+        menuCycle: "4"
       }],
       offeringTier: "Silver",
       menuCycle: "4",
