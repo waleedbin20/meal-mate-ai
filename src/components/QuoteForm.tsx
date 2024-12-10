@@ -9,6 +9,53 @@ import { PricingInformation } from "./quote-form/PricingInformation";
 import { QuoteFormData } from "./quote-form/types";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+
+const sampleQuoteData: QuoteFormData = {
+  careHomeName: "Sample Care Home",
+  careHomeAddress: "123 Sample Street, Sample City",
+  numberOfDiningRooms: 2,
+  diningRooms: [
+    {
+      name: "Main Dining Room",
+      totalResidents: 50,
+      mealCategories: ["Standard", "Large", "Allergy Free"],
+      menuType: "Standard",
+      offeringTiers: ["Silver"],
+      menuCycle: "4",
+      allergyFreeMeals: 5,
+      energyDenseMeals: 0,
+      fingerMeals: 0,
+      standardResidents: 40,
+      largeResidents: 5,
+      allergyFreeResidents: 5,
+      energyDenseResidents: 0,
+      fingerFoodResidents: 0,
+    },
+    {
+      name: "Special Care Dining",
+      totalResidents: 20,
+      mealCategories: ["Energy Dense", "Finger Food"],
+      menuType: "Specialized",
+      offeringTiers: ["Gold"],
+      menuCycle: "4",
+      allergyFreeMeals: 0,
+      energyDenseMeals: 12,
+      fingerMeals: 8,
+      standardResidents: 0,
+      largeResidents: 0,
+      allergyFreeResidents: 0,
+      energyDenseResidents: 12,
+      fingerFoodResidents: 8,
+    },
+  ],
+  menuCycle: "4",
+  priceListNumber: "12345",
+  currentLabourHours: 40,
+  currentLabourCost: 50000,
+  currentFoodSpend: 75000,
+  estimatedNonApetitoSpend: 25000,
+};
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -45,11 +92,49 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
     },
   });
 
+  const { toast } = useToast();
   const diningRooms = form.watch('diningRooms') || [];
+
+  const handleLoadSample = () => {
+    Object.keys(sampleQuoteData).forEach(key => {
+      form.setValue(key as keyof QuoteFormData, sampleQuoteData[key as keyof QuoteFormData]);
+    });
+    toast({
+      title: "Sample Data Loaded",
+      description: "The form has been populated with sample data.",
+    });
+  };
+
+  const handleClearForm = () => {
+    form.reset();
+    toast({
+      title: "Form Cleared",
+      description: "All form fields have been reset.",
+    });
+  };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-6">
+        <div className="flex gap-4 mb-6">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleLoadSample}
+            className="w-full"
+          >
+            Load Sample
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleClearForm}
+            className="w-full"
+          >
+            Clear Form
+          </Button>
+        </div>
+
         <CareHomeDetails form={form} />
         
         <FormField
