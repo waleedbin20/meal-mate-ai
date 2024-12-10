@@ -43,6 +43,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
       breakfastIncluded: false,
       teaIncluded: false,
       priceListNumber: "",
+      currentLabourHours: 0,
+      currentLabourCost: 0,
+      currentFoodSpend: 0,
+      estimatedNonApetitoSpend: 0,
     },
   });
 
@@ -152,19 +156,51 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="priceListNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price List Number</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Enter price list number" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">Pricing Information</h3>
+            
+            <FormField
+              control={form.control}
+              name="currentFoodSpend"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Current Food Spend (£)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} placeholder="Enter current food spend" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="estimatedNonApetitoSpend"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estimated Non-Apetito Spend (£)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} placeholder="Enter estimated spend" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="priceListNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price List Number</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter price list number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         <LaborCostFields form={form} />
@@ -172,7 +208,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
         <Button 
           type="submit" 
           disabled={isLoading}
-          className="w-full bg-primary hover:bg-primary/90"
+          className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl"
         >
           Generate Quote
         </Button>
