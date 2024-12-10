@@ -10,11 +10,11 @@ export interface DiningRoom {
   allergyFreeMeals: number;
   energyDenseMeals: number;
   fingerMeals: number;
-  standardResidents?: number;
-  largeResidents?: number;
-  allergyFreeResidents?: number;
-  energyDenseResidents?: number;
-  fingerFoodResidents?: number;
+  standardResidents: number;
+  largeResidents: number;
+  allergyFreeResidents: number;
+  energyDenseResidents: number;
+  fingerFoodResidents: number;
 }
 
 export interface QuoteFormData {

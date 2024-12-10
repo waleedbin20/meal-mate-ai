@@ -19,6 +19,17 @@ const mealCategories: MealCategory[] = [
 ];
 
 export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
+  const getResidentFieldName = (category: MealCategory): keyof DiningRoom => {
+    const mapping: Record<MealCategory, keyof DiningRoom> = {
+      "Standard": "standardResidents",
+      "Large": "largeResidents",
+      "Allergy Free": "allergyFreeResidents",
+      "Energy Dense": "energyDenseResidents",
+      "Finger Food": "fingerFoodResidents"
+    };
+    return mapping[category];
+  };
+
   return (
     <div className="space-y-4 p-4 border rounded-lg">
       <FormField
@@ -81,7 +92,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
               {form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <FormField
                   control={form.control}
-                  name={`diningRooms.${index}.${category.toLowerCase().replace(' ', '')}Residents`}
+                  name={`diningRooms.${index}.${getResidentFieldName(category)}`}
                   render={({ field }) => (
                     <FormItem className="ml-6">
                       <FormControl>
@@ -89,8 +100,10 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                           {...field}
                           type="number"
                           min="0"
+                          value={field.value || ''}
                           placeholder={`Number of ${category} residents`}
                           className="w-full max-w-xs"
+                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
                         />
                       </FormControl>
                       <FormMessage />
