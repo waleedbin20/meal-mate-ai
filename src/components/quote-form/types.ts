@@ -22,13 +22,8 @@ export interface QuoteFormData {
   careHomeAddress: string;
   numberOfDiningRooms: number;
   diningRooms: DiningRoom[];
-  offeringTier: "Silver" | "Gold" | "Platinum";
   menuCycle: string;
-  breakfastIncluded: boolean;
-  teaIncluded: boolean;
   priceListNumber: string;
   currentLabourHours: number;
   currentLabourCost: number;
-  currentFoodSpend: number;
-  estimatedNonApetitoSpend: number;
 }

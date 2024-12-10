@@ -5,10 +5,10 @@ import { Form } from "@/components/ui/form";
 import { CareHomeDetails } from "./quote-form/CareHomeDetails";
 import { DiningRoomFields } from "./quote-form/DiningRoomFields";
 import { LaborCostFields } from "./quote-form/LaborCostFields";
+import { PricingInformation } from "./quote-form/PricingInformation";
 import { QuoteFormData } from "./quote-form/types";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -38,15 +38,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           fingerFoodResidents: 0,
         },
       ],
-      offeringTier: "Silver",
       menuCycle: "4",
-      breakfastIncluded: false,
-      teaIncluded: false,
       priceListNumber: "",
       currentLabourHours: 0,
       currentLabourCost: 0,
-      currentFoodSpend: 0,
-      estimatedNonApetitoSpend: 0,
     },
   });
 
@@ -83,27 +78,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
         <div className="space-y-4">
           <FormField
             control={form.control}
-            name="offeringTier"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Offering Tier</FormLabel>
-                <FormControl>
-                  <select 
-                    className="w-full p-2 border rounded"
-                    {...field}
-                  >
-                    <option value="Silver">Silver</option>
-                    <option value="Gold">Gold</option>
-                    <option value="Platinum">Platinum</option>
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="menuCycle"
             render={({ field }) => (
               <FormItem>
@@ -121,88 +95,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="breakfastIncluded"
-            render={({ field }) => (
-              <FormItem className="flex items-center space-x-2">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>Breakfast Included</FormLabel>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="teaIncluded"
-            render={({ field }) => (
-              <FormItem className="flex items-center space-x-2">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>Tea Included</FormLabel>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">Pricing Information</h3>
-            
-            <FormField
-              control={form.control}
-              name="currentFoodSpend"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Current Food Spend (£)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} placeholder="Enter current food spend" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="estimatedNonApetitoSpend"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Estimated Non-Apetito Spend (£)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} placeholder="Enter estimated spend" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="priceListNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price List Number</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Enter price list number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
         </div>
 
+        <PricingInformation form={form} />
         <LaborCostFields form={form} />
         
         <Button 
