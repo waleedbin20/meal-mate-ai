@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { UseFormReturn } from "react-hook-form";
 import { QuoteFormData, MealCategory } from "./types";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface DiningRoomFieldsProps {
   form: UseFormReturn<QuoteFormData>;
@@ -20,8 +20,6 @@ const mealCategories: MealCategory[] = [
 ];
 
 export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
-  const currentMealCategories = form.getValues(`diningRooms.${index}.mealCategories`) || [];
-
   return (
     <div className="space-y-4 p-4 border rounded-lg">
       <FormField
@@ -52,29 +50,37 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
         )}
       />
 
-      <FormField
-        control={form.control}
-        name={`diningRooms.${index}.mealCategories`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Meal Categories</FormLabel>
-            <MultiSelect
-              options={mealCategories.map(category => ({
-                label: category,
-                value: category
-              }))}
-              selected={field.value?.map(v => v.toString()) || []}
-              onChange={(value) => {
-                const typedValue = (value || []) as MealCategory[];
-                field.onChange(typedValue);
-                form.setValue(`diningRooms.${index}.mealCategories`, typedValue);
-              }}
-              placeholder="Select meal categories"
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold text-purple-700">Meal Categories</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {mealCategories.map((category) => (
+            <FormField
+              key={category}
+              control={form.control}
+              name={`diningRooms.${index}.mealCategories`}
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value?.includes(category)}
+                      onCheckedChange={(checked) => {
+                        const currentValue = field.value || [];
+                        const newValue = checked
+                          ? [...currentValue, category]
+                          : currentValue.filter((v) => v !== category);
+                        field.onChange(newValue);
+                      }}
+                    />
+                  </FormControl>
+                  <FormLabel className="font-normal">{category}</FormLabel>
+                </FormItem>
+              )}
             />
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+          ))}
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormField

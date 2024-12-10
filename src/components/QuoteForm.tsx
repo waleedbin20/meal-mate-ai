@@ -148,6 +148,25 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         
         <LaborCostFields form={form} />
 
+        <Separator />
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-purple-700">Pricing Information</h3>
+          <FormField
+            control={form.control}
+            name="priceListNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price List Number</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Enter price list number" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <div className="flex gap-4">
           <Button 
             type="submit" 
