@@ -9,6 +9,7 @@ import { DiningRoomFields } from "./quote-form/DiningRoomFields";
 import { LaborCostFields } from "./quote-form/LaborCostFields";
 import type { QuoteFormData, MealCategory } from "./quote-form/types";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -16,6 +17,7 @@ interface QuoteFormProps {
 }
 
 const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
+  const { toast } = useToast();
   const form = useForm<QuoteFormData>({
     defaultValues: {
       numberOfDiningRooms: 1,
@@ -40,8 +42,21 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
   });
 
   const updateDiningRooms = (numberOfRooms: number) => {
+    // Validate input
+    if (numberOfRooms < 1 || !Number.isInteger(numberOfRooms)) {
+      toast({
+        title: "Invalid Input",
+        description: "Number of dining rooms must be a positive integer",
+        variant: "destructive",
+      });
+      form.setValue("numberOfDiningRooms", 1);
+      return;
+    }
+
     const currentRooms = form.getValues("diningRooms");
-    const newRooms = Array(numberOfRooms).fill(null).map((_, index) => {
+    const safeNumberOfRooms = Math.min(Math.max(1, numberOfRooms), 100); // Limit to reasonable range
+    
+    const newRooms = Array.from({ length: safeNumberOfRooms }, (_, index) => {
       return currentRooms[index] || {
         name: `Dining Room ${index + 1}`,
         totalResidents: 0,
@@ -51,6 +66,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         menuCycle: "4" as "4" | "6"
       };
     });
+    
     form.setValue("diningRooms", newRooms);
   };
 
@@ -99,7 +115,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
                 <FormControl>
                   <Input 
                     type="number" 
-                    min="1" 
+                    min="1"
+                    max="100"
                     {...field} 
                     onChange={(e) => {
                       const value = parseInt(e.target.value);
@@ -142,7 +159,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
       </form>
     </Form>
   );
-
 };
 
 export default QuoteForm;
