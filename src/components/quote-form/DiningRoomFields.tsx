@@ -63,10 +63,11 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                 label: category,
                 value: category
               }))}
-              selected={field.value || []}
+              selected={field.value?.map(v => v.toString()) || []}
               onChange={(value) => {
-                field.onChange(value as MealCategory[]);
-                form.setValue(`diningRooms.${index}.mealCategories`, value as MealCategory[]);
+                const typedValue = (value || []) as MealCategory[];
+                field.onChange(typedValue);
+                form.setValue(`diningRooms.${index}.mealCategories`, typedValue);
               }}
               placeholder="Select meal categories"
             />
