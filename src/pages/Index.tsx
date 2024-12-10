@@ -4,9 +4,59 @@ import ChatInput from "@/components/ChatInput";
 import QuoteCalculator from "@/components/QuoteCalculator";
 import QuoteForm from "@/components/QuoteForm";
 import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
+import { FileDown, RefreshCw, FileText } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { generateAiResponse } from "@/services/azureAi";
+import { QuoteFormData } from "@/components/quote-form/types";
+
+const exampleData: Partial<QuoteFormData> = {
+  careHomeName: "Sunshine Care Home",
+  careHomeAddress: "123 Care Street, London, UK",
+  numberOfDiningRooms: 2,
+  diningRooms: [
+    {
+      name: "Main Dining Hall",
+      totalResidents: 30,
+      mealCategories: ["Standard", "Allergy Free"],
+      menuType: "Silver",
+      offeringTiers: ["Silver"],
+      menuCycle: "4",
+      allergyFreeMeals: 5,
+      energyDenseMeals: 0,
+      fingerMeals: 0,
+      standardResidents: 25,
+      largeResidents: 0,
+      allergyFreeResidents: 5,
+      energyDenseResidents: 0,
+      fingerFoodResidents: 0
+    },
+    {
+      name: "Special Care Unit",
+      totalResidents: 15,
+      mealCategories: ["Standard", "Energy Dense"],
+      menuType: "Gold",
+      offeringTiers: ["Gold"],
+      menuCycle: "6",
+      allergyFreeMeals: 0,
+      energyDenseMeals: 5,
+      fingerMeals: 0,
+      standardResidents: 10,
+      largeResidents: 0,
+      allergyFreeResidents: 0,
+      energyDenseResidents: 5,
+      fingerFoodResidents: 0
+    }
+  ],
+  offeringTier: "Silver",
+  menuCycle: "4",
+  breakfastIncluded: true,
+  teaIncluded: true,
+  priceListNumber: "PL2024",
+  currentLabourHours: 40,
+  currentLabourCost: 50000,
+  currentFoodSpend: 75000,
+  estimatedNonApetitoSpend: 25000
+};
 
 const Index = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -14,29 +64,11 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [quoteDetails, setQuoteDetails] = useState<any>(null);
   const [showChatAndSummary, setShowChatAndSummary] = useState(false);
-
-  const handleMessage = async (message: string) => {
-    setIsProcessing(true);
-    setMessages(prev => [...prev, { content: message, isAi: false }]);
-
-    try {
-      const response = await generateAiResponse(message);
-      setMessages(prev => [...prev, { content: response, isAi: true }]);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to generate AI response. Please try again later.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+  const [formKey, setFormKey] = useState(0); // Add this to force form reset
 
   const handleQuoteSubmit = async (formData: any) => {
     setIsProcessing(true);
     try {
-      // Simulating API call success
       setQuoteDetails(formData);
       setShowChatAndSummary(true);
       setMessages([{ 
@@ -58,6 +90,40 @@ const Index = () => {
     }
   };
 
+  const handleMessage = async (message: string) => {
+    setIsProcessing(true);
+    setMessages(prev => [...prev, { content: message, isAi: false }]);
+
+    try {
+      const response = await generateAiResponse(message);
+      setMessages(prev => [...prev, { content: response, isAi: true }]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate AI response. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleLoadExample = () => {
+    setFormKey(prev => prev + 1);
+    toast({
+      title: "Example Loaded",
+      description: "The form has been populated with example data.",
+    });
+  };
+
+  const handleClear = () => {
+    setFormKey(prev => prev + 1);
+    toast({
+      title: "Form Cleared",
+      description: "All form fields have been reset.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
       <div className="container mx-auto py-8">
@@ -65,7 +131,30 @@ const Index = () => {
           {/* Quote Form */}
           <div className={`lg:col-span-${showChatAndSummary ? '3' : '6 lg:col-start-4'}`}>
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl">
-              <QuoteForm onSubmit={handleQuoteSubmit} isLoading={isProcessing} />
+              <div className="p-4 flex gap-2 justify-end border-b">
+                <Button
+                  variant="outline"
+                  onClick={handleLoadExample}
+                  className="flex items-center gap-2"
+                >
+                  <FileText className="h-4 w-4" />
+                  Load Example
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleClear}
+                  className="flex items-center gap-2"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Clear
+                </Button>
+              </div>
+              <QuoteForm 
+                key={formKey} 
+                onSubmit={handleQuoteSubmit} 
+                isLoading={isProcessing}
+                defaultValues={exampleData}
+              />
             </div>
           </div>
 
