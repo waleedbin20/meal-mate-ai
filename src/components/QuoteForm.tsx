@@ -10,6 +10,7 @@ import { QuoteFormData } from "./quote-form/types";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { Upload, Trash2 } from "lucide-react";
 
 const sampleQuoteData: QuoteFormData = {
   careHomeName: "Sample Care Home",
@@ -115,22 +116,24 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-6 bg-white rounded-lg shadow-md">
         <div className="flex gap-4 mb-6">
           <Button
             type="button"
             variant="outline"
             onClick={handleLoadSample}
-            className="w-full"
+            className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all"
           >
+            <Upload className="w-4 h-4" />
             Load Sample
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={handleClearForm}
-            className="w-full"
+            className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all"
           >
+            <Trash2 className="w-4 h-4" />
             Clear Form
           </Button>
         </div>
