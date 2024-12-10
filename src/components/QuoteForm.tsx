@@ -25,10 +25,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         mealCategories: ["Standard" as MealCategory],
         menuType: "A",
         offeringTiers: ["Silver" as "Silver" | "Gold" | "Platinum"],
-        menuCycle: "4"
+        menuCycle: "4" as "4" | "6"
       }],
       offeringTier: "Silver",
-      menuCycle: "4",
+      menuCycle: "4" as "4" | "6",
       breakfastIncluded: false,
       teaIncluded: false,
       currentLabourHours: 10,
@@ -48,7 +48,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         mealCategories: ["Standard" as MealCategory],
         menuType: "A",
         offeringTiers: ["Silver" as "Silver" | "Gold" | "Platinum"],
-        menuCycle: "4"
+        menuCycle: "4" as "4" | "6"
       };
     });
     form.setValue("diningRooms", newRooms);
@@ -65,10 +65,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         mealCategories: ["Standard", "Large", "Allergy Free"] as MealCategory[],
         menuType: "A",
         offeringTiers: ["Silver", "Gold"] as ("Silver" | "Gold" | "Platinum")[],
-        menuCycle: "4"
+        menuCycle: "4" as "4" | "6"
       }],
       offeringTier: "Silver",
-      menuCycle: "4",
+      menuCycle: "4" as "4" | "6",
       breakfastIncluded: true,
       teaIncluded: true,
       currentLabourHours: 10,
@@ -142,6 +142,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
       </form>
     </Form>
   );
+
 };
 
 export default QuoteForm;
