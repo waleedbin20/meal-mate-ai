@@ -2,7 +2,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UseFormReturn } from "react-hook-form";
-import { QuoteFormData, MealCategory } from "./types";
+import { QuoteFormData, MealCategory, DiningRoom } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface DiningRoomFieldsProps {
@@ -53,7 +53,13 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
           <FormItem>
             <FormLabel>Total Residents</FormLabel>
             <FormControl>
-              <Input {...field} type="number" min="0" />
+              <Input 
+                {...field} 
+                type="number" 
+                min="0" 
+                onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                value={field.value || ''}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -92,12 +98,11 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
               {form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <FormField
                   control={form.control}
-                  name={`diningRooms.${index}.${getResidentFieldName(category)}`}
+                  name={`diningRooms.${index}.${String(getResidentFieldName(category))}`}
                   render={({ field }) => (
                     <FormItem className="ml-6">
                       <FormControl>
                         <Input
-                          {...field}
                           type="number"
                           min="0"
                           value={field.value || ''}

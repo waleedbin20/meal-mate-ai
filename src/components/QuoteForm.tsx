@@ -30,7 +30,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         menuCycle: "4" as "4" | "6",
         allergyFreeMeals: 0,
         energyDenseMeals: 0,
-        fingerMeals: 0
+        fingerMeals: 0,
+        standardResidents: 0,
+        largeResidents: 0,
+        allergyFreeResidents: 0,
+        energyDenseResidents: 0,
+        fingerFoodResidents: 0
       }],
       offeringTier: "Silver",
       menuCycle: "4" as "4" | "6",
@@ -45,7 +50,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
   });
 
   const updateDiningRooms = (numberOfRooms: number) => {
-    // Validate input
     if (numberOfRooms < 1 || !Number.isInteger(numberOfRooms)) {
       toast({
         title: "Invalid Input",
@@ -57,7 +61,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
     }
 
     const currentRooms = form.getValues("diningRooms");
-    const safeNumberOfRooms = Math.min(Math.max(1, numberOfRooms), 100); // Limit to reasonable range
+    const safeNumberOfRooms = Math.min(Math.max(1, numberOfRooms), 100);
     
     const newRooms = Array.from({ length: safeNumberOfRooms }, (_, index) => {
       return currentRooms[index] || {
@@ -69,7 +73,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         menuCycle: "4" as "4" | "6",
         allergyFreeMeals: 0,
         energyDenseMeals: 0,
-        fingerMeals: 0
+        fingerMeals: 0,
+        standardResidents: 0,
+        largeResidents: 0,
+        allergyFreeResidents: 0,
+        energyDenseResidents: 0,
+        fingerFoodResidents: 0
       };
     });
     
@@ -90,7 +99,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         menuCycle: "4" as "4" | "6",
         allergyFreeMeals: 5,
         energyDenseMeals: 3,
-        fingerMeals: 2
+        fingerMeals: 2,
+        standardResidents: 30,
+        largeResidents: 5,
+        allergyFreeResidents: 5,
+        energyDenseResidents: 0,
+        fingerFoodResidents: 2
       }],
       offeringTier: "Silver",
       menuCycle: "4" as "4" | "6",
