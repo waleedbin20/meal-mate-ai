@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { CareHomeDetails } from "./quote-form/CareHomeDetails";
 import { DiningRoomFields } from "./quote-form/DiningRoomFields";
 import { LaborCostFields } from "./quote-form/LaborCostFields";
-import type { QuoteFormData } from "./quote-form/types";
+import type { QuoteFormData, MealCategory } from "./quote-form/types";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 
 interface QuoteFormProps {
@@ -22,7 +22,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
       diningRooms: [{
         name: "Main Dining Room",
         totalResidents: 0,
-        mealCategories: ["Standard"],
+        mealCategories: ["Standard" as MealCategory],
         menuType: "A",
         offeringTiers: ["Silver"],
         menuCycle: "4"
@@ -45,7 +45,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
       return currentRooms[index] || {
         name: `Dining Room ${index + 1}`,
         totalResidents: 0,
-        mealCategories: ["Standard"],
+        mealCategories: ["Standard" as MealCategory],
         menuType: "A",
         offeringTiers: ["Silver"],
         menuCycle: "4"
@@ -62,7 +62,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
       diningRooms: [{
         name: "Main Dining Room",
         totalResidents: 42,
-        mealCategories: ["Standard", "Large", "Allergy Free"],
+        mealCategories: ["Standard", "Large", "Allergy Free"] as MealCategory[],
         menuType: "A",
         offeringTiers: ["Silver"],
         menuCycle: "4"
