@@ -100,7 +100,7 @@ const Index = () => {
             <div className="flex gap-2">
               <Button
                 onClick={() => {}} // TODO: Implement export functionality
-                className="flex-1 bg-white hover:bg-gray-50/90 text-purple-700 hover:text-purple-800 border border-purple-200"
+                className="flex-1 bg-white hover:bg-gray-50/90 text-purple-700 hover:text-purple-800 border border-purple-200 inline-flex items-center justify-center px-4 py-2"
                 variant="outline"
               >
                 <FileDown className="mr-2 h-4 w-4" />
