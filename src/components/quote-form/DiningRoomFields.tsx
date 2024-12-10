@@ -27,6 +27,19 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
       />
       <FormField
         control={form.control}
+        name={`diningRooms.${index}.totalResidents`}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Total Residents</FormLabel>
+            <FormControl>
+              <Input {...field} type="number" min="0" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
         name={`diningRooms.${index}.standardMeals`}
         render={({ field }) => (
           <FormItem>

@@ -1,5 +1,6 @@
 export interface DiningRoom {
   name: string;
+  totalResidents: number;
   standardMeals: number;
   allergyFreeMeals: number;
   energyDenseMeals: number;

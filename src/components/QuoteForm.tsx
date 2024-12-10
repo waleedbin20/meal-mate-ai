@@ -7,6 +7,7 @@ import { CareHomeDetails } from "./quote-form/CareHomeDetails";
 import { DiningRoomFields } from "./quote-form/DiningRoomFields";
 import { LaborCostFields } from "./quote-form/LaborCostFields";
 import type { QuoteFormData } from "./quote-form/types";
+import { PlusCircle } from "lucide-react";
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -18,6 +19,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
     defaultValues: {
       diningRooms: [{ 
         name: "Main Dining Room",
+        totalResidents: 0,
         standardMeals: 0,
         allergyFreeMeals: 0,
         energyDenseMeals: 0,
@@ -33,8 +35,26 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
       currentLabourCost: 0,
       currentFoodSpend: 0,
       estimatedNonApetitoSpend: 0,
+      priceListNumber: "",
     },
   });
+
+  const addDiningRoom = () => {
+    const currentDiningRooms = form.getValues("diningRooms");
+    form.setValue("diningRooms", [
+      ...currentDiningRooms,
+      {
+        name: `Dining Room ${currentDiningRooms.length + 1}`,
+        totalResidents: 0,
+        standardMeals: 0,
+        allergyFreeMeals: 0,
+        energyDenseMeals: 0,
+        fingerMeals: 0,
+        menuType: "A",
+        portionSize: "standard"
+      }
+    ]);
+  };
 
   const loadExampleData = () => {
     form.reset({
@@ -42,6 +62,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
       careHomeAddress: "123 Care Street, London",
       diningRooms: [{
         name: "Main Dining Room",
+        totalResidents: 42,
         standardMeals: 25,
         allergyFreeMeals: 5,
         energyDenseMeals: 8,
@@ -68,7 +89,19 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading }) => {
         <Separator />
         
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-purple-700">Dining Information</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold text-purple-700">Dining Information</h3>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={addDiningRoom}
+              className="flex items-center gap-2"
+            >
+              <PlusCircle className="h-4 w-4" />
+              Add Dining Room
+            </Button>
+          </div>
+          
           {form.getValues().diningRooms.map((_, index) => (
             <DiningRoomFields key={index} form={form} index={index} />
           ))}
