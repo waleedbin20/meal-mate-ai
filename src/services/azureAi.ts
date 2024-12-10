@@ -1,47 +1,23 @@
-interface AzureConfig {
-  azureEndpoint: string;
-  azureApiKey: string;
-  deploymentName: string;
-}
-
-export const generateAiResponse = async (
-  message: string,
-  config: AzureConfig
-): Promise<string> => {
+export const generateAiResponse = async (message: string): Promise<string> => {
   try {
-    const response = await fetch(
-      `${config.azureEndpoint}/openai/deployments/${config.deploymentName}/chat/completions?api-version=2024-02-15-preview`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "api-key": config.azureApiKey,
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are a helpful assistant that helps generate quotes for care home meal plans.",
-            },
-            {
-              role: "user",
-              content: message,
-            },
-          ],
-          max_tokens: 800,
-        }),
-      }
-    );
+    const response = await fetch('http://localhost:3000/api/chat', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message,
+      }),
+    });
 
     if (!response.ok) {
       throw new Error("Failed to generate response");
     }
 
     const data = await response.json();
-    return data.choices[0].message.content;
+    return data.message;
   } catch (error) {
-    console.error("Error calling Azure OpenAI:", error);
+    console.error("Error calling chat API:", error);
     throw error;
   }
 };
