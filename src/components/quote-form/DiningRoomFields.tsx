@@ -54,11 +54,12 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
             <FormLabel>Total Residents</FormLabel>
             <FormControl>
               <Input 
-                {...field} 
                 type="number" 
                 min="0" 
                 onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 value={field.value || ''}
+                onBlur={field.onBlur}
+                name={field.name}
               />
             </FormControl>
             <FormMessage />
@@ -98,17 +99,19 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
               {form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <FormField
                   control={form.control}
-                  name={`diningRooms.${index}.${String(getResidentFieldName(category))}`}
+                  name={`diningRooms.${index}.${getResidentFieldName(category)}` as const}
                   render={({ field }) => (
                     <FormItem className="ml-6">
                       <FormControl>
                         <Input
                           type="number"
                           min="0"
+                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
                           value={field.value || ''}
+                          onBlur={field.onBlur}
+                          name={field.name}
                           placeholder={`Number of ${category} residents`}
                           className="w-full max-w-xs"
-                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
                         />
                       </FormControl>
                       <FormMessage />
