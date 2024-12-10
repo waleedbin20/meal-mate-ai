@@ -29,11 +29,14 @@ interface MultiSelectProps {
 
 export function MultiSelect({
   options,
-  selected,
+  selected = [], // Provide default empty array
   onChange,
   placeholder = "Select options...",
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
+  
+  // Ensure selected is always an array
+  const selectedValues = Array.isArray(selected) ? selected : [];
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,9 +47,9 @@ export function MultiSelect({
           aria-expanded={open}
           className="w-full justify-between"
         >
-          {selected.length === 0
+          {selectedValues.length === 0
             ? placeholder
-            : `${selected.length} selected`}
+            : `${selectedValues.length} selected`}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -59,16 +62,16 @@ export function MultiSelect({
               <CommandItem
                 key={option.value}
                 onSelect={() => {
-                  const newSelected = selected.includes(option.value)
-                    ? selected.filter((item) => item !== option.value)
-                    : [...selected, option.value];
+                  const newSelected = selectedValues.includes(option.value)
+                    ? selectedValues.filter((item) => item !== option.value)
+                    : [...selectedValues, option.value];
                   onChange(newSelected);
                 }}
               >
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    selected.includes(option.value) ? "opacity-100" : "opacity-0"
+                    selectedValues.includes(option.value) ? "opacity-100" : "opacity-0"
                   )}
                 />
                 {option.label}
