@@ -50,7 +50,9 @@ const exampleData: Partial<QuoteFormData> = {
   menuCycle: "4",
   priceListNumber: "PL2024",
   currentLabourHours: 40,
-  currentLabourCost: 50000
+  currentLabourCost: 50000,
+  currentFoodSpend: 75000,
+  estimatedNonApetitoSpend: 25000
 };
 
 const Index = () => {

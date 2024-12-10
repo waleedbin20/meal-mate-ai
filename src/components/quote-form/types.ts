@@ -26,4 +26,6 @@ export interface QuoteFormData {
   priceListNumber: string;
   currentLabourHours: number;
   currentLabourCost: number;
+  currentFoodSpend: number;
+  estimatedNonApetitoSpend: number;
 }
