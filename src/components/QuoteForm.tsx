@@ -155,7 +155,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
               type="button"
               variant="outline"
               onClick={handleLoadSample}
-              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all"
+              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all px-4 py-2"
             >
               <Upload className="w-4 h-4" />
               Load Sample
@@ -164,7 +164,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
               type="button"
               variant="outline"
               onClick={handleClearForm}
-              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all"
+              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all px-4 py-2"
             >
               <Trash2 className="w-4 h-4" />
               Clear Form
