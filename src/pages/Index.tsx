@@ -6,6 +6,7 @@ import QuoteForm from "@/components/QuoteForm";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { generateAiResponse } from "@/services/azureAi";
 
 const Index = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
