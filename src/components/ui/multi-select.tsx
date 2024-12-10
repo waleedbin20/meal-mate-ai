@@ -29,14 +29,14 @@ interface MultiSelectProps {
 
 export function MultiSelect({
   options,
-  selected = [], // Provide default empty array
+  selected,
   onChange,
   placeholder = "Select options...",
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
   
-  // Ensure selected is always an array
-  const selectedValues = Array.isArray(selected) ? selected : [];
+  // Ensure we always have an array, even if selected is undefined
+  const selectedValues = selected || [];
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -58,7 +58,7 @@ export function MultiSelect({
           <CommandInput placeholder="Search..." />
           <CommandEmpty>No option found.</CommandEmpty>
           <CommandGroup>
-            {options.map((option) => (
+            {(options || []).map((option) => (
               <CommandItem
                 key={option.value}
                 onSelect={() => {
