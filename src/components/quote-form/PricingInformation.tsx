@@ -34,9 +34,9 @@ export const PricingInformation = ({ form }: PricingInformationProps) => {
                   <SelectValue placeholder="Select a price list" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {PRICE_LIST_OPTIONS.map((option) => (
-                  <SelectItem key={option} value={option}>
+                  <SelectItem key={option} value={option} className="hover:bg-gray-100">
                     {option}
                   </SelectItem>
                 ))}
