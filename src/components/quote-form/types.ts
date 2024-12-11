@@ -43,7 +43,7 @@ export interface QuoteFormData {
   numberOfDiningRooms: number;
   diningRooms: DiningRoom[];
   menuCycle: string;
-  priceListNumber: PriceListOption;
+  priceListName: PriceListOption;  // Changed from priceListNumber
   currentLabourHours: number;
   currentLabourCost: number;
   currentFoodSpend: number;

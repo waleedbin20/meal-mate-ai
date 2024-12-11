@@ -52,7 +52,7 @@ const sampleQuoteData: QuoteFormData = {
     },
   ],
   menuCycle: "4",
-  priceListNumber: "Jan 23 Launch Menu with TM",
+  priceListName: "Jan 23 Launch Menu with TM",  // Changed from priceListNumber
   currentLabourHours: 40,
   currentLabourCost: 50000,
   currentFoodSpend: 75000,
@@ -91,7 +91,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
         },
       ],
       menuCycle: "4",
-      priceListNumber: "Jan 23 Launch Menu with TM",
+      priceListName: "Jan 23 Launch Menu with TM",  // Changed from priceListNumber
       currentLabourHours: 0,
       currentLabourCost: 0,
       currentFoodSpend: 0,
@@ -170,7 +170,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
         },
       ],
       menuCycle: "4",
-      priceListNumber: "Jan 23 Launch Menu with TM",
+      priceListName: "Jan 23 Launch Menu with TM",  // Changed from priceListNumber
       currentLabourHours: 0,
       currentLabourCost: 0,
       currentFoodSpend: 0,

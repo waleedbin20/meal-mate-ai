@@ -29,7 +29,7 @@ export interface TransformedQuoteData {
     }>;
   };
   pricingInformation: {
-    priceListNumber: number;
+    priceListName: string;  // Changed from priceListNumber
   };
   labourAndCost: {
     labourHoursPerDay: string;
@@ -69,7 +69,7 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
       })),
     },
     pricingInformation: {
-      priceListNumber: parseInt(data.priceListNumber) || 0,
+      priceListName: data.priceListName,  // Changed from priceListNumber
     },
     labourAndCost: {
       labourHoursPerDay: data.currentLabourHours.toString(),

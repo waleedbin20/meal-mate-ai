@@ -24,7 +24,7 @@ export const PricingInformation = ({ form }: PricingInformationProps) => {
       <h3 className="text-lg font-semibold mb-4">Pricing Information</h3>
       <FormField
         control={form.control}
-        name="priceListNumber"
+        name="priceListName"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Price List</FormLabel>
