@@ -23,8 +23,8 @@ const mealCategories: MealCategory[] = [
   "Mini Meals"
 ];
 
-const getResidentFieldName = (category: MealCategory): string => {
-  const mapping: Record<MealCategory, string> = {
+const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['diningRooms'][0] => {
+  const mapping: Record<MealCategory, keyof QuoteFormData['diningRooms'][0]> = {
     "Standard": "standardResidents",
     "Level 3 IDDSI": "level3Residents",
     "Level 4 IDDSI": "level4Residents",
@@ -88,7 +88,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
             <div key={category} className="space-y-2">
               <FormField
                 control={form.control}
-                name={`diningRooms.${index}.mealCategories`}
+                name={`diningRooms.${index}.mealCategories` as const}
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2">
                     <FormControl>
@@ -111,7 +111,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
               {form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <FormField
                   control={form.control}
-                  name={`diningRooms.${index}.${getResidentFieldName(category)}`}
+                  name={`diningRooms.${index}.${getResidentFieldName(category)}` as const}
                   render={({ field }) => (
                     <FormItem className="ml-6">
                       <FormControl>
