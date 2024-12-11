@@ -31,8 +31,11 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
     return mapping[category];
   };
 
+  // Alternate background colors based on index
+  const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+
   return (
-    <div className="space-y-4 p-4 border rounded-lg">
+    <div className={`${bgColor} space-y-4 p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-md`}>
       <FormField
         control={form.control}
         name={`diningRooms.${index}.name`}

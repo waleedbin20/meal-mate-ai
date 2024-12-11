@@ -227,9 +227,11 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
             )}
           />
 
-          {diningRooms.map((_, index) => (
-            <DiningRoomFields key={index} form={form} index={index} />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {diningRooms.map((_, index) => (
+              <DiningRoomFields key={index} form={form} index={index} />
+            ))}
+          </div>
 
           <div className="space-y-4">
             <FormField
@@ -244,7 +246,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
                       {...field}
                     >
                       <option value="4">4 Week</option>
-                      <option value="6">6 Week</option>
                     </select>
                   </FormControl>
                   <FormMessage />
