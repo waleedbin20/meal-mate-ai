@@ -28,12 +28,22 @@ export interface DiningRoom {
   miniMealResidents: number;
 }
 
+export type PriceListOption = 
+  | "Jan 23 Launch Menu with TM"
+  | "Bluestone Skydome Menu"
+  | "NTC-H"
+  | "29 St - The Fields"
+  | "Abbey Total Care - Woodlands 28 1DR"
+  | "Menu A - Sept 2024"
+  | "Menu B - Sept 2024"
+  | "1 Sam's Care Home";
+
 export interface QuoteFormData {
   careHomeName: string;
   numberOfDiningRooms: number;
   diningRooms: DiningRoom[];
   menuCycle: string;
-  priceListNumber: string;
+  priceListNumber: PriceListOption;
   currentLabourHours: number;
   currentLabourCost: number;
   currentFoodSpend: number;
