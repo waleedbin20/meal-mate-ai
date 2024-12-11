@@ -5,7 +5,6 @@ export const formatQuoteSummary = (data: QuoteFormData): string => {
   
   return `Summary of Quote Request:
 Care Home: ${data.careHomeName}
-Location: ${data.careHomeAddress}
 Total Residents: ${totalResidents}
 Number of Dining Rooms: ${data.numberOfDiningRooms}
 Menu Cycle: ${data.menuCycle} weeks

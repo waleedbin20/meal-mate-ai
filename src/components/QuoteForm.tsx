@@ -70,7 +70,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
   const form = useForm<QuoteFormData>({
     defaultValues: defaultValues || {
       careHomeName: "",
-      careHomeAddress: "",
       numberOfDiningRooms: 1,
       diningRooms: [
         {
@@ -80,14 +79,15 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           menuType: "",
           offeringTiers: [],
           menuCycle: "4",
-          allergyFreeMeals: 0,
-          energyDenseMeals: 0,
-          fingerMeals: 0,
+          portionSize: "Standard",
           standardResidents: 0,
-          largeResidents: 0,
+          level3Residents: 0,
+          level4Residents: 0,
+          level5Residents: 0,
+          level6Residents: 0,
           allergyFreeResidents: 0,
-          energyDenseResidents: 0,
           fingerFoodResidents: 0,
+          miniMealResidents: 0,
         },
       ],
       menuCycle: "4",
@@ -116,14 +116,15 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
         menuType: "",
         offeringTiers: [],
         menuCycle: "4",
-        allergyFreeMeals: 0,
-        energyDenseMeals: 0,
-        fingerMeals: 0,
+        portionSize: "Standard",
         standardResidents: 0,
-        largeResidents: 0,
+        level3Residents: 0,
+        level4Residents: 0,
+        level5Residents: 0,
+        level6Residents: 0,
         allergyFreeResidents: 0,
-        energyDenseResidents: 0,
         fingerFoodResidents: 0,
+        miniMealResidents: 0,
       });
     }
 
@@ -148,7 +149,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
   const handleClearForm = () => {
     form.reset({
       careHomeName: "",
-      careHomeAddress: "",
       numberOfDiningRooms: 1,
       diningRooms: [
         {
@@ -158,14 +158,15 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           menuType: "",
           offeringTiers: [],
           menuCycle: "4",
-          allergyFreeMeals: 0,
-          energyDenseMeals: 0,
-          fingerMeals: 0,
+          portionSize: "Standard",
           standardResidents: 0,
-          largeResidents: 0,
+          level3Residents: 0,
+          level4Residents: 0,
+          level5Residents: 0,
+          level6Residents: 0,
           allergyFreeResidents: 0,
-          energyDenseResidents: 0,
           fingerFoodResidents: 0,
+          miniMealResidents: 0,
         },
       ],
       menuCycle: "4",

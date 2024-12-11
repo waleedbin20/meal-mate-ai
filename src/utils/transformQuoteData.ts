@@ -3,7 +3,6 @@ import { QuoteFormData } from "@/components/quote-form/types";
 export interface TransformedQuoteData {
   careHomeDetails: {
     name: string;
-    address: string;
   };
   diningInformation: {
     numberOfDiningRooms: number;
@@ -12,16 +11,20 @@ export interface TransformedQuoteData {
       residents: {
         total: number;
         categories: {
-          standardMeals: number;
-          largeMeals: number;
-          allergyFreeMeals: number;
-          energyDenseMeals: number;
-          fingerFoodsMeals: number;
+          standardResidents: number;
+          level3Residents: number;
+          level4Residents: number;
+          level5Residents: number;
+          level6Residents: number;
+          allergyFreeResidents: number;
+          fingerFoodResidents: number;
+          miniMealResidents: number;
         };
       };
       menuInformation: {
         menuCycle: string;
         menuOfferingTier: string;
+        portionSize: string;
       };
     }>;
   };
@@ -40,7 +43,6 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
   return {
     careHomeDetails: {
       name: data.careHomeName || "",
-      address: data.careHomeAddress || "",
     },
     diningInformation: {
       numberOfDiningRooms: data.numberOfDiningRooms,
@@ -49,16 +51,20 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
         residents: {
           total: room.totalResidents,
           categories: {
-            standardMeals: room.standardResidents,
-            largeMeals: room.largeResidents,
-            allergyFreeMeals: room.allergyFreeResidents,
-            energyDenseMeals: room.energyDenseResidents,
-            fingerFoodsMeals: room.fingerFoodResidents,
+            standardResidents: room.standardResidents,
+            level3Residents: room.level3Residents,
+            level4Residents: room.level4Residents,
+            level5Residents: room.level5Residents,
+            level6Residents: room.level6Residents,
+            allergyFreeResidents: room.allergyFreeResidents,
+            fingerFoodResidents: room.fingerFoodResidents,
+            miniMealResidents: room.miniMealResidents,
           },
         },
         menuInformation: {
           menuCycle: room.menuCycle,
-          menuOfferingTier: room.offeringTiers[0] || "", // Taking the first tier as the primary
+          menuOfferingTier: room.offeringTiers[0] || "",
+          portionSize: room.portionSize,
         },
       })),
     },
