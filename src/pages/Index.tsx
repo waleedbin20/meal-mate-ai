@@ -70,7 +70,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className={`lg:col-span-${messages.length > 0 ? '8' : '8 lg:col-start-3'}`}>
+          <div className={`lg:col-span-${messages.length > 0 ? '6' : '6 lg:col-start-4'}`}>
             <QuoteForm 
               onSubmit={handleQuoteSubmit} 
               isLoading={isProcessing}
@@ -79,13 +79,11 @@ const Index = () => {
           </div>
 
           {messages.length > 0 && (
-            <div className="lg:col-span-4">
-              <ChatSection
-                messages={messages}
-                isProcessing={isProcessing}
-                onSendMessage={handleChatMessage}
-              />
-            </div>
+            <ChatSection
+              messages={messages}
+              isProcessing={isProcessing}
+              onSendMessage={handleChatMessage}
+            />
           )}
         </div>
       </div>
