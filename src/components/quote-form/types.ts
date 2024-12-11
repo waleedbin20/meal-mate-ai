@@ -1,4 +1,14 @@
-export type MealCategory = "Standard" | "Large" | "Allergy Free" | "Energy Dense" | "Finger Food";
+export type PortionSize = "Small" | "Standard" | "Large";
+
+export type MealCategory = 
+  | "Standard"
+  | "Level 3 IDDSI"
+  | "Level 4 IDDSI"
+  | "Level 5 IDDSI"
+  | "Level 6 IDDSI"
+  | "Allergy-Free"
+  | "Finger Foods"
+  | "Mini Meals";
 
 export interface DiningRoom {
   name: string;
@@ -6,20 +16,20 @@ export interface DiningRoom {
   mealCategories: MealCategory[];
   menuType: string;
   offeringTiers: ("Silver" | "Gold" | "Platinum")[];
-  menuCycle: "4" | "6";
-  allergyFreeMeals: number;
-  energyDenseMeals: number;
-  fingerMeals: number;
+  menuCycle: "4";
+  portionSize: PortionSize;
   standardResidents: number;
-  largeResidents: number;
+  level3Residents: number;
+  level4Residents: number;
+  level5Residents: number;
+  level6Residents: number;
   allergyFreeResidents: number;
-  energyDenseResidents: number;
   fingerFoodResidents: number;
+  miniMealResidents: number;
 }
 
 export interface QuoteFormData {
   careHomeName: string;
-  careHomeAddress: string;
   numberOfDiningRooms: number;
   diningRooms: DiningRoom[];
   menuCycle: string;

@@ -3,8 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
-import { QuoteFormData, MealCategory, DiningRoom } from "./types";
+import { QuoteFormData, MealCategory } from "./types";
 import { MenuInformation } from "./MenuInformation";
+import { PortionSizeField } from "./PortionSizeField";
 
 interface DiningRoomFieldsProps {
   form: UseFormReturn<QuoteFormData>;
@@ -13,25 +14,30 @@ interface DiningRoomFieldsProps {
 
 const mealCategories: MealCategory[] = [
   "Standard",
-  "Large",
-  "Allergy Free",
-  "Energy Dense",
-  "Finger Food"
+  "Level 3 IDDSI",
+  "Level 4 IDDSI",
+  "Level 5 IDDSI",
+  "Level 6 IDDSI",
+  "Allergy-Free",
+  "Finger Foods",
+  "Mini Meals"
 ];
 
-export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
-  const getResidentFieldName = (category: MealCategory): keyof DiningRoom => {
-    const mapping: Record<MealCategory, keyof DiningRoom> = {
-      "Standard": "standardResidents",
-      "Large": "largeResidents",
-      "Allergy Free": "allergyFreeResidents",
-      "Energy Dense": "energyDenseResidents",
-      "Finger Food": "fingerFoodResidents"
-    };
-    return mapping[category];
+const getResidentFieldName = (category: MealCategory): string => {
+  const mapping: Record<MealCategory, string> = {
+    "Standard": "standardResidents",
+    "Level 3 IDDSI": "level3Residents",
+    "Level 4 IDDSI": "level4Residents",
+    "Level 5 IDDSI": "level5Residents",
+    "Level 6 IDDSI": "level6Residents",
+    "Allergy-Free": "allergyFreeResidents",
+    "Finger Foods": "fingerFoodResidents",
+    "Mini Meals": "miniMealResidents"
   };
+  return mapping[category];
+};
 
-  // Alternate background colors based on index
+export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
   const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
 
   return (
@@ -70,6 +76,8 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
           </FormItem>
         )}
       />
+
+      <PortionSizeField form={form} index={index} />
 
       <Card>
         <CardHeader>
