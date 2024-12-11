@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -100,6 +100,39 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
 
   const { toast } = useToast();
   const diningRooms = form.watch('diningRooms') || [];
+  const numberOfDiningRooms = form.watch('numberOfDiningRooms') || 1;
+
+  useEffect(() => {
+    const currentDiningRooms = form.getValues('diningRooms') || [];
+    const newDiningRooms = [...currentDiningRooms];
+
+    // Add new dining rooms if needed
+    while (newDiningRooms.length < numberOfDiningRooms) {
+      newDiningRooms.push({
+        name: "",
+        totalResidents: 0,
+        mealCategories: [],
+        menuType: "",
+        offeringTiers: [],
+        menuCycle: "4",
+        allergyFreeMeals: 0,
+        energyDenseMeals: 0,
+        fingerMeals: 0,
+        standardResidents: 0,
+        largeResidents: 0,
+        allergyFreeResidents: 0,
+        energyDenseResidents: 0,
+        fingerFoodResidents: 0,
+      });
+    }
+
+    // Remove extra dining rooms if needed
+    while (newDiningRooms.length > numberOfDiningRooms) {
+      newDiningRooms.pop();
+    }
+
+    form.setValue('diningRooms', newDiningRooms);
+  }, [numberOfDiningRooms, form]);
 
   const handleLoadSample = () => {
     Object.keys(sampleQuoteData).forEach(key => {
@@ -150,7 +183,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white rounded-lg shadow-md">
+      <form className="space-y-6 bg-white rounded-lg shadow-md">
         <div className="p-6 space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Button
@@ -226,7 +259,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
         
         <div className="p-6 bg-gray-50 rounded-b-lg">
           <Button 
-            type="submit" 
+            type="button" 
+            onClick={form.handleSubmit(onSubmit)}
             disabled={isLoading}
             className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl"
           >
