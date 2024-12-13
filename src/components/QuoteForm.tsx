@@ -1,18 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { Form } from "@/components/ui/form";
 import { CareHomeDetails } from "./quote-form/CareHomeDetails";
-import { DiningRoomFields } from "./quote-form/DiningRoomFields";
+import { DiningRoomsSection } from "./quote-form/DiningRoomsSection";
 import { LaborCostFields } from "./quote-form/LaborCostFields";
 import { PricingInformation } from "./quote-form/PricingInformation";
 import { QuoteFormData } from "./quote-form/types";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { MenuSelection } from "./quote-form/MenuSelection";
 import { FormActions } from "./quote-form/FormActions";
 import { FormSubmitButton } from "./quote-form/FormSubmitButton";
 import { FormWrapper } from "./quote-form/FormWrapper";
+import { NumberOfDiningRooms } from "./quote-form/NumberOfDiningRooms";
+import { FormInitializer } from "./quote-form/FormInitializer";
 
 const sampleQuoteData: QuoteFormData = {
   careHomeName: "Sample Care Home",
@@ -62,7 +61,12 @@ interface QuoteFormProps {
   onClearForm?: () => void;
 }
 
-const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValues, onClearForm }) => {
+const QuoteForm: React.FC<QuoteFormProps> = ({ 
+  onSubmit, 
+  isLoading, 
+  defaultValues, 
+  onClearForm 
+}) => {
   const form = useForm<QuoteFormData>({
     defaultValues: defaultValues || {
       careHomeName: "",
@@ -95,34 +99,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
   const { toast } = useToast();
   const diningRooms = form.watch('diningRooms') || [];
   const numberOfDiningRooms = form.watch('numberOfDiningRooms') || 1;
-
-  useEffect(() => {
-    const currentDiningRooms = form.getValues('diningRooms') || [];
-    const newDiningRooms = [...currentDiningRooms];
-
-    while (newDiningRooms.length < numberOfDiningRooms) {
-      newDiningRooms.push({
-        name: "",
-        totalResidents: 0,
-        mealCategories: [],
-        selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-        standardResidents: 0,
-        level3Residents: 0,
-        level4Residents: 0,
-        level5Residents: 0,
-        level6Residents: 0,
-        allergyFreeResidents: 0,
-        fingerFoodResidents: 0,
-        miniMealResidents: 0,
-      });
-    }
-
-    while (newDiningRooms.length > numberOfDiningRooms) {
-      newDiningRooms.pop();
-    }
-
-    form.setValue('diningRooms', newDiningRooms);
-  }, [numberOfDiningRooms, form]);
 
   const handleLoadSample = () => {
     Object.keys(sampleQuoteData).forEach(key => {
@@ -170,6 +146,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
 
   return (
     <FormWrapper form={form}>
+      <FormInitializer form={form} numberOfDiningRooms={numberOfDiningRooms} />
+      
       <FormActions 
         form={form}
         onLoadSample={handleLoadSample}
@@ -178,30 +156,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
 
       <CareHomeDetails form={form} />
       
-      <FormField
-        control={form.control}
-        name="numberOfDiningRooms"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Number of Dining Rooms</FormLabel>
-            <FormControl>
-              <Input 
-                type="number" 
-                min="1"
-                onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
-                value={field.value}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <NumberOfDiningRooms form={form} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {diningRooms.map((_, index) => (
-          <DiningRoomFields key={index} form={form} index={index} />
-        ))}
-      </div>
+      <DiningRoomsSection form={form} diningRooms={diningRooms} />
 
       <MenuSelection form={form} />
 
