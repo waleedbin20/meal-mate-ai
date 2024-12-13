@@ -24,7 +24,7 @@ const Landing = () => {
               className="text-lg px-8 py-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700
                 transform transition-all duration-300 hover:scale-105 hover:shadow-xl animate-[fade-in_0.6s_ease-out_0.6s] opacity-0 [animation-fill-mode:forwards]"
             >
-              Get Started
+              Create a Quote
             </Button>
           </div>
           <div className="relative animate-[fade-in_0.6s_ease-out_0.9s] opacity-0 [animation-fill-mode:forwards]">
