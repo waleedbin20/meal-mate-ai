@@ -54,27 +54,6 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
           </FormItem>
         )}
       />
-      
-      <FormField
-        control={form.control}
-        name={`diningRooms.${index}.totalResidents`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Total Residents</FormLabel>
-            <FormControl>
-              <Input 
-                type="number" 
-                min="0" 
-                onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
-                value={field.value || ''}
-                onBlur={field.onBlur}
-                name={field.name}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
 
       <Card>
         <CardHeader>
