@@ -58,6 +58,22 @@ const sampleQuoteData: QuoteFormData = {
   currentLabourCost: 50000,
   currentFoodSpend: 75000,
   estimatedNonApetitoSpend: 25000,
+  role1: {
+    hourlyRate: 12,
+    hoursPerWeek: 40
+  },
+  role2: {
+    hourlyRate: 15,
+    hoursPerWeek: 35
+  },
+  role3: {
+    hourlyRate: 18,
+    hoursPerWeek: 30
+  },
+  apetitoLabor: {
+    hourlyRate: 14,
+    hoursPerWeek: 35
+  }
 };
 
 interface QuoteFormProps {
@@ -102,6 +118,22 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
       currentLabourCost: 0,
       currentFoodSpend: 0,
       estimatedNonApetitoSpend: 0,
+      role1: {
+        hourlyRate: 0,
+        hoursPerWeek: 0
+      },
+      role2: {
+        hourlyRate: 0,
+        hoursPerWeek: 0
+      },
+      role3: {
+        hourlyRate: 0,
+        hoursPerWeek: 0
+      },
+      apetitoLabor: {
+        hourlyRate: 0,
+        hoursPerWeek: 0
+      }
     },
   });
 

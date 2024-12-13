@@ -32,11 +32,30 @@ export interface TransformedQuoteData {
     }>;
   };
   pricingInformation: {
-    priceListName: string;
+    priceListName: {
+      customerNo: string;
+      priceHierarchy: string;
+    };
   };
   labourAndCost: {
-    labourHoursPerDay: string;
-    labourCostPerYear: string;
+    currentLabour: {
+      role1: {
+        hourlyRate: string;
+        hoursPerWeek: string;
+      };
+      role2: {
+        hourlyRate: string;
+        hoursPerWeek: string;
+      };
+      role3: {
+        hourlyRate: string;
+        hoursPerWeek: string;
+      };
+    };
+    apetitoLabour: {
+      hourlyRate: string;
+      hoursPerWeek: string;
+    };
     preApetitoPerYear: string;
     postApetitoPerYear: string;
   };
@@ -78,8 +97,24 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
       priceListName: data.priceListName,
     },
     labourAndCost: {
-      labourHoursPerDay: data.currentLabourHours.toString(),
-      labourCostPerYear: data.currentLabourCost.toString(),
+      currentLabour: {
+        role1: {
+          hourlyRate: data.role1.hourlyRate.toString(),
+          hoursPerWeek: data.role1.hoursPerWeek.toString(),
+        },
+        role2: {
+          hourlyRate: data.role2.hourlyRate.toString(),
+          hoursPerWeek: data.role2.hoursPerWeek.toString(),
+        },
+        role3: {
+          hourlyRate: data.role3.hourlyRate.toString(),
+          hoursPerWeek: data.role3.hoursPerWeek.toString(),
+        },
+      },
+      apetitoLabour: {
+        hourlyRate: data.apetitoLabor.hourlyRate.toString(),
+        hoursPerWeek: data.apetitoLabor.hoursPerWeek.toString(),
+      },
       preApetitoPerYear: data.currentFoodSpend?.toString() || "0",
       postApetitoPerYear: data.estimatedNonApetitoSpend?.toString() || "0",
     },
