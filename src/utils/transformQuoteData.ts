@@ -24,7 +24,7 @@ export interface TransformedQuoteData {
       menuInformation: {
         menuName: string;
         menuId: string;
-        portionSize: string;
+        portionSize?: string;
       };
     }>;
   };

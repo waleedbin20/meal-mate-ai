@@ -8,6 +8,8 @@ export type MealCategory =
   | "Finger Foods"
   | "Mini Meals";
 
+export type PortionSize = "Small" | "Standard" | "Large";
+
 export interface MenuOption {
   menuName: string;
   menuId: string;
@@ -26,6 +28,7 @@ export interface DiningRoom {
   fingerFoodResidents: number;
   miniMealResidents: number;
   selectedMenu: MenuOption;
+  portionSize?: PortionSize;
 }
 
 export type PriceListOption = 

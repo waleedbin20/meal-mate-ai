@@ -15,14 +15,14 @@ export const PortionSizeField = ({ form, index }: PortionSizeFieldProps) => {
   return (
     <FormField
       control={form.control}
-      name={`diningRooms.${index}.portionSize`}
+      name={`diningRooms.${index}.portionSize` as const}
       render={({ field }) => (
         <FormItem>
           <FormLabel>Portion Size</FormLabel>
           <FormControl>
             <RadioGroup
-              onValueChange={field.onChange}
-              defaultValue={field.value}
+              onValueChange={(value: PortionSize) => field.onChange(value)}
+              value={field.value as PortionSize}
               className="flex flex-col space-y-1"
             >
               {portionSizes.map((size) => (
