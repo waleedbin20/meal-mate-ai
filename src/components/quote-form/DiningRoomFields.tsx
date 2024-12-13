@@ -12,7 +12,9 @@ interface DiningRoomFieldsProps {
 }
 
 const mealCategories: MealCategory[] = [
-  "Standard",
+  "Multi Twin Large",
+  "Multi Twin Small",
+  "Multi Twin Standard",
   "Level 3 IDDSI",
   "Level 4 IDDSI",
   "Level 5 IDDSI",
@@ -24,7 +26,9 @@ const mealCategories: MealCategory[] = [
 
 const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['diningRooms'][0] => {
   const mapping: Record<MealCategory, keyof QuoteFormData['diningRooms'][0]> = {
-    "Standard": "standardResidents",
+    "Multi Twin Large": "multiTwinLargeResidents",
+    "Multi Twin Small": "multiTwinSmallResidents",
+    "Multi Twin Standard": "multiTwinStandardResidents",
     "Level 3 IDDSI": "level3Residents",
     "Level 4 IDDSI": "level4Residents",
     "Level 5 IDDSI": "level5Residents",

@@ -1,5 +1,7 @@
 export type MealCategory = 
-  | "Standard"
+  | "Multi Twin Large"
+  | "Multi Twin Small" 
+  | "Multi Twin Standard"
   | "Level 3 IDDSI"
   | "Level 4 IDDSI"
   | "Level 5 IDDSI"
@@ -27,6 +29,9 @@ export interface DiningRoom {
   allergyFreeResidents: number;
   fingerFoodResidents: number;
   miniMealResidents: number;
+  multiTwinLargeResidents?: number;
+  multiTwinSmallResidents?: number;
+  multiTwinStandardResidents?: number;
   selectedMenu: MenuOption;
   portionSize?: PortionSize;
 }
