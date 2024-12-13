@@ -89,9 +89,11 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
           <FormItem>
             <FormLabel>Menu Selection</FormLabel>
             <Select
-              onValueChange={(value) => {
-                const selectedMenu = menuOptions.find(menu => menu.menuId === value);
-                field.onChange(selectedMenu);
+              onValueChange={(menuId) => {
+                const selectedMenu = menuOptions.find(menu => menu.menuId === menuId);
+                if (selectedMenu) {
+                  field.onChange(selectedMenu);
+                }
               }}
               value={field.value?.menuId}
             >
