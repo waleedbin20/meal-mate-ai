@@ -11,15 +11,30 @@ interface NumberOfDiningRoomsProps {
 export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
   const diningRooms = useWatch({
     control: form.control,
-    name: "diningRooms"
+    name: "diningRooms",
+    defaultValue: []
   });
 
   useEffect(() => {
-    if (diningRooms?.[0]) {
-      const totalResidents = calculateTotalResidents(diningRooms[0]);
-      form.setValue("diningRooms.0.totalResidents", totalResidents);
-    }
-  }, [diningRooms, form]);
+    diningRooms.forEach((diningRoom, index) => {
+      if (diningRoom) {
+        const totalResidents = calculateTotalResidents(diningRoom);
+        form.setValue(`diningRooms.${index}.totalResidents`, totalResidents);
+      }
+    });
+  }, [
+    diningRooms?.[0]?.multiTwinLargeResidents,
+    diningRooms?.[0]?.multiTwinSmallResidents,
+    diningRooms?.[0]?.multiTwinStandardResidents,
+    diningRooms?.[0]?.level3Residents,
+    diningRooms?.[0]?.level4Residents,
+    diningRooms?.[0]?.level5Residents,
+    diningRooms?.[0]?.level6Residents,
+    diningRooms?.[0]?.allergyFreeResidents,
+    diningRooms?.[0]?.fingerFoodResidents,
+    diningRooms?.[0]?.miniMealResidents,
+    form
+  ]);
 
   const calculateTotalResidents = (diningRoom: QuoteFormData['diningRooms'][0]) => {
     return (

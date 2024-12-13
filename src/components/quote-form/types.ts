@@ -21,7 +21,6 @@ export interface DiningRoom {
   name: string;
   totalResidents: number;
   mealCategories: MealCategory[];
-  standardResidents: number;
   level3Residents: number;
   level4Residents: number;
   level5Residents: number;
@@ -29,9 +28,9 @@ export interface DiningRoom {
   allergyFreeResidents: number;
   fingerFoodResidents: number;
   miniMealResidents: number;
-  multiTwinLargeResidents?: number;
-  multiTwinSmallResidents?: number;
-  multiTwinStandardResidents?: number;
+  multiTwinLargeResidents: number;
+  multiTwinSmallResidents: number;
+  multiTwinStandardResidents: number;
   selectedMenu: MenuOption;
   portionSize?: PortionSize;
 }
