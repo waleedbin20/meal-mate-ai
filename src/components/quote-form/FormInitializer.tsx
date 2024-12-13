@@ -10,13 +10,30 @@ interface FormInitializerProps {
 export const FormInitializer = ({ form, numberOfDiningRooms }: FormInitializerProps) => {
   useEffect(() => {
     const currentDiningRooms = form.getValues('diningRooms') || [];
-    
-    // Only remove dining rooms if there are too many
-    while (currentDiningRooms.length > numberOfDiningRooms) {
-      currentDiningRooms.pop();
+    const newDiningRooms = [...currentDiningRooms];
+
+    while (newDiningRooms.length < numberOfDiningRooms) {
+      newDiningRooms.push({
+        name: "",
+        totalResidents: 0,
+        mealCategories: [],
+        selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
+        standardResidents: 0,
+        level3Residents: 0,
+        level4Residents: 0,
+        level5Residents: 0,
+        level6Residents: 0,
+        allergyFreeResidents: 0,
+        fingerFoodResidents: 0,
+        miniMealResidents: 0,
+      });
     }
 
-    form.setValue('diningRooms', currentDiningRooms);
+    while (newDiningRooms.length > numberOfDiningRooms) {
+      newDiningRooms.pop();
+    }
+
+    form.setValue('diningRooms', newDiningRooms);
   }, [numberOfDiningRooms, form]);
 
   return null;
