@@ -85,7 +85,8 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                           
                           if (!checked) {
                             const fieldName = getResidentFieldName(category);
-                            form.setValue(`diningRooms.${index}.${fieldName}` as const, 0);
+                            const path = `diningRooms.${index}.${fieldName}` as const;
+                            form.setValue(path, 0);
                           }
                         }}
                       />
@@ -105,10 +106,11 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                         <Input
                           type="number"
                           min="0"
-                          onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
                           value={field.value || ''}
                           onBlur={field.onBlur}
                           name={field.name}
+                          ref={field.ref}
                           placeholder={`Number of ${category} residents`}
                           className="w-full max-w-xs"
                         />

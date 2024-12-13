@@ -12,14 +12,16 @@ interface RoleCardProps {
 }
 
 export const RoleCard = ({ form, roleNumber, bgColor, textColor }: RoleCardProps) => {
-  const roleName = `role${roleNumber}`;
+  const roleName = `role${roleNumber}` as const;
   
-  // Use proper typing for the watched values
-  const hourlyRate = form.watch(`${roleName}.hourlyRate` as const) || 0;
-  const hoursPerWeek = form.watch(`${roleName}.hoursPerWeek` as const) || 0;
+  // Type-safe field paths
+  const hourlyRatePath = `${roleName}.hourlyRate` as const;
+  const hoursPerWeekPath = `${roleName}.hoursPerWeek` as const;
   
-  // Ensure we're working with numbers
-  const weeklyTotal = Number(hourlyRate) * Number(hoursPerWeek);
+  const hourlyRate = form.watch(hourlyRatePath);
+  const hoursPerWeek = form.watch(hoursPerWeekPath);
+  
+  const weeklyTotal = (Number(hourlyRate) || 0) * (Number(hoursPerWeek) || 0);
   const annualTotal = weeklyTotal * 52;
 
   return (
@@ -28,17 +30,20 @@ export const RoleCard = ({ form, roleNumber, bgColor, textColor }: RoleCardProps
       <div className="space-y-4">
         <FormField
           control={form.control}
-          name={`${roleName}.hourlyRate` as const}
+          name={hourlyRatePath}
           render={({ field }) => (
             <FormItem>
               <FormLabel className={textColor}>Hourly Rate (£)</FormLabel>
               <FormControl>
                 <Input 
-                  {...field}
                   type="number"
                   min="0"
                   step="0.01"
                   onChange={(e) => field.onChange(Number(e.target.value))}
+                  value={field.value || ''}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
                 />
               </FormControl>
               <FormMessage />
@@ -47,16 +52,19 @@ export const RoleCard = ({ form, roleNumber, bgColor, textColor }: RoleCardProps
         />
         <FormField
           control={form.control}
-          name={`${roleName}.hoursPerWeek` as const}
+          name={hoursPerWeekPath}
           render={({ field }) => (
             <FormItem>
               <FormLabel className={textColor}>Hours per Week</FormLabel>
               <FormControl>
                 <Input 
-                  {...field}
                   type="number"
                   min="0"
                   onChange={(e) => field.onChange(Number(e.target.value))}
+                  value={field.value || ''}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
                 />
               </FormControl>
               <FormMessage />
