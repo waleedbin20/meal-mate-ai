@@ -18,6 +18,11 @@ export interface MenuOption {
   menuId: string;
 }
 
+export interface PriceListOption {
+  customerNo: string;
+  priceHierarchy: string;
+}
+
 export interface DiningRoom {
   name: string;
   totalResidents: number;
@@ -36,16 +41,6 @@ export interface DiningRoom {
   selectedMenu: MenuOption;
   portionSize?: PortionSize;
 }
-
-export type PriceListOption = 
-  | "Jan 23 Launch Menu with TM"
-  | "Bluestone Skydome Menu"
-  | "NTC-H"
-  | "29 St - The Fields"
-  | "Abbey Total Care - Woodlands 28 1DR"
-  | "Menu A - Sept 2024"
-  | "Menu B - Sept 2024"
-  | "1 Sam's Care Home";
 
 export interface QuoteFormData {
   careHomeName: string;
