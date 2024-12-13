@@ -110,7 +110,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
           fingerFoodResidents: 0,
           miniMealResidents: 0,
           religiousDietsResidents: 0,
-        },
+        }
       ],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
       priceListName: { customerNo: "1103998", priceHierarchy: "0008801129" },
@@ -172,7 +172,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
           fingerFoodResidents: 0,
           miniMealResidents: 0,
           religiousDietsResidents: 0,
-        },
+        }
       ],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
       priceListName: { customerNo: "1103998", priceHierarchy: "0008801129" },
@@ -202,7 +202,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
       
       <NumberOfDiningRooms form={form} />
 
-      <DiningRoomsSection form={form} diningRooms={diningRooms} />
+      <DiningRoomsSection form={form} diningRooms={[diningRooms[0]]} />
 
       <MenuSelection form={form} />
 
