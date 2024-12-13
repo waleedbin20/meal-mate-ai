@@ -33,13 +33,17 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
               value={field.value?.menuId}
             >
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Select a menu" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="bg-white z-50">
                 {menuOptions.map((menu) => (
-                  <SelectItem key={menu.menuId} value={menu.menuId}>
+                  <SelectItem 
+                    key={menu.menuId} 
+                    value={menu.menuId}
+                    className="hover:bg-gray-100"
+                  >
                     {menu.menuName}
                   </SelectItem>
                 ))}
