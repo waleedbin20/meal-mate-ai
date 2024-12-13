@@ -11,27 +11,29 @@ const Landing = () => {
       <div className="container mx-auto px-4 pt-20 pb-32">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 animate-fade-in">
-            <h1 className="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent 
+              [text-shadow:_0_0_30px_rgb(139_92_246_/_0.3)] animate-pulse">
               Care Home Meal Planning Made Simple
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 animate-[fade-in_0.6s_ease-out_0.3s] opacity-0 [animation-fill-mode:forwards]">
               Get instant quotes and AI-powered assistance for your care home meal planning needs. Streamline your process and make informed decisions with Quote AI.
             </p>
             <Button 
               onClick={() => navigate("/quote")} 
               size="lg"
-              className="text-lg px-8 py-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              className="text-lg px-8 py-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700
+                transform transition-all duration-300 hover:scale-105 hover:shadow-xl animate-[fade-in_0.6s_ease-out_0.6s] opacity-0 [animation-fill-mode:forwards]"
             >
               Get Started
             </Button>
           </div>
-          <div className="relative">
+          <div className="relative animate-[fade-in_0.6s_ease-out_0.9s] opacity-0 [animation-fill-mode:forwards]">
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl blur opacity-30"></div>
-            <div className="relative bg-white p-6 rounded-2xl shadow-xl">
+            <div className="relative bg-white p-6 rounded-2xl shadow-xl transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
               <img 
-                src="/placeholder.svg" 
+                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158"
                 alt="Care Home Meal Planning" 
-                className="w-full h-auto rounded-lg"
+                className="w-full h-auto rounded-lg object-cover aspect-video"
               />
             </div>
           </div>
@@ -41,7 +43,8 @@ const Landing = () => {
       {/* Features Section */}
       <div className="bg-white/80 backdrop-blur-sm py-24">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-16 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold text-center mb-16 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent
+            [text-shadow:_0_0_20px_rgb(139_92_246_/_0.2)]">
             Why Choose Quote AI?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -61,9 +64,13 @@ const Landing = () => {
             ].map((feature, index) => (
               <div 
                 key={index}
-                className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105
+                  animate-[fade-in_0.6s_ease-out] [animation-delay:var(--delay)] opacity-0 [animation-fill-mode:forwards]"
+                style={{ '--delay': `${1.2 + index * 0.2}s` } as React.CSSProperties}
               >
-                <h3 className="text-xl font-semibold mb-4">{feature.title}</h3>
+                <h3 className="text-xl font-semibold mb-4 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                  {feature.title}
+                </h3>
                 <p className="text-gray-600">{feature.description}</p>
               </div>
             ))}
