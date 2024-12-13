@@ -10,13 +10,15 @@ export type MealCategory =
   | "Finger Foods"
   | "Mini Meals";
 
+export interface MenuOption {
+  menuName: string;
+  menuId: string;
+}
+
 export interface DiningRoom {
   name: string;
   totalResidents: number;
   mealCategories: MealCategory[];
-  menuType: string;
-  offeringTiers: ("Silver" | "Gold" | "Platinum")[];
-  menuCycle: "4";
   portionSize: PortionSize;
   standardResidents: number;
   level3Residents: number;
@@ -26,6 +28,7 @@ export interface DiningRoom {
   allergyFreeResidents: number;
   fingerFoodResidents: number;
   miniMealResidents: number;
+  selectedMenu: MenuOption;
 }
 
 export type PriceListOption = 
@@ -42,8 +45,7 @@ export interface QuoteFormData {
   careHomeName: string;
   numberOfDiningRooms: number;
   diningRooms: DiningRoom[];
-  menuCycle: string;
-  priceListName: PriceListOption;  // Changed from priceListNumber
+  priceListName: PriceListOption;
   currentLabourHours: number;
   currentLabourCost: number;
   currentFoodSpend: number;

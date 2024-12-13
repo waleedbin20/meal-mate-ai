@@ -20,9 +20,7 @@ const sampleQuoteData: QuoteFormData = {
       name: "Main Dining Room",
       totalResidents: 50,
       mealCategories: ["Standard", "Level 4 IDDSI", "Allergy-Free"],
-      menuType: "Standard",
-      offeringTiers: ["Silver"],
-      menuCycle: "4",
+      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
       portionSize: "Standard",
       standardResidents: 40,
       level3Residents: 0,
@@ -37,9 +35,7 @@ const sampleQuoteData: QuoteFormData = {
       name: "Special Care Dining",
       totalResidents: 20,
       mealCategories: ["Level 3 IDDSI", "Finger Foods"],
-      menuType: "Specialized",
-      offeringTiers: ["Gold"],
-      menuCycle: "4",
+      selectedMenu: { menuName: "Menu B - Sep 2024", menuId: "90670" },
       portionSize: "Small",
       standardResidents: 0,
       level3Residents: 12,
@@ -51,8 +47,7 @@ const sampleQuoteData: QuoteFormData = {
       miniMealResidents: 0
     },
   ],
-  menuCycle: "4",
-  priceListName: "Jan 23 Launch Menu with TM",  // Changed from priceListNumber
+  priceListName: "Jan 23 Launch Menu with TM",
   currentLabourHours: 40,
   currentLabourCost: 50000,
   currentFoodSpend: 75000,
@@ -76,9 +71,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           name: "",
           totalResidents: 0,
           mealCategories: [],
-          menuType: "",
-          offeringTiers: [],
-          menuCycle: "4",
+          selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
           portionSize: "Standard",
           standardResidents: 0,
           level3Residents: 0,
@@ -90,8 +83,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           miniMealResidents: 0,
         },
       ],
-      menuCycle: "4",
-      priceListName: "Jan 23 Launch Menu with TM",  // Changed from priceListNumber
+      priceListName: "Jan 23 Launch Menu with TM",
       currentLabourHours: 0,
       currentLabourCost: 0,
       currentFoodSpend: 0,
@@ -113,9 +105,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
         name: "",
         totalResidents: 0,
         mealCategories: [],
-        menuType: "",
-        offeringTiers: [],
-        menuCycle: "4",
+        selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
         portionSize: "Standard",
         standardResidents: 0,
         level3Residents: 0,
@@ -155,9 +145,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           name: "",
           totalResidents: 0,
           mealCategories: [],
-          menuType: "",
-          offeringTiers: [],
-          menuCycle: "4",
+          selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
           portionSize: "Standard",
           standardResidents: 0,
           level3Residents: 0,
@@ -169,8 +157,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           miniMealResidents: 0,
         },
       ],
-      menuCycle: "4",
-      priceListName: "Jan 23 Launch Menu with TM",  // Changed from priceListNumber
+      priceListName: "Jan 23 Launch Menu with TM",
       currentLabourHours: 0,
       currentLabourCost: 0,
       currentFoodSpend: 0,
@@ -236,27 +223,9 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           </div>
 
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="menuCycle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Menu Cycle</FormLabel>
-                  <FormControl>
-                    <select 
-                      className="w-full p-2 border rounded"
-                      {...field}
-                    >
-                      <option value="4">4 Week</option>
-                    </select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <PricingInformation form={form} />
           </div>
 
-          <PricingInformation form={form} />
           <LaborCostFields form={form} />
         </div>
         
