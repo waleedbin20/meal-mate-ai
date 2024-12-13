@@ -13,7 +13,7 @@ const Landing = () => {
           <div className="space-y-8 animate-fade-in">
             <h1 className="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent 
               [text-shadow:_0_0_30px_rgb(139_92_246_/_0.3)] animate-pulse">
-              Generate Professional Customer Quotes in Minutes
+              Generate Customer Quotes in Minutes
             </h1>
             <p className="text-xl text-gray-600 animate-[fade-in_0.6s_ease-out_0.3s] opacity-0 [animation-fill-mode:forwards]">
               Streamline your onboarding process with instant, AI-powered quote generation. Create detailed, accurate quotes for your customers before they are onboarded.
