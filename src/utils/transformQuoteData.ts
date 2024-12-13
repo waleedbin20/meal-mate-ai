@@ -22,14 +22,14 @@ export interface TransformedQuoteData {
         };
       };
       menuInformation: {
-        menuCycle: string;
-        menuOfferingTier: string;
+        menuName: string;
+        menuId: string;
         portionSize: string;
       };
     }>;
   };
   pricingInformation: {
-    priceListName: string;  // Changed from priceListNumber
+    priceListName: string;
   };
   labourAndCost: {
     labourHoursPerDay: string;
@@ -62,14 +62,14 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
           },
         },
         menuInformation: {
-          menuCycle: room.menuCycle,
-          menuOfferingTier: room.offeringTiers[0] || "",
+          menuName: room.selectedMenu.menuName,
+          menuId: room.selectedMenu.menuId,
           portionSize: room.portionSize,
         },
       })),
     },
     pricingInformation: {
-      priceListName: data.priceListName,  // Changed from priceListNumber
+      priceListName: data.priceListName,
     },
     labourAndCost: {
       labourHoursPerDay: data.currentLabourHours.toString(),
