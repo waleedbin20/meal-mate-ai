@@ -16,7 +16,7 @@ const Landing = () => {
               Generate Professional Customer Quotes in Minutes
             </h1>
             <p className="text-xl text-gray-600 animate-[fade-in_0.6s_ease-out_0.3s] opacity-0 [animation-fill-mode:forwards]">
-              Streamline your onboarding process with instant, AI-powered quote generation. Create detailed, accurate quotes for your customers before they join your care home meal planning service.
+              Streamline your onboarding process with instant, AI-powered quote generation. Create detailed, accurate quotes for your customers before they are onboarded.
             </p>
             <Button 
               onClick={() => navigate("/quote")} 
