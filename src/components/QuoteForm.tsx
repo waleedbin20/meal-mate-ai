@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { CareHomeDetails } from "./quote-form/CareHomeDetails";
 import { DiningRoomFields } from "./quote-form/DiningRoomFields";
@@ -10,8 +9,10 @@ import { QuoteFormData } from "./quote-form/types";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, Trash2 } from "lucide-react";
 import { MenuSelection } from "./quote-form/MenuSelection";
+import { FormActions } from "./quote-form/FormActions";
+import { FormSubmitButton } from "./quote-form/FormSubmitButton";
+import { FormWrapper } from "./quote-form/FormWrapper";
 
 const sampleQuoteData: QuoteFormData = {
   careHomeName: "Sample Care Home",
@@ -99,7 +100,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
     const currentDiningRooms = form.getValues('diningRooms') || [];
     const newDiningRooms = [...currentDiningRooms];
 
-    // Add new dining rooms if needed
     while (newDiningRooms.length < numberOfDiningRooms) {
       newDiningRooms.push({
         name: "",
@@ -117,7 +117,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
       });
     }
 
-    // Remove extra dining rooms if needed
     while (newDiningRooms.length > numberOfDiningRooms) {
       newDiningRooms.pop();
     }
@@ -170,78 +169,53 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
   };
 
   return (
-    <Form {...form}>
-      <form className="space-y-6 bg-white rounded-lg shadow-md">
-        <div className="p-6 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleLoadSample}
-              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all px-4 py-2"
-            >
-              <Upload className="w-4 h-4" />
-              Load Sample
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClearForm}
-              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border-gray-200 text-gray-700 hover:text-gray-900 transition-all px-4 py-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              Clear Form
-            </Button>
-          </div>
+    <FormWrapper form={form}>
+      <FormActions 
+        form={form}
+        onLoadSample={handleLoadSample}
+        onClearForm={handleClearForm}
+      />
 
-          <CareHomeDetails form={form} />
-          
-          <FormField
-            control={form.control}
-            name="numberOfDiningRooms"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Number of Dining Rooms</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    min="1"
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
-                    value={field.value}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <CareHomeDetails form={form} />
+      
+      <FormField
+        control={form.control}
+        name="numberOfDiningRooms"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Number of Dining Rooms</FormLabel>
+            <FormControl>
+              <Input 
+                type="number" 
+                min="1"
+                onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
+                value={field.value}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {diningRooms.map((_, index) => (
-              <DiningRoomFields key={index} form={form} index={index} />
-            ))}
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {diningRooms.map((_, index) => (
+          <DiningRoomFields key={index} form={form} index={index} />
+        ))}
+      </div>
 
-          <MenuSelection form={form} />
+      <MenuSelection form={form} />
 
-          <div className="space-y-4">
-            <PricingInformation form={form} />
-          </div>
+      <div className="space-y-4">
+        <PricingInformation form={form} />
+      </div>
 
-          <LaborCostFields form={form} />
-        </div>
-        
-        <div className="p-6 bg-gray-50 rounded-b-lg">
-          <Button 
-            type="button" 
-            onClick={form.handleSubmit(onSubmit)}
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl"
-          >
-            Generate Quote
-          </Button>
-        </div>
-      </form>
-    </Form>
+      <LaborCostFields form={form} />
+
+      <FormSubmitButton 
+        isLoading={isLoading}
+        onClick={form.handleSubmit(onSubmit)}
+      />
+    </FormWrapper>
   );
 };
 
