@@ -80,6 +80,12 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                             ? [...currentValue, category]
                             : currentValue.filter((v) => v !== category);
                           field.onChange(newValue);
+                          
+                          // Reset resident count to zero when category is unchecked
+                          if (!checked) {
+                            const fieldName = getResidentFieldName(category);
+                            form.setValue(`diningRooms.${index}.${fieldName}`, 0);
+                          }
                         }}
                       />
                     </FormControl>
