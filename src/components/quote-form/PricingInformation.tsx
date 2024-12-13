@@ -1,9 +1,11 @@
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
-import { QuoteFormData, PriceListOption } from "./types";
+import { QuoteFormData } from "./types";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const PRICE_LIST_OPTIONS: PriceListOption[] = [
+const priceListOptions = [
   { customerNo: "1103998", priceHierarchy: "0008801129" },
   { customerNo: "1103999", priceHierarchy: "0008801130" },
   { customerNo: "1104000", priceHierarchy: "0008801097" },
@@ -16,44 +18,91 @@ interface PricingInformationProps {
 
 export const PricingInformation = ({ form }: PricingInformationProps) => {
   return (
-    <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-      <h3 className="text-lg font-semibold mb-4">Pricing Information</h3>
-      <FormField
-        control={form.control}
-        name="priceListName"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Price List</FormLabel>
-            <Select 
-              onValueChange={(value) => {
-                const selectedOption = PRICE_LIST_OPTIONS.find(
-                  option => option.customerNo === value
-                );
-                field.onChange(selectedOption);
-              }}
-              value={field.value?.customerNo}
-            >
-              <FormControl>
-                <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Select a customer number" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent className="bg-white z-50">
-                {PRICE_LIST_OPTIONS.map((option) => (
-                  <SelectItem 
-                    key={option.customerNo} 
-                    value={option.customerNo}
-                    className="hover:bg-gray-100"
-                  >
-                    {`Customer: ${option.customerNo} - Price Hierarchy: ${option.priceHierarchy}`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
+    <Card className="bg-white">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold text-purple-700">Pricing Information</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <FormField
+          control={form.control}
+          name="priceListName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Price List</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  const [customerNo, priceHierarchy] = value.split(',');
+                  field.onChange({ customerNo, priceHierarchy });
+                }}
+                value={`${field.value.customerNo},${field.value.priceHierarchy}`}
+              >
+                <FormControl>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select a price list" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {priceListOptions.map((option) => (
+                    <SelectItem 
+                      key={`${option.customerNo}-${option.priceHierarchy}`}
+                      value={`${option.customerNo},${option.priceHierarchy}`}
+                    >
+                      {`Customer: ${option.customerNo}, Price Hierarchy: ${option.priceHierarchy}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="currentFoodSpend"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Current Food Spend Per Year (£)</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    min="0"
+                    step="0.01"
+                    placeholder="Enter current food spend"
+                    className="bg-white"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="estimatedNonApetitoSpend"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estimated Non-apetito Food Spend Per Year (£)</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    min="0"
+                    step="0.01"
+                    placeholder="Enter estimated non-apetito spend"
+                    className="bg-white"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 };
