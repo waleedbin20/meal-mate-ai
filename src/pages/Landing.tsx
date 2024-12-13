@@ -59,7 +59,7 @@ const Landing = () => {
               },
               {
                 title: "Customizable Plans",
-                description: "Tailor your meal plans to your care home's specific needs and requirements."
+                description: "Tailor your quotes to match your specific business requirements and customer needs."
               }
             ].map((feature, index) => (
               <div 
