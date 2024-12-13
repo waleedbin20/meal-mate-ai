@@ -11,6 +11,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Trash2 } from "lucide-react";
+import { MenuSelection } from "./quote-form/MenuSelection";
 
 const sampleQuoteData: QuoteFormData = {
   careHomeName: "Sample Care Home",
@@ -21,7 +22,6 @@ const sampleQuoteData: QuoteFormData = {
       totalResidents: 50,
       mealCategories: ["Standard", "Level 4 IDDSI", "Allergy-Free"],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-      portionSize: "Standard",
       standardResidents: 40,
       level3Residents: 0,
       level4Residents: 5,
@@ -36,7 +36,6 @@ const sampleQuoteData: QuoteFormData = {
       totalResidents: 20,
       mealCategories: ["Level 3 IDDSI", "Finger Foods"],
       selectedMenu: { menuName: "Menu B - Sep 2024", menuId: "90670" },
-      portionSize: "Small",
       standardResidents: 0,
       level3Residents: 12,
       level4Residents: 0,
@@ -47,6 +46,7 @@ const sampleQuoteData: QuoteFormData = {
       miniMealResidents: 0
     },
   ],
+  selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
   priceListName: "Jan 23 Launch Menu with TM",
   currentLabourHours: 40,
   currentLabourCost: 50000,
@@ -72,7 +72,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           totalResidents: 0,
           mealCategories: [],
           selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-          portionSize: "Standard",
           standardResidents: 0,
           level3Residents: 0,
           level4Residents: 0,
@@ -83,6 +82,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           miniMealResidents: 0,
         },
       ],
+      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
       priceListName: "Jan 23 Launch Menu with TM",
       currentLabourHours: 0,
       currentLabourCost: 0,
@@ -106,7 +106,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
         totalResidents: 0,
         mealCategories: [],
         selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-        portionSize: "Standard",
         standardResidents: 0,
         level3Residents: 0,
         level4Residents: 0,
@@ -146,7 +145,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           totalResidents: 0,
           mealCategories: [],
           selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-          portionSize: "Standard",
           standardResidents: 0,
           level3Residents: 0,
           level4Residents: 0,
@@ -157,6 +155,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
           miniMealResidents: 0,
         },
       ],
+      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
       priceListName: "Jan 23 Launch Menu with TM",
       currentLabourHours: 0,
       currentLabourCost: 0,
@@ -221,6 +220,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({ onSubmit, isLoading, defaultValue
               <DiningRoomFields key={index} form={form} index={index} />
             ))}
           </div>
+
+          <MenuSelection form={form} />
 
           <div className="space-y-4">
             <PricingInformation form={form} />

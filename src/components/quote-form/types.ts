@@ -1,5 +1,3 @@
-export type PortionSize = "Small" | "Standard" | "Large";
-
 export type MealCategory = 
   | "Standard"
   | "Level 3 IDDSI"
@@ -19,7 +17,6 @@ export interface DiningRoom {
   name: string;
   totalResidents: number;
   mealCategories: MealCategory[];
-  portionSize: PortionSize;
   standardResidents: number;
   level3Residents: number;
   level4Residents: number;
@@ -50,4 +47,5 @@ export interface QuoteFormData {
   currentLabourCost: number;
   currentFoodSpend: number;
   estimatedNonApetitoSpend: number;
+  selectedMenu: MenuOption;
 }

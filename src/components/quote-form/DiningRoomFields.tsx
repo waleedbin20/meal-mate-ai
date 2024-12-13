@@ -2,11 +2,9 @@ import React from "react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
-import { QuoteFormData, MealCategory, MenuOption } from "./types";
-import { PortionSizeField } from "./PortionSizeField";
+import { QuoteFormData, MealCategory } from "./types";
 
 interface DiningRoomFieldsProps {
   form: UseFormReturn<QuoteFormData>;
@@ -22,11 +20,6 @@ const mealCategories: MealCategory[] = [
   "Allergy-Free",
   "Finger Foods",
   "Mini Meals"
-];
-
-const menuOptions: MenuOption[] = [
-  { menuName: "Menu A - Sep 2024", menuId: "90667" },
-  { menuName: "Menu B - Sep 2024", menuId: "90670" }
 ];
 
 const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['diningRooms'][0] => {
@@ -82,41 +75,6 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
           </FormItem>
         )}
       />
-
-      <FormField
-        control={form.control}
-        name={`diningRooms.${index}.selectedMenu`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Menu Selection</FormLabel>
-            <Select
-              onValueChange={(value) => {
-                const selectedMenu = menuOptions.find(menu => menu.menuId === value);
-                if (selectedMenu) {
-                  field.onChange(selectedMenu);
-                }
-              }}
-              value={field.value?.menuId}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a menu" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {menuOptions.map((menu) => (
-                  <SelectItem key={menu.menuId} value={menu.menuId}>
-                    {menu.menuName}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <PortionSizeField form={form} index={index} />
 
       <Card>
         <CardHeader>
