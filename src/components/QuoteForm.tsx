@@ -31,7 +31,8 @@ const sampleQuoteData: QuoteFormData = {
       level6Residents: 0,
       allergyFreeResidents: 5,
       fingerFoodResidents: 0,
-      miniMealResidents: 0
+      miniMealResidents: 0,
+      religiousDietsResidents: 0
     },
     {
       name: "Special Care Dining",
@@ -47,7 +48,8 @@ const sampleQuoteData: QuoteFormData = {
       level6Residents: 0,
       allergyFreeResidents: 0,
       fingerFoodResidents: 8,
-      miniMealResidents: 0
+      miniMealResidents: 0,
+      religiousDietsResidents: 0
     },
   ],
   selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },

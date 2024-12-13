@@ -33,6 +33,7 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
     diningRooms?.[0]?.allergyFreeResidents,
     diningRooms?.[0]?.fingerFoodResidents,
     diningRooms?.[0]?.miniMealResidents,
+    diningRooms?.[0]?.religiousDietsResidents,
     form
   ]);
 
@@ -47,7 +48,8 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
       (diningRoom.level6Residents || 0) +
       (diningRoom.allergyFreeResidents || 0) +
       (diningRoom.fingerFoodResidents || 0) +
-      (diningRoom.miniMealResidents || 0)
+      (diningRoom.miniMealResidents || 0) +
+      (diningRoom.religiousDietsResidents || 0)
     );
   };
 
