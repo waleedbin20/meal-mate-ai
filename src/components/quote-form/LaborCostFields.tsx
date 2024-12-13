@@ -1,216 +1,42 @@
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
 import { QuoteFormData } from "./types";
-import { Card } from "@/components/ui/card";
+import { RoleCard } from "./labor-costs/RoleCard";
+import { ApetitoLaborCard } from "./labor-costs/ApetitoLaborCard";
 
 interface LaborCostFieldsProps {
   form: UseFormReturn<QuoteFormData>;
 }
 
 export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
-  const calculateWeeklyCost = (hourlyRate: number, hoursPerWeek: number) => {
-    return hourlyRate * hoursPerWeek;
-  };
-
-  const calculateAnnualCost = (weeklyCost: number) => {
-    return weeklyCost * 52;
-  };
-
-  const role1WeeklyCost = calculateWeeklyCost(
-    form.watch('role1.hourlyRate') || 0,
-    form.watch('role1.hoursPerWeek') || 0
-  );
-  const role2WeeklyCost = calculateWeeklyCost(
-    form.watch('role2.hourlyRate') || 0,
-    form.watch('role2.hoursPerWeek') || 0
-  );
-  const role3WeeklyCost = calculateWeeklyCost(
-    form.watch('role3.hourlyRate') || 0,
-    form.watch('role3.hoursPerWeek') || 0
-  );
-
-  const apetitoWeeklyCost = calculateWeeklyCost(
-    form.watch('apetitoLabor.hourlyRate') || 0,
-    form.watch('apetitoLabor.hoursPerWeek') || 0
-  );
-
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-purple-700">Labour & Cost Information</h3>
-      
-      <Card className="p-6">
-        <h4 className="text-md font-semibold mb-4">Current Labour Costs</h4>
+      <div>
+        <h3 className="text-lg font-semibold text-purple-700 mb-4">Current Labour Costs</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Role 1 */}
-          <div className="space-y-4">
-            <h5 className="font-medium">Role 1</h5>
-            <FormField
-              control={form.control}
-              name="role1.hourlyRate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hourly Rate (£)</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" min="0" step="0.01" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="role1.hoursPerWeek"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hours per Week</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" min="0" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div>
-              <p>Total Weekly Cost: £{role1WeeklyCost.toFixed(2)}</p>
-              <p>Total Annual Cost: £{calculateAnnualCost(role1WeeklyCost).toFixed(2)}</p>
-            </div>
-          </div>
-
-          {/* Role 2 */}
-          <div className="space-y-4">
-            <h5 className="font-medium">Role 2</h5>
-            <FormField
-              control={form.control}
-              name="role2.hourlyRate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hourly Rate (£)</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" min="0" step="0.01" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="role2.hoursPerWeek"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hours per Week</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" min="0" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div>
-              <p>Total Weekly Cost: £{role2WeeklyCost.toFixed(2)}</p>
-              <p>Total Annual Cost: £{calculateAnnualCost(role2WeeklyCost).toFixed(2)}</p>
-            </div>
-          </div>
-
-          {/* Role 3 */}
-          <div className="space-y-4">
-            <h5 className="font-medium">Role 3</h5>
-            <FormField
-              control={form.control}
-              name="role3.hourlyRate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hourly Rate (£)</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" min="0" step="0.01" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="role3.hoursPerWeek"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hours per Week</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" min="0" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div>
-              <p>Total Weekly Cost: £{role3WeeklyCost.toFixed(2)}</p>
-              <p>Total Annual Cost: £{calculateAnnualCost(role3WeeklyCost).toFixed(2)}</p>
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      <Card className="p-6">
-        <h4 className="text-md font-semibold mb-4">Proposed apetito Labour Costs</h4>
-        <div className="max-w-md space-y-4">
-          <FormField
-            control={form.control}
-            name="apetitoLabor.hourlyRate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>apetito Hourly Rate (£)</FormLabel>
-                <FormControl>
-                  <Input {...field} type="number" min="0" step="0.01" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <RoleCard 
+            form={form} 
+            roleNumber={1} 
+            bgColor="bg-gradient-to-br from-blue-50 to-blue-100"
+            textColor="text-blue-900"
           />
-          <FormField
-            control={form.control}
-            name="apetitoLabor.hoursPerWeek"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>apetito Hours per Week</FormLabel>
-                <FormControl>
-                  <Input {...field} type="number" min="0" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <RoleCard 
+            form={form} 
+            roleNumber={2} 
+            bgColor="bg-gradient-to-br from-green-50 to-green-100"
+            textColor="text-green-900"
           />
-          <div>
-            <p>Total Weekly Cost: £{apetitoWeeklyCost.toFixed(2)}</p>
-            <p>Total Annual Cost: £{calculateAnnualCost(apetitoWeeklyCost).toFixed(2)}</p>
-          </div>
+          <RoleCard 
+            form={form} 
+            roleNumber={3} 
+            bgColor="bg-gradient-to-br from-amber-50 to-amber-100"
+            textColor="text-amber-900"
+          />
         </div>
-      </Card>
+      </div>
 
-      <FormField
-        control={form.control}
-        name="currentFoodSpend"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Current Food Spend (£ per year)</FormLabel>
-            <FormControl>
-              <Input {...field} type="number" min="0" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="estimatedNonApetitoSpend"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Estimated Non-Apetito Spend (£ per year)</FormLabel>
-            <FormControl>
-              <Input {...field} type="number" min="0" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="mt-8">
+        <ApetitoLaborCard form={form} />
+      </div>
     </div>
   );
 };
