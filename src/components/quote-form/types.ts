@@ -32,6 +32,11 @@ export interface DiningRoom {
   name: string;
   totalResidents: number;
   mealCategories: MealCategory[];
+  selectedMenu: MenuOption;
+  portionSize?: PortionSize;
+  multiTwinLargeResidents: number;
+  multiTwinSmallResidents: number;
+  multiTwinStandardResidents: number;
   level3Residents: number;
   level4Residents: number;
   level5Residents: number;
@@ -39,29 +44,69 @@ export interface DiningRoom {
   allergyFreeResidents: number;
   fingerFoodResidents: number;
   miniMealResidents: number;
-  multiTwinLargeResidents: number;
-  multiTwinSmallResidents: number;
-  multiTwinStandardResidents: number;
   religiousDietsResidents: number;
-  selectedMenu: MenuOption;
-  portionSize?: PortionSize;
 }
 
 export interface QuoteFormData {
   careHomeName: string;
   numberOfDiningRooms: number;
   diningRooms: DiningRoom[];
+  selectedMenu: MenuOption;
   priceListName: PriceListOption;
   currentLabourHours: number;
   currentLabourCost: number;
   currentFoodSpend: number;
   estimatedNonApetitoSpend: number;
-  selectedMenu: MenuOption;
   role1: LaborRole;
   role2: LaborRole;
   role3: LaborRole;
-  apetitoLabor: {
-    hourlyRate: number;
-    hoursPerWeek: number;
+  apetitoLabor: LaborRole;
+}
+
+export interface TransformedQuoteData {
+  careHomeDetails: {
+    name: string;
+  };
+  diningInformation: {
+    numberOfDiningRooms: number;
+    diningRooms: Array<{
+      diningRoomName: string;
+      residents: {
+        total: number;
+        categories: {
+          multiTwinLargeResidents: number;
+          multiTwinSmallResidents: number;
+          multiTwinStandardResidents: number;
+          level3Residents: number;
+          level4Residents: number;
+          level5Residents: number;
+          level6Residents: number;
+          allergyFreeResidents: number;
+          fingerFoodResidents: number;
+          miniMealResidents: number;
+          religiousDietsResidents: number;
+        };
+      };
+      menuInformation: {
+        menuName: string;
+        menuId: string;
+        portionSize?: string;
+      };
+    }>;
+  };
+  pricingInformation: {
+    priceListName: PriceListOption;
+    currentFoodSpend: number;
+    estimatedNonApetitoSpend: number;
+  };
+  labourAndCost: {
+    currentLabour: {
+      role1: LaborRole;
+      role2: LaborRole;
+      role3: LaborRole;
+      totalHours: number;
+      totalCost: number;
+    };
+    apetitoLabour: LaborRole;
   };
 }

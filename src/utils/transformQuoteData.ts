@@ -1,70 +1,15 @@
-import { QuoteFormData } from "@/components/quote-form/types";
-
-export interface TransformedQuoteData {
-  careHomeDetails: {
-    name: string;
-  };
-  diningInformation: {
-    numberOfDiningRooms: number;
-    diningRooms: Array<{
-      diningRoomName: string;
-      residents: {
-        total: number;
-        categories: {
-          multiTwinLargeResidents: number;
-          multiTwinSmallResidents: number;
-          multiTwinStandardResidents: number;
-          level3Residents: number;
-          level4Residents: number;
-          level5Residents: number;
-          level6Residents: number;
-          allergyFreeResidents: number;
-          fingerFoodResidents: number;
-          miniMealResidents: number;
-          religiousDietsResidents: number;
-        };
-      };
-      menuInformation: {
-        menuName: string;
-        menuId: string;
-        portionSize?: string;
-      };
-    }>;
-  };
-  pricingInformation: {
-    priceListName: {
-      customerNo: string;
-      priceHierarchy: string;
-    };
-  };
-  labourAndCost: {
-    currentLabour: {
-      role1: {
-        hourlyRate: string;
-        hoursPerWeek: string;
-      };
-      role2: {
-        hourlyRate: string;
-        hoursPerWeek: string;
-      };
-      role3: {
-        hourlyRate: string;
-        hoursPerWeek: string;
-      };
-    };
-    apetitoLabour: {
-      hourlyRate: string;
-      hoursPerWeek: string;
-    };
-    preApetitoPerYear: string;
-    postApetitoPerYear: string;
-  };
-}
+import { QuoteFormData, TransformedQuoteData } from "@/components/quote-form/types";
 
 export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData => {
+  const totalLabourHours = data.role1.hoursPerWeek + data.role2.hoursPerWeek + data.role3.hoursPerWeek;
+  const totalLabourCost = 
+    (data.role1.hourlyRate * data.role1.hoursPerWeek * 52) +
+    (data.role2.hourlyRate * data.role2.hoursPerWeek * 52) +
+    (data.role3.hourlyRate * data.role3.hoursPerWeek * 52);
+
   return {
     careHomeDetails: {
-      name: data.careHomeName || "",
+      name: data.careHomeName,
     },
     diningInformation: {
       numberOfDiningRooms: data.numberOfDiningRooms,
@@ -95,28 +40,18 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
     },
     pricingInformation: {
       priceListName: data.priceListName,
+      currentFoodSpend: data.currentFoodSpend,
+      estimatedNonApetitoSpend: data.estimatedNonApetitoSpend,
     },
     labourAndCost: {
       currentLabour: {
-        role1: {
-          hourlyRate: data.role1.hourlyRate.toString(),
-          hoursPerWeek: data.role1.hoursPerWeek.toString(),
-        },
-        role2: {
-          hourlyRate: data.role2.hourlyRate.toString(),
-          hoursPerWeek: data.role2.hoursPerWeek.toString(),
-        },
-        role3: {
-          hourlyRate: data.role3.hourlyRate.toString(),
-          hoursPerWeek: data.role3.hoursPerWeek.toString(),
-        },
+        role1: data.role1,
+        role2: data.role2,
+        role3: data.role3,
+        totalHours: totalLabourHours,
+        totalCost: totalLabourCost,
       },
-      apetitoLabour: {
-        hourlyRate: data.apetitoLabor.hourlyRate.toString(),
-        hoursPerWeek: data.apetitoLabor.hoursPerWeek.toString(),
-      },
-      preApetitoPerYear: data.currentFoodSpend?.toString() || "0",
-      postApetitoPerYear: data.estimatedNonApetitoSpend?.toString() || "0",
+      apetitoLabour: data.apetitoLabor,
     },
   };
 };
