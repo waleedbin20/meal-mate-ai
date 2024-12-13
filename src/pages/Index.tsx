@@ -10,6 +10,8 @@ import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
 const Index = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showForm, setShowForm] = useState(true);
+  const [isChatActive, setIsChatActive] = useState(false);
   const { toast } = useToast();
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
@@ -18,7 +20,6 @@ const Index = () => {
       const transformedData = transformQuoteData(data);
       const response = await submitQuote(transformedData);
       
-      // Add the summary message
       const summary = formatQuoteSummary(data);
       setMessages([
         { content: summary, isAi: false },
@@ -27,6 +28,9 @@ const Index = () => {
           isAi: true 
         }
       ]);
+
+      setShowForm(false);
+      setIsChatActive(true);
 
       toast({
         title: "Success",
@@ -44,6 +48,8 @@ const Index = () => {
   };
 
   const handleChatMessage = async (message: string) => {
+    if (!isChatActive) return;
+    
     setIsProcessing(true);
     setMessages(prev => [...prev, { content: message, isAi: false }]);
 
@@ -62,28 +68,47 @@ const Index = () => {
     }
   };
 
+  const handleNewChat = () => {
+    setShowForm(true);
+    setMessages([]);
+    setIsChatActive(false);
+  };
+
+  const handleStopChat = () => {
+    setIsChatActive(false);
+    toast({
+      title: "Chat Ended",
+      description: "The conversation has been ended.",
+    });
+  };
+
   const handleClearForm = () => {
-    setMessages([]); // Clear messages when form is cleared
+    setMessages([]);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className={`lg:col-span-${messages.length > 0 ? '6' : '6 lg:col-start-4'}`}>
-            <QuoteForm 
-              onSubmit={handleQuoteSubmit} 
-              isLoading={isProcessing}
-              onClearForm={handleClearForm}
-            />
-          </div>
-
-          {messages.length > 0 && (
-            <ChatSection
-              messages={messages}
-              isProcessing={isProcessing}
-              onSendMessage={handleChatMessage}
-            />
+          {showForm ? (
+            <div className="lg:col-span-6 lg:col-start-4">
+              <QuoteForm 
+                onSubmit={handleQuoteSubmit} 
+                isLoading={isProcessing}
+                onClearForm={handleClearForm}
+              />
+            </div>
+          ) : (
+            <div className="lg:col-span-6 lg:col-start-4">
+              <ChatSection
+                messages={messages}
+                isProcessing={isProcessing}
+                onSendMessage={handleChatMessage}
+                onNewChat={handleNewChat}
+                onStopChat={handleStopChat}
+                isChatActive={isChatActive}
+              />
+            </div>
           )}
         </div>
       </div>
