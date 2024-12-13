@@ -1,3 +1,4 @@
+import React from "react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -95,7 +96,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                   field.onChange(selectedMenu);
                 }
               }}
-              value={field.value?.menuId}
+              value={field.value?.menuId || ""}
             >
               <FormControl>
                 <SelectTrigger>
