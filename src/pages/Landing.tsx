@@ -51,21 +51,27 @@ const Landing = () => {
             {[
               {
                 title: "Instant Quotes",
-                description: "Get accurate meal planning quotes in minutes, not days."
+                description: "Get accurate meal planning quotes in minutes, not days.",
+                bgColor: "bg-[#E5DEFF]",
+                borderColor: "border-[#1A1F2C]"
               },
               {
                 title: "AI Assistant",
-                description: "Chat with our AI to understand your quote and optimize your planning."
+                description: "Chat with our AI to understand your quote and optimize your planning.",
+                bgColor: "bg-[#D3E4FD]",
+                borderColor: "border-[#8E9196]"
               },
               {
                 title: "Customizable Plans",
-                description: "Tailor your quotes to match your specific business requirements and customer needs."
+                description: "Tailor your quotes to match your specific business requirements and customer needs.",
+                bgColor: "bg-[#F2FCE2]",
+                borderColor: "border-[#C8C8C9]"
               }
             ].map((feature, index) => (
               <div 
                 key={index}
-                className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105
-                  animate-[fade-in_0.6s_ease-out] [animation-delay:var(--delay)] opacity-0 [animation-fill-mode:forwards]"
+                className={`p-6 ${feature.bgColor} border-2 ${feature.borderColor} rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105
+                  animate-[fade-in_0.6s_ease-out] [animation-delay:var(--delay)] opacity-0 [animation-fill-mode:forwards]`}
                 style={{ '--delay': `${1.2 + index * 0.2}s` } as React.CSSProperties}
               >
                 <h3 className="text-xl font-semibold mb-4 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
