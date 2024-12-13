@@ -97,7 +97,6 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                 }
               }}
               value={field.value?.menuId}
-              defaultValue={field.value?.menuId}
             >
               <FormControl>
                 <SelectTrigger>
