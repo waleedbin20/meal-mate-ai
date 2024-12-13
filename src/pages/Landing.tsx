@@ -52,20 +52,20 @@ const Landing = () => {
               {
                 title: "Instant Quotes",
                 description: "Get accurate meal planning quotes in minutes, not days.",
-                bgColor: "bg-[#E5DEFF]",
-                borderColor: "border-[#1A1F2C]"
+                bgColor: "bg-[#FDE1D3]",
+                borderColor: "border-[#F97316]"
               },
               {
                 title: "AI Assistant",
                 description: "Chat with our AI to understand your quote and optimize your planning.",
-                bgColor: "bg-[#D3E4FD]",
-                borderColor: "border-[#8E9196]"
+                bgColor: "bg-[#FFDEE2]",
+                borderColor: "border-[#D946EF]"
               },
               {
                 title: "Customizable Plans",
                 description: "Tailor your quotes to match your specific business requirements and customer needs.",
-                bgColor: "bg-[#F2FCE2]",
-                borderColor: "border-[#C8C8C9]"
+                bgColor: "bg-[#E5DEFF]",
+                borderColor: "border-[#8B5CF6]"
               }
             ].map((feature, index) => (
               <div 
