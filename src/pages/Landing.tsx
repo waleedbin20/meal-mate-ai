@@ -71,8 +71,11 @@ const Landing = () => {
               <div 
                 key={index}
                 className={`p-6 ${feature.bgColor} border-2 ${feature.borderColor} rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105
-                  animate-[fade-in_0.6s_ease-out] [animation-delay:var(--delay)] opacity-0 [animation-fill-mode:forwards]`}
-                style={{ '--delay': `${1.2 + index * 0.2}s` } as React.CSSProperties}
+                  opacity-0 translate-y-12 animate-[slide-in_0.5s_ease-out_forwards]`}
+                style={{ 
+                  '--delay': `${0.2 + index * 0.2}s`,
+                  animationDelay: `${0.2 + index * 0.2}s`
+                } as React.CSSProperties}
               >
                 <h3 className="text-xl font-semibold mb-4 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                   {feature.title}
