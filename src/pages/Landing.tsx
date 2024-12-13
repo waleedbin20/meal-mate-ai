@@ -6,7 +6,7 @@ const Landing = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
+    <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2] flex flex-col">
       {/* Hero Section */}
       <div className="container mx-auto px-4 pt-20 pb-32">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -77,6 +77,16 @@ const Landing = () => {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-auto py-6 bg-white/90 backdrop-blur-sm">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-600">
+            Made with ❤️ by{" "}
+            <span className="text-purple-600 font-semibold">WaleedDev</span>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
