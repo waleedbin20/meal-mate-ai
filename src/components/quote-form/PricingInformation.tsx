@@ -37,15 +37,16 @@ export const PricingInformation = ({ form }: PricingInformationProps) => {
                 value={`${field.value.customerNo},${field.value.priceHierarchy}`}
               >
                 <FormControl>
-                  <SelectTrigger className="bg-white">
+                  <SelectTrigger className="bg-white border-gray-200">
                     <SelectValue placeholder="Select a price list" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   {priceListOptions.map((option) => (
                     <SelectItem 
                       key={`${option.customerNo}-${option.priceHierarchy}`}
                       value={`${option.customerNo},${option.priceHierarchy}`}
+                      className="hover:bg-gray-100"
                     >
                       {`Customer: ${option.customerNo}, Price Hierarchy: ${option.priceHierarchy}`}
                     </SelectItem>
