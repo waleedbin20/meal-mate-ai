@@ -21,7 +21,8 @@ const mealCategories: MealCategory[] = [
   "Level 6 IDDSI",
   "Allergy-Free",
   "Finger Foods",
-  "Mini Meals"
+  "Mini Meals",
+  "Religious Diets"
 ];
 
 const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['diningRooms'][0] => {
@@ -35,7 +36,8 @@ const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['dini
     "Level 6 IDDSI": "level6Residents",
     "Allergy-Free": "allergyFreeResidents",
     "Finger Foods": "fingerFoodResidents",
-    "Mini Meals": "miniMealResidents"
+    "Mini Meals": "miniMealResidents",
+    "Religious Diets": "religiousDietsResidents"
   };
   return mapping[category];
 };

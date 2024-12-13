@@ -11,7 +11,9 @@ export interface TransformedQuoteData {
       residents: {
         total: number;
         categories: {
-          standardResidents: number;
+          multiTwinLargeResidents: number;
+          multiTwinSmallResidents: number;
+          multiTwinStandardResidents: number;
           level3Residents: number;
           level4Residents: number;
           level5Residents: number;
@@ -19,6 +21,7 @@ export interface TransformedQuoteData {
           allergyFreeResidents: number;
           fingerFoodResidents: number;
           miniMealResidents: number;
+          religiousDietsResidents: number;
         };
       };
       menuInformation: {
@@ -51,7 +54,9 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
         residents: {
           total: room.totalResidents,
           categories: {
-            standardResidents: room.standardResidents,
+            multiTwinLargeResidents: room.multiTwinLargeResidents,
+            multiTwinSmallResidents: room.multiTwinSmallResidents,
+            multiTwinStandardResidents: room.multiTwinStandardResidents,
             level3Residents: room.level3Residents,
             level4Residents: room.level4Residents,
             level5Residents: room.level5Residents,
@@ -59,6 +64,7 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
             allergyFreeResidents: room.allergyFreeResidents,
             fingerFoodResidents: room.fingerFoodResidents,
             miniMealResidents: room.miniMealResidents,
+            religiousDietsResidents: room.religiousDietsResidents,
           },
         },
         menuInformation: {

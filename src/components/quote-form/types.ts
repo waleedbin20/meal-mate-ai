@@ -8,7 +8,8 @@ export type MealCategory =
   | "Level 6 IDDSI"
   | "Allergy-Free"
   | "Finger Foods"
-  | "Mini Meals";
+  | "Mini Meals"
+  | "Religious Diets";
 
 export type PortionSize = "Small" | "Standard" | "Large";
 
@@ -31,6 +32,7 @@ export interface DiningRoom {
   multiTwinLargeResidents: number;
   multiTwinSmallResidents: number;
   multiTwinStandardResidents: number;
+  religiousDietsResidents: number;
   selectedMenu: MenuOption;
   portionSize?: PortionSize;
 }

@@ -28,6 +28,7 @@ export const FormInitializer = ({ form, numberOfDiningRooms }: FormInitializerPr
         allergyFreeResidents: 0,
         fingerFoodResidents: 0,
         miniMealResidents: 0,
+        religiousDietsResidents: 0,
       });
     }
 
