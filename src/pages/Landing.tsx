@@ -31,8 +31,8 @@ const Landing = () => {
             <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl blur opacity-30"></div>
             <div className="relative bg-white p-6 rounded-2xl shadow-xl transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158"
-                alt="Care Home Meal Planning" 
+                src="/lovable-uploads/efa2d967-5018-4d0f-9240-df3da802bd4e.png"
+                alt="Team collaborating on meal planning" 
                 className="w-full h-auto rounded-lg object-cover aspect-video"
               />
             </div>
