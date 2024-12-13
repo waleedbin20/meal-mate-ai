@@ -107,7 +107,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                           type="number"
                           min="0"
                           onChange={(e) => field.onChange(Number(e.target.value))}
-                          value={field.value || ''}
+                          value={String(field.value || '')}
                           onBlur={field.onBlur}
                           name={field.name}
                           ref={field.ref}
