@@ -90,13 +90,14 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
           <FormItem>
             <FormLabel>Menu Selection</FormLabel>
             <Select
-              onValueChange={(menuId) => {
-                const selectedMenu = menuOptions.find(menu => menu.menuId === menuId);
+              onValueChange={(value: string) => {
+                const selectedMenu = menuOptions.find(menu => menu.menuId === value);
                 if (selectedMenu) {
                   field.onChange(selectedMenu);
                 }
               }}
-              value={field.value?.menuId || ""}
+              value={field.value?.menuId}
+              defaultValue={field.value?.menuId}
             >
               <FormControl>
                 <SelectTrigger>
@@ -127,7 +128,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
             <div key={category} className="space-y-2">
               <FormField
                 control={form.control}
-                name={`diningRooms.${index}.mealCategories` as const}
+                name={`diningRooms.${index}.mealCategories`}
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2">
                     <FormControl>
@@ -150,7 +151,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
               {form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <FormField
                   control={form.control}
-                  name={`diningRooms.${index}.${getResidentFieldName(category)}` as const}
+                  name={`diningRooms.${index}.${getResidentFieldName(category)}`}
                   render={({ field }) => (
                     <FormItem className="ml-6">
                       <FormControl>
