@@ -3,6 +3,7 @@ import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import { Button } from "./ui/button";
 import { PlusCircle, StopCircle } from "lucide-react";
+import { ScrollArea } from "./ui/scroll-area";
 
 interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
@@ -22,7 +23,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   isChatActive,
 }) => {
   return (
-    <div className="lg:col-span-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl h-[600px] flex flex-col">
+    <div className="lg:col-span-8 lg:col-start-3 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl h-[800px] flex flex-col">
       <div className="p-6 border-b border-purple-100 flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
@@ -53,16 +54,18 @@ const ChatSection: React.FC<ChatSectionProps> = ({
           )}
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message, index) => (
-          <ChatMessage
-            key={index}
-            isAi={message.isAi}
-            content={message.content}
-            animate={index === messages.length - 1}
-          />
-        ))}
-      </div>
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {messages.map((message, index) => (
+            <ChatMessage
+              key={index}
+              isAi={message.isAi}
+              content={message.content}
+              animate={index === messages.length - 1}
+            />
+          ))}
+        </div>
+      </ScrollArea>
       <ChatInput 
         onSend={onSendMessage} 
         disabled={isProcessing || !isChatActive} 

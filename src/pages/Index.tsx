@@ -91,7 +91,7 @@ const Index = () => {
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {showForm ? (
-            <div className="lg:col-span-6 lg:col-start-4">
+            <div className="lg:col-span-8 lg:col-start-3">
               <QuoteForm 
                 onSubmit={handleQuoteSubmit} 
                 isLoading={isProcessing}
@@ -99,16 +99,14 @@ const Index = () => {
               />
             </div>
           ) : (
-            <div className="lg:col-span-6 lg:col-start-4">
-              <ChatSection
-                messages={messages}
-                isProcessing={isProcessing}
-                onSendMessage={handleChatMessage}
-                onNewChat={handleNewChat}
-                onStopChat={handleStopChat}
-                isChatActive={isChatActive}
-              />
-            </div>
+            <ChatSection
+              messages={messages}
+              isProcessing={isProcessing}
+              onSendMessage={handleChatMessage}
+              onNewChat={handleNewChat}
+              onStopChat={handleStopChat}
+              isChatActive={isChatActive}
+            />
           )}
         </div>
       </div>
