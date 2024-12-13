@@ -49,7 +49,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
     <div className={`${bgColor} space-y-4 p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-md`}>
       <FormField
         control={form.control}
-        name={`diningRooms.${index}.name`}
+        name={`diningRooms.${index}.name` as const}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Dining Room Name</FormLabel>
@@ -70,7 +70,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
             <div key={category} className="space-y-2">
               <FormField
                 control={form.control}
-                name={`diningRooms.${index}.mealCategories`}
+                name={`diningRooms.${index}.mealCategories` as const}
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2">
                     <FormControl>
@@ -83,10 +83,9 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                             : currentValue.filter((v) => v !== category);
                           field.onChange(newValue);
                           
-                          // Reset resident count to zero when category is unchecked
                           if (!checked) {
                             const fieldName = getResidentFieldName(category);
-                            form.setValue(`diningRooms.${index}.${fieldName}`, 0);
+                            form.setValue(`diningRooms.${index}.${fieldName}` as const, 0);
                           }
                         }}
                       />
@@ -99,7 +98,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
               {form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <FormField
                   control={form.control}
-                  name={`diningRooms.${index}.${getResidentFieldName(category)}`}
+                  name={`diningRooms.${index}.${getResidentFieldName(category)}` as const}
                   render={({ field }) => (
                     <FormItem className="ml-6">
                       <FormControl>

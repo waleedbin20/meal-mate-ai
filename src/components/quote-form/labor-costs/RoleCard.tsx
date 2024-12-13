@@ -13,9 +13,13 @@ interface RoleCardProps {
 
 export const RoleCard = ({ form, roleNumber, bgColor, textColor }: RoleCardProps) => {
   const roleName = `role${roleNumber}`;
-  const hourlyRate = form.watch(`${roleName}.hourlyRate`) || 0;
-  const hoursPerWeek = form.watch(`${roleName}.hoursPerWeek`) || 0;
-  const weeklyTotal = hourlyRate * hoursPerWeek;
+  
+  // Use proper typing for the watched values
+  const hourlyRate = form.watch(`${roleName}.hourlyRate` as const) || 0;
+  const hoursPerWeek = form.watch(`${roleName}.hoursPerWeek` as const) || 0;
+  
+  // Ensure we're working with numbers
+  const weeklyTotal = Number(hourlyRate) * Number(hoursPerWeek);
   const annualTotal = weeklyTotal * 52;
 
   return (
@@ -24,12 +28,18 @@ export const RoleCard = ({ form, roleNumber, bgColor, textColor }: RoleCardProps
       <div className="space-y-4">
         <FormField
           control={form.control}
-          name={`${roleName}.hourlyRate`}
+          name={`${roleName}.hourlyRate` as const}
           render={({ field }) => (
             <FormItem>
               <FormLabel className={textColor}>Hourly Rate (£)</FormLabel>
               <FormControl>
-                <Input {...field} type="number" min="0" step="0.01" />
+                <Input 
+                  {...field}
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -37,12 +47,17 @@ export const RoleCard = ({ form, roleNumber, bgColor, textColor }: RoleCardProps
         />
         <FormField
           control={form.control}
-          name={`${roleName}.hoursPerWeek`}
+          name={`${roleName}.hoursPerWeek` as const}
           render={({ field }) => (
             <FormItem>
               <FormLabel className={textColor}>Hours per Week</FormLabel>
               <FormControl>
-                <Input {...field} type="number" min="0" />
+                <Input 
+                  {...field}
+                  type="number"
+                  min="0"
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

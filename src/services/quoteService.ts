@@ -1,4 +1,4 @@
-import { TransformedQuoteData } from "@/utils/transformQuoteData";
+import { TransformedQuoteData } from "@/components/quote-form/types";
 
 export const submitQuote = async (quoteData: TransformedQuoteData) => {
   // Simulating API call with a delay
