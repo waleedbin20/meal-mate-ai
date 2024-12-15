@@ -4,6 +4,7 @@ import ChatInput from "./ChatInput";
 import { Button } from "./ui/button";
 import { PlusCircle, StopCircle } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
+import ChatSkeleton from "./ChatSkeleton";
 
 interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
@@ -64,6 +65,16 @@ const ChatSection: React.FC<ChatSectionProps> = ({
               animate={index === messages.length - 1}
             />
           ))}
+          {isProcessing && (
+            <>
+              <ChatMessage
+                isAi={true}
+                content="Quote AI is thinking..."
+                animate={true}
+              />
+              <ChatSkeleton />
+            </>
+          )}
         </div>
       </ScrollArea>
       <ChatInput 

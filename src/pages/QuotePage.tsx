@@ -15,22 +15,22 @@ const Index = () => {
   const { toast } = useToast();
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
+    // First show the chat interface
+    const summary = formatQuoteSummary(data);
+    setMessages([{ content: summary, isAi: false }]);
+    setShowForm(false);
+    setIsChatActive(true);
     setIsProcessing(true);
+
+    // Then process the API request
     try {
       const transformedData = transformQuoteData(data);
       const response = await submitQuote(transformedData);
       
-      const summary = formatQuoteSummary(data);
-      setMessages([
-        { content: summary, isAi: false },
-        { 
-          content: "Thank you for submitting your quote request. I've analyzed your requirements and I'm here to help you understand the details better. What specific aspects would you like to know more about?", 
-          isAi: true 
-        }
-      ]);
-
-      setShowForm(false);
-      setIsChatActive(true);
+      setMessages(prev => [...prev, { 
+        content: "Thank you for submitting your quote request. I've analyzed your requirements and I'm here to help you understand the details better. What specific aspects would you like to know more about?", 
+        isAi: true 
+      }]);
 
       toast({
         title: "Success",
@@ -42,6 +42,7 @@ const Index = () => {
         description: "Failed to submit quote. Please try again.",
         variant: "destructive",
       });
+      // Keep the chat active even if there's an error
     } finally {
       setIsProcessing(false);
     }
