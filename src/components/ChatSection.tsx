@@ -65,16 +65,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
               animate={index === messages.length - 1}
             />
           ))}
-          {isProcessing && (
-            <>
-              <ChatMessage
-                isAi={true}
-                content="Quote AI is thinking..."
-                animate={true}
-              />
-              <ChatSkeleton />
-            </>
-          )}
+          {isProcessing && <ChatSkeleton />}
         </div>
       </ScrollArea>
       <ChatInput 
