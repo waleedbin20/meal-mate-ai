@@ -35,7 +35,6 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
         menuInformation: {
           menuName: room.selectedMenu.menuName,
           menuId: room.selectedMenu.menuId,
-          portionSize: room.portionSize,
         },
       })),
     },

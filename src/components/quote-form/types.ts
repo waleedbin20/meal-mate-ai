@@ -58,3 +58,51 @@ export interface QuoteFormData {
   role3: LaborRole;
   apetitoLabor: LaborRole;
 }
+
+export interface TransformedQuoteData {
+  careHomeDetails: {
+    name: string;
+  };
+  diningInformation: {
+    numberOfDiningRooms: number;
+    diningRooms: Array<{
+      diningRoomName: string;
+      residents: {
+        total: number;
+        categories: {
+          multiTwinResidents: {
+            size: MultiTwinSize;
+            count: number;
+          };
+          level3Residents: number;
+          level4Residents: number;
+          level5Residents: number;
+          level6Residents: number;
+          allergyFreeResidents: number;
+          fingerFoodResidents: number;
+          miniMealResidents: number;
+          religiousDietsResidents: number;
+        };
+      };
+      menuInformation: {
+        menuName: string;
+        menuId: string;
+      };
+    }>;
+  };
+  pricingInformation: {
+    priceListName: PriceListOption;
+    currentFoodSpend: number;
+    estimatedNonApetitoSpend: number;
+  };
+  labourAndCost: {
+    currentLabour: {
+      role1: LaborRole;
+      role2: LaborRole;
+      role3: LaborRole;
+      totalHours: number;
+      totalCost: number;
+    };
+    apetitoLabour: LaborRole;
+  };
+}
