@@ -105,14 +105,14 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                     name={`diningRooms.${index}.multiTwinSize` as const}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Size</FormLabel>
+                        <FormLabel>Portion Size</FormLabel>
                         <Select
                           onValueChange={(value) => field.onChange(value as MultiTwinSize)}
                           value={field.value}
                         >
                           <FormControl>
                             <SelectTrigger className="bg-white">
-                              <SelectValue placeholder="Select size" />
+                              <SelectValue placeholder="Select portion size" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="bg-white">
