@@ -181,6 +181,11 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
     });
   };
 
+  const handleSubmit = (data: QuoteFormData) => {
+    console.log('Form data being sent to API:', JSON.stringify(data, null, 2));
+    onSubmit(data);
+  };
+
   return (
     <FormWrapper form={form}>
       <FormInitializer form={form} numberOfDiningRooms={numberOfDiningRooms} />
@@ -207,7 +212,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
 
       <FormSubmitButton 
         isLoading={isLoading}
-        onClick={form.handleSubmit(onSubmit)}
+        onClick={form.handleSubmit(handleSubmit)}
       />
     </FormWrapper>
   );
