@@ -111,13 +111,17 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                           value={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-white">
                               <SelectValue placeholder="Select size" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent className="bg-white">
                             {multiTwinSizes.map((size) => (
-                              <SelectItem key={size} value={size}>
+                              <SelectItem 
+                                key={size} 
+                                value={size}
+                                className="hover:bg-gray-100"
+                              >
                                 {size}
                               </SelectItem>
                             ))}
