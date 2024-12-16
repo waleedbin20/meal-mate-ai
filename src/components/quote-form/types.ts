@@ -13,7 +13,7 @@ export type MultiTwinSize = "Standard" | "Small" | "Large";
 
 export interface MenuOption {
   menuName: string;
-  menuId: string;
+  menuId: number;
 }
 
 export interface PriceListOption {
@@ -86,7 +86,7 @@ export interface TransformedQuoteData {
       };
       menuInformation: {
         menuName: string;
-        menuId: string;
+        menuId: number;
       };
     }>;
   };

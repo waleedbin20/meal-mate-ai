@@ -5,8 +5,8 @@ import { UseFormReturn } from "react-hook-form";
 import { QuoteFormData, MenuOption } from "./types";
 
 const menuOptions: MenuOption[] = [
-  { menuName: "Menu A - Sep 2024", menuId: "90667" },
-  { menuName: "Menu B - Sep 2024", menuId: "90670" }
+  { menuName: "Menu A - Sep 2024", menuId: 90667 },
+  { menuName: "Menu B - Sep 2024", menuId: 90670 }
 ];
 
 interface MenuSelectionProps {
@@ -25,12 +25,12 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
             <FormLabel>Menu</FormLabel>
             <Select
               onValueChange={(value) => {
-                const selectedMenu = menuOptions.find(menu => menu.menuId === value);
+                const selectedMenu = menuOptions.find(menu => menu.menuId === parseInt(value));
                 if (selectedMenu) {
                   field.onChange(selectedMenu);
                 }
               }}
-              value={field.value?.menuId}
+              value={field.value?.menuId.toString()}
             >
               <FormControl>
                 <SelectTrigger className="bg-white">
@@ -41,7 +41,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                 {menuOptions.map((menu) => (
                   <SelectItem 
                     key={menu.menuId} 
-                    value={menu.menuId}
+                    value={menu.menuId.toString()}
                     className="hover:bg-gray-100"
                   >
                     {menu.menuName}
