@@ -23,9 +23,7 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
       }
     });
   }, [
-    diningRooms?.[0]?.multiTwinLargeResidents,
-    diningRooms?.[0]?.multiTwinSmallResidents,
-    diningRooms?.[0]?.multiTwinStandardResidents,
+    diningRooms?.[0]?.multiTwinResidents,
     diningRooms?.[0]?.level3Residents,
     diningRooms?.[0]?.level4Residents,
     diningRooms?.[0]?.level5Residents,
@@ -39,9 +37,7 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
 
   const calculateTotalResidents = (diningRoom: QuoteFormData['diningRooms'][0]) => {
     return (
-      (diningRoom.multiTwinLargeResidents || 0) +
-      (diningRoom.multiTwinSmallResidents || 0) +
-      (diningRoom.multiTwinStandardResidents || 0) +
+      (diningRoom.multiTwinResidents || 0) +
       (diningRoom.level3Residents || 0) +
       (diningRoom.level4Residents || 0) +
       (diningRoom.level5Residents || 0) +

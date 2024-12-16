@@ -20,11 +20,10 @@ const sampleQuoteData: QuoteFormData = {
     {
       name: "Main Dining Room",
       totalResidents: 50,
-      mealCategories: ["Multi Twin Large", "Level 4 IDDSI", "Allergy-Free"],
+      mealCategories: ["Multi Twin", "Level 4 IDDSI", "Allergy-Free"],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-      multiTwinLargeResidents: 40,
-      multiTwinSmallResidents: 0,
-      multiTwinStandardResidents: 0,
+      multiTwinSize: "Large",
+      multiTwinResidents: 40,
       level3Residents: 0,
       level4Residents: 5,
       level5Residents: 0,
@@ -39,9 +38,7 @@ const sampleQuoteData: QuoteFormData = {
       totalResidents: 20,
       mealCategories: ["Level 3 IDDSI", "Finger Foods"],
       selectedMenu: { menuName: "Menu B - Sep 2024", menuId: "90670" },
-      multiTwinLargeResidents: 0,
-      multiTwinSmallResidents: 0,
-      multiTwinStandardResidents: 0,
+      multiTwinResidents: 0,
       level3Residents: 12,
       level4Residents: 0,
       level5Residents: 0,
@@ -99,9 +96,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
           totalResidents: 0,
           mealCategories: [],
           selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-          multiTwinLargeResidents: 0,
-          multiTwinSmallResidents: 0,
-          multiTwinStandardResidents: 0,
+          multiTwinResidents: 0,
           level3Residents: 0,
           level4Residents: 0,
           level5Residents: 0,
@@ -161,9 +156,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
           totalResidents: 0,
           mealCategories: [],
           selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-          multiTwinLargeResidents: 0,
-          multiTwinSmallResidents: 0,
-          multiTwinStandardResidents: 0,
+          multiTwinResidents: 0,
           level3Residents: 0,
           level4Residents: 0,
           level5Residents: 0,
@@ -202,7 +195,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
       
       <NumberOfDiningRooms form={form} />
 
-      <DiningRoomsSection form={form} diningRooms={[diningRooms[0]]} />
+      <DiningRoomsSection form={form} diningRooms={diningRooms} />
 
       <MenuSelection form={form} />
 
