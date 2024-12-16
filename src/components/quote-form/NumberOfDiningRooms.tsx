@@ -9,45 +9,63 @@ interface NumberOfDiningRoomsProps {
 }
 
 export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
+  const numberOfDiningRooms = useWatch({
+    control: form.control,
+    name: "numberOfDiningRooms",
+    defaultValue: 1
+  });
+
   const diningRooms = useWatch({
     control: form.control,
     name: "diningRooms",
     defaultValue: []
   });
 
+  // Update dining rooms array when number changes
   useEffect(() => {
-    diningRooms.forEach((diningRoom, index) => {
-      if (diningRoom) {
-        const totalResidents = calculateTotalResidents(diningRoom);
-        form.setValue(`diningRooms.${index}.totalResidents`, totalResidents);
+    const currentLength = form.getValues("diningRooms")?.length || 0;
+    if (numberOfDiningRooms > currentLength) {
+      // Add new dining rooms
+      const newDiningRooms = [...form.getValues("diningRooms") || []];
+      for (let i = currentLength; i < numberOfDiningRooms; i++) {
+        newDiningRooms.push({
+          name: "",
+          totalResidents: 0,
+          mealCategories: [],
+          selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
+          multiTwinResidents: 0,
+          level3Residents: 0,
+          level4Residents: 0,
+          level5Residents: 0,
+          level6Residents: 0,
+          allergyFreeResidents: 0,
+          fingerFoodResidents: 0,
+          miniMealResidents: 0,
+          religiousDietsResidents: 0,
+        });
       }
-    });
-  }, [
-    diningRooms?.[0]?.multiTwinResidents,
-    diningRooms?.[0]?.level3Residents,
-    diningRooms?.[0]?.level4Residents,
-    diningRooms?.[0]?.level5Residents,
-    diningRooms?.[0]?.level6Residents,
-    diningRooms?.[0]?.allergyFreeResidents,
-    diningRooms?.[0]?.fingerFoodResidents,
-    diningRooms?.[0]?.miniMealResidents,
-    diningRooms?.[0]?.religiousDietsResidents,
-    form
-  ]);
+      form.setValue("diningRooms", newDiningRooms);
+    } else if (numberOfDiningRooms < currentLength) {
+      // Remove excess dining rooms
+      const newDiningRooms = form.getValues("diningRooms").slice(0, numberOfDiningRooms);
+      form.setValue("diningRooms", newDiningRooms);
+    }
+  }, [numberOfDiningRooms, form]);
 
-  const calculateTotalResidents = (diningRoom: QuoteFormData['diningRooms'][0]) => {
-    return (
-      (diningRoom.multiTwinResidents || 0) +
-      (diningRoom.level3Residents || 0) +
-      (diningRoom.level4Residents || 0) +
-      (diningRoom.level5Residents || 0) +
-      (diningRoom.level6Residents || 0) +
-      (diningRoom.allergyFreeResidents || 0) +
-      (diningRoom.fingerFoodResidents || 0) +
-      (diningRoom.miniMealResidents || 0) +
-      (diningRoom.religiousDietsResidents || 0)
+  // Calculate total residents across all dining rooms
+  const totalResidents = diningRooms.reduce((total, room) => {
+    return total + (
+      (room.multiTwinResidents || 0) +
+      (room.level3Residents || 0) +
+      (room.level4Residents || 0) +
+      (room.level5Residents || 0) +
+      (room.level6Residents || 0) +
+      (room.allergyFreeResidents || 0) +
+      (room.fingerFoodResidents || 0) +
+      (room.miniMealResidents || 0) +
+      (room.religiousDietsResidents || 0)
     );
-  };
+  }, 0);
 
   return (
     <div className="space-y-4">
@@ -70,23 +88,16 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="diningRooms.0.totalResidents"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Total Residents</FormLabel>
-            <FormControl>
-              <Input 
-                type="number"
-                disabled
-                value={field.value || 0}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <FormItem>
+        <FormLabel>Total Residents (All Dining Rooms)</FormLabel>
+        <FormControl>
+          <Input 
+            type="number"
+            disabled
+            value={totalResidents}
+          />
+        </FormControl>
+      </FormItem>
     </div>
   );
 };

@@ -9,7 +9,7 @@ interface DiningRoomsSectionProps {
 
 export const DiningRoomsSection = ({ form, diningRooms }: DiningRoomsSectionProps) => {
   return (
-    <div className="grid grid-cols-1 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {diningRooms.map((_, index) => (
         <DiningRoomFields key={index} form={form} index={index} />
       ))}
