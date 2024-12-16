@@ -1,7 +1,5 @@
 export type MealCategory = 
-  | "Multi Twin Large"
-  | "Multi Twin Small" 
-  | "Multi Twin Standard"
+  | "Multi Twin"
   | "Level 3 IDDSI"
   | "Level 4 IDDSI"
   | "Level 5 IDDSI"
@@ -11,7 +9,7 @@ export type MealCategory =
   | "Mini Meals"
   | "Religious Diets";
 
-export type PortionSize = "Small" | "Standard" | "Large";
+export type MultiTwinSize = "Standard" | "Small" | "Large";
 
 export interface MenuOption {
   menuName: string;
@@ -34,9 +32,8 @@ export interface DiningRoom {
   mealCategories: MealCategory[];
   selectedMenu: MenuOption;
   portionSize?: PortionSize;
-  multiTwinLargeResidents: number;
-  multiTwinSmallResidents: number;
-  multiTwinStandardResidents: number;
+  multiTwinSize?: MultiTwinSize;
+  multiTwinResidents: number;
   level3Residents: number;
   level4Residents: number;
   level5Residents: number;
@@ -74,9 +71,10 @@ export interface TransformedQuoteData {
       residents: {
         total: number;
         categories: {
-          multiTwinLargeResidents: number;
-          multiTwinSmallResidents: number;
-          multiTwinStandardResidents: number;
+          multiTwinResidents: {
+            size: string;
+            count: number;
+          };
           level3Residents: number;
           level4Residents: number;
           level5Residents: number;

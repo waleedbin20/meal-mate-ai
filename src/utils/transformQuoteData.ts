@@ -18,9 +18,10 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
         residents: {
           total: room.totalResidents,
           categories: {
-            multiTwinLargeResidents: room.multiTwinLargeResidents,
-            multiTwinSmallResidents: room.multiTwinSmallResidents,
-            multiTwinStandardResidents: room.multiTwinStandardResidents,
+            multiTwinResidents: {
+              size: room.multiTwinSize || "Standard",
+              count: room.multiTwinResidents
+            },
             level3Residents: room.level3Residents,
             level4Residents: room.level4Residents,
             level5Residents: room.level5Residents,
