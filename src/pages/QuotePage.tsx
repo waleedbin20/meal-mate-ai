@@ -4,45 +4,74 @@ import ChatSection from "@/components/ChatSection";
 import { QuoteFormData } from "@/components/quote-form/types";
 import { transformQuoteData } from "@/utils/transformQuoteData";
 import { submitQuote } from "@/services/quoteService";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
+import { fetchQuoteResponse } from "@/services/quoteResponseService";
+import { QuoteResponse } from "@/types/quoteResponse";
+import QuoteResponse from "@/components/QuoteResponse";
 
-const Index = () => {
+const QuotePage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [isChatActive, setIsChatActive] = useState(false);
+  const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
   const { toast } = useToast();
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
-    // First show the chat interface
+    setIsProcessing(true);
     const summary = formatQuoteSummary(data);
     setMessages([{ content: summary, isAi: false }]);
     setShowForm(false);
     setIsChatActive(true);
-    setIsProcessing(true);
 
-    // Then process the API request
     try {
-      const transformedData = transformQuoteData(data);
-      const response = await submitQuote(transformedData);
+      const response = await fetchQuoteResponse(data);
+      setQuoteResponse(response);
       
+      if (!response.managerQuoteApproval) {
+        toast({
+          title: "Quote Generation Failed",
+          description: response.managerQuoteSummary,
+          variant: "destructive",
+        });
+      }
+
       setMessages(prev => [...prev, { 
         content: "Thank you for submitting your quote request. I've analyzed your requirements and I'm here to help you understand the details better. What specific aspects would you like to know more about?", 
         isAi: true 
       }]);
-
-      toast({
-        title: "Success",
-        description: "Quote submitted successfully!",
-      });
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to submit quote. Please try again.",
         variant: "destructive",
       });
-      // Keep the chat active even if there's an error
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleRetry = async () => {
+    if (!messages.length) return;
+    setIsProcessing(true);
+    try {
+      const response = await fetchQuoteResponse(transformQuoteData(messages[0].content));
+      setQuoteResponse(response);
+      
+      if (!response.managerQuoteApproval) {
+        toast({
+          title: "Quote Generation Failed",
+          description: response.managerQuoteSummary,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to retry quote generation. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -100,14 +129,27 @@ const Index = () => {
               />
             </div>
           ) : (
-            <ChatSection
-              messages={messages}
-              isProcessing={isProcessing}
-              onSendMessage={handleChatMessage}
-              onNewChat={handleNewChat}
-              onStopChat={handleStopChat}
-              isChatActive={isChatActive}
-            />
+            <>
+              <div className="lg:col-span-8">
+                <ChatSection
+                  messages={messages}
+                  isProcessing={isProcessing}
+                  onSendMessage={handleChatMessage}
+                  onNewChat={handleNewChat}
+                  onStopChat={handleStopChat}
+                  isChatActive={isChatActive}
+                />
+              </div>
+              {quoteResponse && (
+                <div className="lg:col-span-4">
+                  <QuoteResponse 
+                    response={quoteResponse}
+                    onRetry={handleRetry}
+                    isLoading={isProcessing}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -115,4 +157,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default QuotePage;
