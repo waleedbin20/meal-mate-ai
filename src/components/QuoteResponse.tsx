@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { QuoteResponse } from "@/types/quoteResponse";
+import type { QuoteResponse } from "@/types/quoteResponse";
 import { RefreshCw } from "lucide-react";
 
 interface QuoteResponseProps {
@@ -10,7 +10,7 @@ interface QuoteResponseProps {
   isLoading: boolean;
 }
 
-const QuoteResponse: React.FC<QuoteResponseProps> = ({ response, onRetry, isLoading }) => {
+const QuoteResponseDisplay: React.FC<QuoteResponseProps> = ({ response, onRetry, isLoading }) => {
   const { managerQuoteApproval, managerQuoteSummary, quoteDetails } = response;
 
   return (
@@ -52,4 +52,4 @@ const QuoteResponse: React.FC<QuoteResponseProps> = ({ response, onRetry, isLoad
   );
 };
 
-export default QuoteResponse;
+export default QuoteResponseDisplay;

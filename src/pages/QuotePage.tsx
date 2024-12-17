@@ -7,8 +7,8 @@ import { submitQuote } from "@/services/quoteService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
 import { fetchQuoteResponse } from "@/services/quoteResponseService";
-import { QuoteResponse } from "@/types/quoteResponse";
-import QuoteResponse from "@/components/QuoteResponse";
+import type { QuoteResponse } from "@/types/quoteResponse";
+import QuoteResponseDisplay from "@/components/QuoteResponse";
 
 const QuotePage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -54,9 +54,13 @@ const QuotePage = () => {
 
   const handleRetry = async () => {
     if (!messages.length) return;
+    
+    const lastFormData = messages[0].content;
+    if (!lastFormData) return;
+
     setIsProcessing(true);
     try {
-      const response = await fetchQuoteResponse(transformQuoteData(messages[0].content));
+      const response = await fetchQuoteResponse(JSON.parse(lastFormData) as QuoteFormData);
       setQuoteResponse(response);
       
       if (!response.managerQuoteApproval) {
@@ -142,7 +146,7 @@ const QuotePage = () => {
               </div>
               {quoteResponse && (
                 <div className="lg:col-span-4">
-                  <QuoteResponse 
+                  <QuoteResponseDisplay 
                     response={quoteResponse}
                     onRetry={handleRetry}
                     isLoading={isProcessing}
