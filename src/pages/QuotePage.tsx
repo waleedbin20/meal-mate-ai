@@ -38,7 +38,7 @@ const QuotePage = () => {
       }
 
       setMessages(prev => [...prev, { 
-        content: "Thank you for submitting your quote request. I've analyzed your requirements and I'm here to help you understand the details better. What specific aspects would you like to know more about?", 
+        content: response.managerQuoteSummary, 
         isAi: true 
       }]);
     } catch (error) {
