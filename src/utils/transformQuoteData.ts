@@ -16,7 +16,7 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
       diningRooms: data.diningRooms.map((room) => ({
         diningRoomName: room.name,
         residents: {
-          total: room.totalResidents,
+          total: data.totalResidents,
           categories: {
             multiTwinResidents: {
               size: room.multiTwinSize || "Standard",

@@ -1,11 +1,9 @@
 import { QuoteFormData } from "@/components/quote-form/types";
 
 export const formatQuoteSummary = (data: QuoteFormData): string => {
-  const totalResidents = data.diningRooms.reduce((sum, room) => sum + room.totalResidents, 0);
-  
   return `Summary of Quote Request:
 Care Home: ${data.careHomeName}
-Total Residents: ${totalResidents}
+Total Residents: ${data.totalResidents}
 Number of Dining Rooms: ${data.numberOfDiningRooms}
 Selected Menu: ${data.diningRooms[0]?.selectedMenu?.menuName || 'Not selected'}
 Current Labour Hours: ${data.currentLabourHours} per day
