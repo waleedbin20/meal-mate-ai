@@ -149,10 +149,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
     form.reset({
       careHomeName: "",
       numberOfDiningRooms: 1,
+      totalResidents: 0,
       diningRooms: [
         {
           name: "",
-          totalResidents: 0,
           mealCategories: [],
           selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
           multiTwinResidents: 0,
