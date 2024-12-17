@@ -16,10 +16,10 @@ import { FormInitializer } from "./quote-form/FormInitializer";
 const sampleQuoteData: QuoteFormData = {
   careHomeName: "Sample Care Home",
   numberOfDiningRooms: 2,
+  totalResidents: 70,
   diningRooms: [
     {
       name: "Main Dining Room",
-      totalResidents: 50,
       mealCategories: ["Multi Twin", "Level 4 IDDSI", "Allergy-Free"],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
       multiTwinSize: "Large",
@@ -35,7 +35,6 @@ const sampleQuoteData: QuoteFormData = {
     },
     {
       name: "Special Care Dining",
-      totalResidents: 20,
       mealCategories: ["Level 3 IDDSI", "Finger Foods"],
       selectedMenu: { menuName: "Menu B - Sep 2024", menuId: 90670 },
       multiTwinResidents: 0,
@@ -90,10 +89,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
     defaultValues: defaultValues || {
       careHomeName: "",
       numberOfDiningRooms: 1,
+      totalResidents: 0,
       diningRooms: [
         {
           name: "",
-          totalResidents: 0,
           mealCategories: [],
           selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
           multiTwinResidents: 0,

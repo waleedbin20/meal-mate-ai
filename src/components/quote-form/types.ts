@@ -28,7 +28,6 @@ export interface LaborRole {
 
 export interface DiningRoom {
   name: string;
-  totalResidents: number;
   mealCategories: MealCategory[];
   selectedMenu: MenuOption;
   multiTwinSize?: MultiTwinSize;
@@ -46,6 +45,7 @@ export interface DiningRoom {
 export interface QuoteFormData {
   careHomeName: string;
   numberOfDiningRooms: number;
+  totalResidents: number;
   diningRooms: DiningRoom[];
   selectedMenu: MenuOption;
   priceListName: PriceListOption;

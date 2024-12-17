@@ -30,7 +30,6 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
       for (let i = currentLength; i < numberOfDiningRooms; i++) {
         newDiningRooms.push({
           name: "",
-          totalResidents: 0,
           mealCategories: [],
           selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
           multiTwinResidents: 0,
@@ -53,19 +52,23 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
   }, [numberOfDiningRooms, form]);
 
   // Calculate total residents across all dining rooms
-  const totalResidents = diningRooms.reduce((total, room) => {
-    return total + (
-      (room.multiTwinResidents || 0) +
-      (room.level3Residents || 0) +
-      (room.level4Residents || 0) +
-      (room.level5Residents || 0) +
-      (room.level6Residents || 0) +
-      (room.allergyFreeResidents || 0) +
-      (room.fingerFoodResidents || 0) +
-      (room.miniMealResidents || 0) +
-      (room.religiousDietsResidents || 0)
-    );
-  }, 0);
+  useEffect(() => {
+    const totalResidents = diningRooms.reduce((total, room) => {
+      return total + (
+        (room.multiTwinResidents || 0) +
+        (room.level3Residents || 0) +
+        (room.level4Residents || 0) +
+        (room.level5Residents || 0) +
+        (room.level6Residents || 0) +
+        (room.allergyFreeResidents || 0) +
+        (room.fingerFoodResidents || 0) +
+        (room.miniMealResidents || 0) +
+        (room.religiousDietsResidents || 0)
+      );
+    }, 0);
+
+    form.setValue("totalResidents", totalResidents);
+  }, [diningRooms, form]);
 
   return (
     <div className="space-y-4">
@@ -88,16 +91,23 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
         )}
       />
 
-      <FormItem>
-        <FormLabel>Total Residents (All Dining Rooms)</FormLabel>
-        <FormControl>
-          <Input 
-            type="number"
-            disabled
-            value={totalResidents}
-          />
-        </FormControl>
-      </FormItem>
+      <FormField
+        control={form.control}
+        name="totalResidents"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Total Residents (All Dining Rooms)</FormLabel>
+            <FormControl>
+              <Input 
+                type="number"
+                disabled
+                value={field.value}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 };
