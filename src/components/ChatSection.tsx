@@ -23,6 +23,11 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   onStopChat,
   isChatActive,
 }) => {
+  const handleNewQuote = () => {
+    // Clear messages before triggering the new chat
+    onNewChat();
+  };
+
   return (
     <div className="lg:col-span-8 lg:col-start-3 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl h-[800px] flex flex-col">
       <div className="p-6 border-b border-purple-100 flex justify-between items-center">
@@ -36,7 +41,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
         </div>
         <div className="flex gap-2">
           <Button
-            onClick={onNewChat}
+            onClick={handleNewQuote}
             variant="outline"
             className="flex items-center gap-2"
           >
