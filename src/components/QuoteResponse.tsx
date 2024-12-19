@@ -5,12 +5,37 @@ import type { QuoteResponse } from "@/types/quoteResponse";
 import { RefreshCw } from "lucide-react";
 
 interface QuoteResponseProps {
-  response: QuoteResponse;
+  response: QuoteResponse | null;
   onRetry: () => void;
   isLoading: boolean;
 }
 
 const QuoteResponseDisplay: React.FC<QuoteResponseProps> = ({ response, onRetry, isLoading }) => {
+  if (!response) {
+    return (
+      <Card className="bg-white mt-6">
+        <CardHeader>
+          <CardTitle className="text-xl text-primary flex items-center justify-between">
+            Quote Response
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onRetry}
+              disabled={isLoading}
+              className="ml-2"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              Try Again
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">No quote response available. Please try again.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const { managerQuoteApproval, managerQuoteSummary, quoteDetails } = response;
 
   return (
@@ -40,13 +65,15 @@ const QuoteResponseDisplay: React.FC<QuoteResponseProps> = ({ response, onRetry,
           </p>
         </div>
         
-        <div className="space-y-2">
-          <h4 className="font-medium">Cost Details</h4>
-          <div className="text-sm">
-            <p className="text-muted-foreground">Apetito Cost per Resident per Day</p>
-            <p className="font-medium">£{quoteDetails.apetitoCostResidentPerDay.toFixed(2)}</p>
+        {quoteDetails && (
+          <div className="space-y-2">
+            <h4 className="font-medium">Cost Details</h4>
+            <div className="text-sm">
+              <p className="text-muted-foreground">Apetito Cost per Resident per Day</p>
+              <p className="font-medium">£{quoteDetails.apetitoCostResidentPerDay.toFixed(2)}</p>
+            </div>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );

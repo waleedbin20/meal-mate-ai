@@ -27,26 +27,29 @@ const QuotePage = () => {
 
     try {
       const response = await fetchQuoteResponse(data);
-      setQuoteResponse(response);
-      
-      if (!response.managerQuoteApproval) {
-        toast({
-          title: "Quote Generation Failed",
-          description: response.managerQuoteSummary,
-          variant: "destructive",
-        });
-      }
+      if (response) {
+        setQuoteResponse(response);
+        
+        if (!response.managerQuoteApproval) {
+          toast({
+            title: "Quote Generation Failed",
+            description: response.managerQuoteSummary,
+            variant: "destructive",
+          });
+        }
 
-      setMessages(prev => [...prev, { 
-        content: response.managerQuoteSummary, 
-        isAi: true 
-      }]);
+        setMessages(prev => [...prev, { 
+          content: response.managerQuoteSummary, 
+          isAi: true 
+        }]);
+      }
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to submit quote. Please try again.",
         variant: "destructive",
       });
+      setQuoteResponse(null);
     } finally {
       setIsProcessing(false);
     }
@@ -61,14 +64,16 @@ const QuotePage = () => {
     setIsProcessing(true);
     try {
       const response = await fetchQuoteResponse(JSON.parse(lastFormData) as QuoteFormData);
-      setQuoteResponse(response);
-      
-      if (!response.managerQuoteApproval) {
-        toast({
-          title: "Quote Generation Failed",
-          description: response.managerQuoteSummary,
-          variant: "destructive",
-        });
+      if (response) {
+        setQuoteResponse(response);
+        
+        if (!response.managerQuoteApproval) {
+          toast({
+            title: "Quote Generation Failed",
+            description: response.managerQuoteSummary,
+            variant: "destructive",
+          });
+        }
       }
     } catch (error) {
       toast({
@@ -76,6 +81,7 @@ const QuotePage = () => {
         description: "Failed to retry quote generation. Please try again.",
         variant: "destructive",
       });
+      setQuoteResponse(null);
     } finally {
       setIsProcessing(false);
     }
@@ -144,15 +150,13 @@ const QuotePage = () => {
                   isChatActive={isChatActive}
                 />
               </div>
-              {quoteResponse && (
-                <div className="lg:col-span-4">
-                  <QuoteResponseDisplay 
-                    response={quoteResponse}
-                    onRetry={handleRetry}
-                    isLoading={isProcessing}
-                  />
-                </div>
-              )}
+              <div className="lg:col-span-4">
+                <QuoteResponseDisplay 
+                  response={quoteResponse}
+                  onRetry={handleRetry}
+                  isLoading={isProcessing}
+                />
+              </div>
             </>
           )}
         </div>
