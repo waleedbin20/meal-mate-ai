@@ -7,6 +7,10 @@ export const fetchQuoteResponse = async (data: QuoteFormData): Promise<QuoteResp
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
       },
       body: JSON.stringify(data),
     });
