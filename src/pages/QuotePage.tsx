@@ -16,10 +16,12 @@ const QuotePage = () => {
   const [showForm, setShowForm] = useState(true);
   const [isChatActive, setIsChatActive] = useState(false);
   const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
+  const [lastFormData, setLastFormData] = useState<QuoteFormData | null>(null);
   const { toast } = useToast();
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
+    setLastFormData(data); // Store the form data for retry
     const summary = formatQuoteSummary(data);
     setMessages([{ content: summary, isAi: false }]);
     setShowForm(false);
@@ -56,14 +58,18 @@ const QuotePage = () => {
   };
 
   const handleRetry = async () => {
-    if (!messages.length) return;
+    if (!lastFormData) {
+      toast({
+        title: "Error",
+        description: "No previous quote data found. Please start a new quote.",
+        variant: "destructive",
+      });
+      return;
+    }
     
-    const lastFormData = messages[0].content;
-    if (!lastFormData) return;
-
     setIsProcessing(true);
     try {
-      const response = await fetchQuoteResponse(JSON.parse(lastFormData) as QuoteFormData);
+      const response = await fetchQuoteResponse(lastFormData);
       if (response) {
         setQuoteResponse(response);
         
@@ -74,6 +80,11 @@ const QuotePage = () => {
             variant: "destructive",
           });
         }
+
+        setMessages(prev => [...prev, { 
+          content: response.managerQuoteSummary, 
+          isAi: true 
+        }]);
       }
     } catch (error) {
       toast({
@@ -112,6 +123,8 @@ const QuotePage = () => {
     setShowForm(true);
     setMessages([]);
     setIsChatActive(false);
+    setQuoteResponse(null);
+    setLastFormData(null);
   };
 
   const handleStopChat = () => {
