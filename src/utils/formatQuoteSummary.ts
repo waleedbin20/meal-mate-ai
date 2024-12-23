@@ -1,7 +1,7 @@
 import { QuoteFormData } from "@/components/quote-form/types";
 
 export const formatQuoteSummary = (data: QuoteFormData): string => {
-  return `Summary of Quote Request:
+  return `Create me a Quote for:
 Care Home: ${data.careHomeName}
 Total Residents: ${data.totalResidents}
 Number of Dining Rooms: ${data.numberOfDiningRooms}
