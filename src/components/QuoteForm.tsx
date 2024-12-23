@@ -154,7 +154,6 @@ export const QuoteForm = ({
         {
           name: "",
           mealCategories: [],
-          selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
           multiTwinResidents: 0,
           level3Residents: 0,
           level4Residents: 0,
@@ -173,6 +172,22 @@ export const QuoteForm = ({
       currentLabourCost: 0,
       currentFoodSpend: 0,
       estimatedNonApetitoSpend: 0,
+      role1: {
+        hourlyRate: 0,
+        hoursPerWeek: 0
+      },
+      role2: {
+        hourlyRate: 0,
+        hoursPerWeek: 0
+      },
+      role3: {
+        hourlyRate: 0,
+        hoursPerWeek: 0
+      },
+      apetitoLabor: {
+        hourlyRate: 0,
+        hoursPerWeek: 0
+      }
     });
     onClearForm?.();
     toast({
