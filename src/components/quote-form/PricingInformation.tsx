@@ -6,10 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const priceListOptions = [
-  { customerNo: "1103998", priceHierarchy: "0008801129" },
-  { customerNo: "1103999", priceHierarchy: "0008801130" },
-  { customerNo: "1104000", priceHierarchy: "0008801097" },
-  { customerNo: "1104045", priceHierarchy: "0008801128" },
+  { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "CUST001" },
+  { customerNo: "1103999", priceHierarchy: "0008801130", customerId: "CUST002" },
+  { customerNo: "1104000", priceHierarchy: "0008801097", customerId: "CUST003" },
+  { customerNo: "1104045", priceHierarchy: "0008801128", customerId: "CUST004" },
 ];
 
 interface PricingInformationProps {
@@ -31,10 +31,10 @@ export const PricingInformation = ({ form }: PricingInformationProps) => {
               <FormLabel>Price List</FormLabel>
               <Select
                 onValueChange={(value) => {
-                  const [customerNo, priceHierarchy] = value.split(',');
-                  field.onChange({ customerNo, priceHierarchy });
+                  const [customerNo, priceHierarchy, customerId] = value.split(',');
+                  field.onChange({ customerNo, priceHierarchy, customerId });
                 }}
-                value={`${field.value.customerNo},${field.value.priceHierarchy}`}
+                value={`${field.value.customerNo},${field.value.priceHierarchy},${field.value.customerId}`}
               >
                 <FormControl>
                   <SelectTrigger className="bg-white border-gray-200">
@@ -45,7 +45,7 @@ export const PricingInformation = ({ form }: PricingInformationProps) => {
                   {priceListOptions.map((option) => (
                     <SelectItem 
                       key={`${option.customerNo}-${option.priceHierarchy}`}
-                      value={`${option.customerNo},${option.priceHierarchy}`}
+                      value={`${option.customerNo},${option.priceHierarchy},${option.customerId}`}
                       className="hover:bg-gray-100"
                     >
                       {`Customer: ${option.customerNo}, Price Hierarchy: ${option.priceHierarchy}`}

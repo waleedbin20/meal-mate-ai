@@ -49,7 +49,7 @@ const sampleQuoteData: QuoteFormData = {
     },
   ],
   selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
-  priceListName: { customerNo: "1103998", priceHierarchy: "0008801129" },
+  priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "CUST001" },
   currentLabourHours: 40,
   currentLabourCost: 50000,
   currentFoodSpend: 75000,
@@ -107,7 +107,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
         }
       ],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
-      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129" },
+      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "CUST001" },
       currentLabourHours: 0,
       currentLabourCost: 0,
       currentFoodSpend: 0,
@@ -167,7 +167,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
         }
       ],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
-      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129" },
+      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "CUST001" },
       currentLabourHours: 0,
       currentLabourCost: 0,
       currentFoodSpend: 0,
