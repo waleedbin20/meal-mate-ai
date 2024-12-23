@@ -13,7 +13,7 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
     return {
       diningRoomName: room.name,
       residents: {
-        total: room.totalResidents || 0,
+        total: room.totalResidentsInDiningRoom,
         categories: {
           multiTwinResidents: {
             size: room.multiTwinSize || "Standard",

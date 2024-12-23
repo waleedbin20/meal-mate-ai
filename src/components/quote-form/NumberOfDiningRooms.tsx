@@ -41,6 +41,7 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
           fingerFoodResidents: 0,
           miniMealResidents: 0,
           religiousDietsResidents: 0,
+          totalResidentsInDiningRoom: 0
         });
       }
       form.setValue("diningRooms", newDiningRooms);
@@ -54,17 +55,7 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
   // Calculate total residents across all dining rooms
   useEffect(() => {
     const totalResidents = diningRooms.reduce((total, room) => {
-      return total + (
-        (room.multiTwinResidents || 0) +
-        (room.level3Residents || 0) +
-        (room.level4Residents || 0) +
-        (room.level5Residents || 0) +
-        (room.level6Residents || 0) +
-        (room.allergyFreeResidents || 0) +
-        (room.fingerFoodResidents || 0) +
-        (room.miniMealResidents || 0) +
-        (room.religiousDietsResidents || 0)
-      );
+      return total + (room.totalResidentsInDiningRoom || 0);
     }, 0);
 
     form.setValue("totalResidents", totalResidents);
