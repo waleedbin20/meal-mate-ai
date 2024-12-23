@@ -94,7 +94,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
         {
           name: "",
           mealCategories: [],
-          selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
           multiTwinResidents: 0,
           level3Residents: 0,
           level4Residents: 0,
@@ -218,5 +217,3 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
     </FormWrapper>
   );
 };
-
-export default QuoteForm;

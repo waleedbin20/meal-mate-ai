@@ -5,7 +5,7 @@ export const formatQuoteSummary = (data: QuoteFormData): string => {
 Care Home: ${data.careHomeName}
 Total Residents: ${data.totalResidents}
 Number of Dining Rooms: ${data.numberOfDiningRooms}
-Selected Menu: ${data.diningRooms[0]?.selectedMenu?.menuName || 'Not selected'}
+Selected Menu: ${data.selectedMenu?.menuName || 'Not selected'}
 Current Labour Hours: ${data.currentLabourHours} per day
 Current Labour Cost: £${data.currentLabourCost.toLocaleString()} per year
 Current Food Spend: £${data.currentFoodSpend.toLocaleString()} per year
