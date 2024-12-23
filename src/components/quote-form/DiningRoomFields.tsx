@@ -61,7 +61,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
       (diningRoom.miniMealResidents || 0) +
       (diningRoom.religiousDietsResidents || 0);
 
-    form.setValue(`diningRooms.${index}.totalResidents`, total);
+    form.setValue(`diningRooms.${index}.totalResidentsInDiningRoom`, total);
   }, [
     diningRoom.multiTwinResidents,
     diningRoom.level3Residents,
@@ -117,7 +117,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
         <div className="ml-4 text-right">
           <p className="text-sm text-gray-500">Total Residents</p>
           <p className="text-lg font-semibold text-purple-700">
-            {diningRoom.totalResidents || 0}
+            {diningRoom.totalResidentsInDiningRoom || 0}
           </p>
         </div>
       </div>

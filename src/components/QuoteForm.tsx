@@ -31,7 +31,8 @@ const sampleQuoteData: QuoteFormData = {
       allergyFreeResidents: 5,
       fingerFoodResidents: 0,
       miniMealResidents: 0,
-      religiousDietsResidents: 0
+      religiousDietsResidents: 0,
+      totalResidentsInDiningRoom: 50
     },
     {
       name: "Special Care Dining",
@@ -45,7 +46,8 @@ const sampleQuoteData: QuoteFormData = {
       allergyFreeResidents: 0,
       fingerFoodResidents: 8,
       miniMealResidents: 0,
-      religiousDietsResidents: 0
+      religiousDietsResidents: 0,
+      totalResidentsInDiningRoom: 20
     },
   ],
   selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
@@ -104,6 +106,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
           fingerFoodResidents: 0,
           miniMealResidents: 0,
           religiousDietsResidents: 0,
+          totalResidentsInDiningRoom: 0
         }
       ],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
@@ -164,6 +167,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
           fingerFoodResidents: 0,
           miniMealResidents: 0,
           religiousDietsResidents: 0,
+          totalResidentsInDiningRoom: 0
         }
       ],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
