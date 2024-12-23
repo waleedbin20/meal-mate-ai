@@ -3,7 +3,7 @@ import { QuoteResponse } from "@/types/quoteResponse";
 
 export const fetchQuoteResponse = async (data: QuoteFormData): Promise<QuoteResponse> => {
   try {
-    const response = await fetch('https://quoteaiapi-cfe5abfdcuf7gqgd.uksouth-01.azurewebsites.net/PostChatRequest', {
+    const response = await fetch('https://quoteaiapi-cfe5abfdcuf7gqgd.uksouth-01.azurewebsites.net/api/PostChatRequest', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -16,6 +16,7 @@ export const fetchQuoteResponse = async (data: QuoteFormData): Promise<QuoteResp
     });
 
     if (!response.ok) {
+      console.error('Error response:', response.status, response.statusText);
       throw new Error('Failed to fetch quote response');
     }
 
@@ -24,7 +25,7 @@ export const fetchQuoteResponse = async (data: QuoteFormData): Promise<QuoteResp
     console.error('Error fetching quote response:', error);
     return {
       managerQuoteApproval: false,
-      managerQuoteSummary: "Sorry something went wrong while generating the quote",
+      managerQuoteSummary: "Sorry, something went wrong while generating the quote. Please try again.",
       quoteDetails: {
         apetitoCostResidentPerDay: 0.0
       }
