@@ -21,7 +21,6 @@ const sampleQuoteData: QuoteFormData = {
     {
       name: "Main Dining Room",
       mealCategories: ["Multi Twin", "Level 4 IDDSI", "Allergy-Free"],
-      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
       multiTwinSize: "Large",
       multiTwinResidents: 40,
       level3Residents: 0,
@@ -37,7 +36,6 @@ const sampleQuoteData: QuoteFormData = {
     {
       name: "Special Care Dining",
       mealCategories: ["Level 3 IDDSI", "Finger Foods"],
-      selectedMenu: { menuName: "Menu B - Sep 2024", menuId: 90670 },
       multiTwinResidents: 0,
       level3Residents: 12,
       level4Residents: 0,

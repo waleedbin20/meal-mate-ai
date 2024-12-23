@@ -31,7 +31,6 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
         newDiningRooms.push({
           name: "",
           mealCategories: [],
-          selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
           multiTwinResidents: 0,
           level3Residents: 0,
           level4Residents: 0,

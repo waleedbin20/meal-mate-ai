@@ -7,31 +7,27 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
     (data.role2.hourlyRate * data.role2.hoursPerWeek * 52) +
     (data.role3.hourlyRate * data.role3.hoursPerWeek * 52);
 
-  // Create a copy of dining rooms without the selectedMenu
-  const transformedDiningRooms = data.diningRooms.map(room => {
-    const { selectedMenu, ...roomWithoutMenu } = room;
-    return {
-      diningRoomName: room.name,
-      residents: {
-        total: room.totalResidentsInDiningRoom,
-        categories: {
-          multiTwinResidents: {
-            size: room.multiTwinSize || "Standard",
-            count: room.multiTwinResidents
-          },
-          level3Residents: room.level3Residents,
-          level4Residents: room.level4Residents,
-          level5Residents: room.level5Residents,
-          level6Residents: room.level6Residents,
-          allergyFreeResidents: room.allergyFreeResidents,
-          fingerFoodResidents: room.fingerFoodResidents,
-          miniMealResidents: room.miniMealResidents,
-          religiousDietsResidents: room.religiousDietsResidents,
+  const transformedDiningRooms = data.diningRooms.map(room => ({
+    diningRoomName: room.name,
+    residents: {
+      total: room.totalResidentsInDiningRoom,
+      categories: {
+        multiTwinResidents: {
+          size: room.multiTwinSize || "Standard",
+          count: room.multiTwinResidents
         },
+        level3Residents: room.level3Residents,
+        level4Residents: room.level4Residents,
+        level5Residents: room.level5Residents,
+        level6Residents: room.level6Residents,
+        allergyFreeResidents: room.allergyFreeResidents,
+        fingerFoodResidents: room.fingerFoodResidents,
+        miniMealResidents: room.miniMealResidents,
+        religiousDietsResidents: room.religiousDietsResidents,
       },
-      menuInformation: data.selectedMenu, // Use the global selected menu instead
-    };
-  });
+    },
+    menuInformation: data.selectedMenu, // Use the global selected menu
+  }));
 
   return {
     careHomeDetails: {

@@ -30,7 +30,6 @@ export interface LaborRole {
 export interface DiningRoom {
   name: string;
   mealCategories: MealCategory[];
-  selectedMenu?: MenuOption;
   multiTwinSize?: MultiTwinSize;
   multiTwinResidents: number;
   level3Residents: number;
@@ -41,7 +40,7 @@ export interface DiningRoom {
   fingerFoodResidents: number;
   miniMealResidents: number;
   religiousDietsResidents: number;
-  totalResidentsInDiningRoom: number;  // Added this field
+  totalResidentsInDiningRoom: number;
 }
 
 export interface QuoteFormData {
@@ -86,10 +85,7 @@ export interface TransformedQuoteData {
           religiousDietsResidents: number;
         };
       };
-      menuInformation: {
-        menuName: string;
-        menuId: number;
-      };
+      menuInformation: MenuOption;
     }>;
   };
   pricingInformation: {
