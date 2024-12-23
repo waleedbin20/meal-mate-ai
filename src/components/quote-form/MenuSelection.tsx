@@ -5,8 +5,8 @@ import { UseFormReturn } from "react-hook-form";
 import { QuoteFormData, MenuOption } from "./types";
 
 const menuOptions: MenuOption[] = [
-  { menuName: "Menu A - Sep 2024", menuId: 90667 },
-  { menuName: "Menu B - Sep 2024", menuId: 90670 }
+  { menuName: "Menu A - Sep 2024", menuId: "90667" },
+  { menuName: "Menu B - Sep 2024", menuId: "90670" }
 ];
 
 interface MenuSelectionProps {
@@ -25,7 +25,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
             <FormLabel>Menu</FormLabel>
             <Select
               onValueChange={(value) => {
-                const selectedMenu = menuOptions.find(menu => menu.menuId === parseInt(value));
+                const selectedMenu = menuOptions.find(menu => menu.menuId === (value));
                 if (selectedMenu) {
                   field.onChange(selectedMenu);
                 }

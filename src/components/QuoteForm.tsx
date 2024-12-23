@@ -48,7 +48,7 @@ const sampleQuoteData: QuoteFormData = {
       totalResidentsInDiningRoom: 20
     },
   ],
-  selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
+  selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
   priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
   currentLabourHours: 40,
   currentLabourCost: 50000,
@@ -106,7 +106,7 @@ export const QuoteForm = ({
           totalResidentsInDiningRoom: 0
         }
       ],
-      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
+      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
       priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
       currentLabourHours: 0,
       currentLabourCost: 0,
@@ -166,7 +166,7 @@ export const QuoteForm = ({
           totalResidentsInDiningRoom: 0
         }
       ],
-      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: 90667 },
+      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
       priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
       currentLabourHours: 0,
       currentLabourCost: 0,
