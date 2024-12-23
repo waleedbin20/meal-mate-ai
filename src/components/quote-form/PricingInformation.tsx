@@ -6,10 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const priceListOptions = [
-  { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "CUST001" },
-  { customerNo: "1103999", priceHierarchy: "0008801130", customerId: "CUST002" },
-  { customerNo: "1104000", priceHierarchy: "0008801097", customerId: "CUST003" },
-  { customerNo: "1104045", priceHierarchy: "0008801128", customerId: "CUST004" },
+  { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
+  { customerNo: "1103999", priceHierarchy: "0008801130", customerId: "2407" },
+  { customerNo: "1104000", priceHierarchy: "0008801097", customerId: "2408" },
+  { customerNo: "1104045", priceHierarchy: "0008801128", customerId: "2468" },
 ];
 
 interface PricingInformationProps {
