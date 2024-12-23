@@ -43,22 +43,59 @@ const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['dini
 
 export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
   const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+  const diningRoom = form.watch(`diningRooms.${index}`);
+
+  // Calculate total residents for this dining room
+  React.useEffect(() => {
+    const total = 
+      (diningRoom.multiTwinResidents || 0) +
+      (diningRoom.level3Residents || 0) +
+      (diningRoom.level4Residents || 0) +
+      (diningRoom.level5Residents || 0) +
+      (diningRoom.level6Residents || 0) +
+      (diningRoom.allergyFreeResidents || 0) +
+      (diningRoom.fingerFoodResidents || 0) +
+      (diningRoom.miniMealResidents || 0) +
+      (diningRoom.religiousDietsResidents || 0);
+
+    form.setValue(`diningRooms.${index}.totalResidents`, total);
+  }, [
+    diningRoom.multiTwinResidents,
+    diningRoom.level3Residents,
+    diningRoom.level4Residents,
+    diningRoom.level5Residents,
+    diningRoom.level6Residents,
+    diningRoom.allergyFreeResidents,
+    diningRoom.fingerFoodResidents,
+    diningRoom.miniMealResidents,
+    diningRoom.religiousDietsResidents,
+    form,
+    index
+  ]);
 
   return (
     <div className={`${bgColor} space-y-4 p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-md`}>
-      <FormField
-        control={form.control}
-        name={`diningRooms.${index}.name` as const}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Dining Room Name</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder="Enter dining room name" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="flex justify-between items-center">
+        <FormField
+          control={form.control}
+          name={`diningRooms.${index}.name` as const}
+          render={({ field }) => (
+            <FormItem className="flex-grow">
+              <FormLabel>Dining Room Name</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Enter dining room name" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="ml-4 text-right">
+          <p className="text-sm text-gray-500">Total Residents</p>
+          <p className="text-lg font-semibold text-purple-700">
+            {diningRoom.totalResidents || 0}
+          </p>
+        </div>
+      </div>
 
       <Card>
         <CardHeader>

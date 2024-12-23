@@ -19,6 +19,7 @@ export interface MenuOption {
 export interface PriceListOption {
   customerNo: string;
   priceHierarchy: string;
+  customerId: string;
 }
 
 export interface LaborRole {
@@ -29,7 +30,7 @@ export interface LaborRole {
 export interface DiningRoom {
   name: string;
   mealCategories: MealCategory[];
-  selectedMenu: MenuOption;
+  selectedMenu?: MenuOption;  // Made optional
   multiTwinSize?: MultiTwinSize;
   multiTwinResidents: number;
   level3Residents: number;
@@ -40,6 +41,7 @@ export interface DiningRoom {
   fingerFoodResidents: number;
   miniMealResidents: number;
   religiousDietsResidents: number;
+  totalResidents?: number;  // Added total residents per dining room
 }
 
 export interface QuoteFormData {
