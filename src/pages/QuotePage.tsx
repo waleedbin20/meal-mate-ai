@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import QuoteForm from "@/components/QuoteForm";
+import { QuoteForm } from "@/components/QuoteForm";
 import ChatSection from "@/components/ChatSection";
 import { QuoteFormData } from "@/components/quote-form/types";
 import { transformQuoteData } from "@/utils/transformQuoteData";

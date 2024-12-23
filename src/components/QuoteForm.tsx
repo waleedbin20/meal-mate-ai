@@ -79,12 +79,12 @@ interface QuoteFormProps {
   onClearForm?: () => void;
 }
 
-const QuoteForm: React.FC<QuoteFormProps> = ({ 
+export const QuoteForm = ({ 
   onSubmit, 
   isLoading, 
   defaultValues, 
   onClearForm 
-}) => {
+}: QuoteFormProps) => {
   const form = useForm<QuoteFormData>({
     defaultValues: defaultValues || {
       careHomeName: "",
@@ -217,3 +217,5 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
     </FormWrapper>
   );
 };
+
+export default QuoteForm;
