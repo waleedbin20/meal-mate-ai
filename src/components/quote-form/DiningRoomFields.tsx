@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
 import { QuoteFormData, MealCategory, MultiTwinSize } from "./types";
+import { useToast } from "@/hooks/use-toast";
 
 interface DiningRoomFieldsProps {
   form: UseFormReturn<QuoteFormData>;
@@ -42,8 +43,10 @@ const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['dini
 };
 
 export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
+  const { toast } = useToast();
   const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
   const diningRoom = form.watch(`diningRooms.${index}`);
+  const allDiningRooms = form.watch('diningRooms');
 
   // Calculate total residents for this dining room
   React.useEffect(() => {
@@ -73,12 +76,34 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
     index
   ]);
 
+  const validateUniqueName = (value: string) => {
+    const isDuplicate = allDiningRooms.some(
+      (room, roomIndex) => 
+        roomIndex !== index && 
+        room.name.toLowerCase() === value.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      toast({
+        title: "Duplicate Name",
+        description: "Each dining room must have a unique name",
+        variant: "destructive",
+      });
+      return "Each dining room must have a unique name";
+    }
+    return true;
+  };
+
   return (
     <div className={`${bgColor} space-y-4 p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-md`}>
       <div className="flex justify-between items-center">
         <FormField
           control={form.control}
           name={`diningRooms.${index}.name` as const}
+          rules={{
+            required: "Dining room name is required",
+            validate: validateUniqueName
+          }}
           render={({ field }) => (
             <FormItem className="flex-grow">
               <FormLabel>Dining Room Name</FormLabel>
