@@ -3,7 +3,7 @@ import { QuoteResponse } from "@/types/quoteResponse";
 
 export const fetchQuoteResponse = async (data: QuoteFormData): Promise<QuoteResponse> => {
   try {
-    const response = await fetch('https://quoteaiapi-cfe5abfdcuf7gqgd.uksouth-01.azurewebsites.net/api/quote/request', {
+    const response = await fetch('https://quoteaiapi-cfe5abfdcuf7gqgd.uksouth-01.azurewebsites.net/api/PostChatRequest', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
