@@ -9,13 +9,13 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true }) => {
-  // Function to handle all types of line breaks and make numbers bold
+  // Function to handle all types of line breaks and make numbers and £ bold
   const formatContent = (text: string) => {
-    // First, make numbers bold
-    const textWithBoldNumbers = text.replace(/\b(\d+)\b/g, '<strong>$1</strong>');
+    // First, make numbers and £ symbol bold
+    const textWithBoldElements = text.replace(/\b(\d+|£)\b/g, '<strong>$1</strong>');
     
     // Split by any number of consecutive newlines
-    return textWithBoldNumbers.split(/\n+/).map((paragraph, index, array) => (
+    return textWithBoldElements.split(/\n+/).map((paragraph, index, array) => (
       <React.Fragment key={index}>
         <span dangerouslySetInnerHTML={{ __html: paragraph }} />
         {index < array.length - 1 && <br />}
