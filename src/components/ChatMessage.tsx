@@ -9,12 +9,13 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true }) => {
-  // Function to convert \n\n to proper line breaks
+  // Function to handle all types of line breaks
   const formatContent = (text: string) => {
-    return text.split('\n\n').map((paragraph, index) => (
+    // Split by any number of consecutive newlines
+    return text.split(/\n+/).map((paragraph, index, array) => (
       <React.Fragment key={index}>
         {paragraph}
-        {index < text.split('\n\n').length - 1 && <br />}
+        {index < array.length - 1 && <br />}
       </React.Fragment>
     ));
   };
