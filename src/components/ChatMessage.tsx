@@ -9,18 +9,27 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true }) => {
-  // Function to handle all types of line breaks and make numbers and £ bold
+  // Function to handle content that may contain HTML or needs formatting
   const formatContent = (text: string) => {
-    // First, make numbers and £ symbol bold
-    const textWithBoldElements = text.replace(/\b(\d+|£)\b/g, '<strong>$1</strong>');
+    // Check if the content appears to contain HTML tags
+    const containsHtml = /<[a-z][\s\S]*>/i.test(text);
     
-    // Split by any number of consecutive newlines
-    return textWithBoldElements.split(/\n+/).map((paragraph, index, array) => (
-      <React.Fragment key={index}>
-        <span dangerouslySetInnerHTML={{ __html: paragraph }} />
-        {index < array.length - 1 && <br />}
-      </React.Fragment>
-    ));
+    if (containsHtml) {
+      // If it contains HTML, render it directly
+      return <div dangerouslySetInnerHTML={{ __html: text }} />;
+    } else {
+      // If it's plain text, apply our custom formatting
+      // Make numbers and £ symbol bold
+      const textWithBoldElements = text.replace(/\b(\d+|£)\b/g, '<strong>$1</strong>');
+      
+      // Split by any number of consecutive newlines
+      return textWithBoldElements.split(/\n+/).map((paragraph, index, array) => (
+        <React.Fragment key={index}>
+          <span dangerouslySetInnerHTML={{ __html: paragraph }} />
+          {index < array.length - 1 && <br />}
+        </React.Fragment>
+      ));
+    }
   };
 
   return (
@@ -45,7 +54,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
         )}
       >
         {isAi && <div className="text-xs font-medium text-purple-700 mb-1">Quote AI</div>}
-        <p className="text-sm leading-relaxed">{formatContent(content)}</p>
+        <div className="text-sm leading-relaxed [&_ul]:pl-4 [&_ul]:list-disc [&_p]:mb-2 [&_li]:mb-1">
+          {formatContent(content)}
+        </div>
       </div>
     </div>
   );
