@@ -9,6 +9,16 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true }) => {
+  // Function to convert \n\n to proper line breaks
+  const formatContent = (text: string) => {
+    return text.split('\n\n').map((paragraph, index) => (
+      <React.Fragment key={index}>
+        {paragraph}
+        {index < text.split('\n\n').length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <div
       className={cn(
@@ -24,14 +34,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
       )}
       <div
         className={cn(
-          "max-w-[80%] rounded-2xl px-4 py-2.5 shadow-sm",
+          "max-w-[80%] rounded-2xl px-4 py-2.5 shadow-sm whitespace-pre-line",
           isAi
             ? "bg-gradient-to-br from-[#F2FCE2] to-[#E5DEFF] text-gray-800"
             : "bg-gradient-to-br from-[#8B5CF6] to-[#6E59A5] text-white"
         )}
       >
         {isAi && <div className="text-xs font-medium text-purple-700 mb-1">Quote AI</div>}
-        <p className="text-sm leading-relaxed">{content}</p>
+        <p className="text-sm leading-relaxed">{formatContent(content)}</p>
       </div>
     </div>
   );
