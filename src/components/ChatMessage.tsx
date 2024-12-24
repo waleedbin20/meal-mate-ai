@@ -9,12 +9,15 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true }) => {
-  // Function to handle all types of line breaks
+  // Function to handle all types of line breaks and make numbers bold
   const formatContent = (text: string) => {
+    // First, make numbers bold
+    const textWithBoldNumbers = text.replace(/\b(\d+)\b/g, '<strong>$1</strong>');
+    
     // Split by any number of consecutive newlines
-    return text.split(/\n+/).map((paragraph, index, array) => (
+    return textWithBoldNumbers.split(/\n+/).map((paragraph, index, array) => (
       <React.Fragment key={index}>
-        {paragraph}
+        <span dangerouslySetInnerHTML={{ __html: paragraph }} />
         {index < array.length - 1 && <br />}
       </React.Fragment>
     ));
