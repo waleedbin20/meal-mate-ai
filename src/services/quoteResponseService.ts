@@ -43,8 +43,8 @@ export const sendChatMessage = async (question: string): Promise<string> => {
       throw new Error('Failed to send chat message');
     }
 
-    const data = await response.json();
-    return data.response;
+    const data: QuoteResponse = await response.json();
+    return data.managerQuoteSummary;
   } catch (error) {
     console.error('Error sending chat message:', error);
     throw new Error('Failed to get AI response. Please try again.');
