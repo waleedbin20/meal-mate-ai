@@ -3,7 +3,7 @@ import { QuoteForm } from "@/components/QuoteForm";
 import ChatSection from "@/components/ChatSection";
 import { QuoteFormData } from "@/components/quote-form/types";
 import { transformQuoteData } from "@/utils/transformQuoteData";
-import { fetchQuoteResponse, sendChatMessage } from "@/services/quoteResponseService";
+import { fetchQuoteResponse, sendChatMessage, clearChat } from "@/services/quoteResponseService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
@@ -118,6 +118,7 @@ const QuotePage = () => {
   };
 
   const handleNewChat = () => {
+    clearChat();
     setShowForm(true);
     setMessages([]);
     setIsChatActive(false);
@@ -126,6 +127,7 @@ const QuotePage = () => {
   };
 
   const handleStopChat = () => {
+    clearChat();
     setIsChatActive(false);
     toast({
       title: "Chat Ended",

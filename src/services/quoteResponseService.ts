@@ -53,3 +53,16 @@ export const sendChatMessage = async (question: string, quoteResponse: QuoteResp
     throw new Error('Failed to get AI response. Please try again.');
   }
 };
+
+export const clearChat = async () => {
+  try {
+    await fetch('https://quoteaiapi-cfe5abfdcuf7gqgd.uksouth-01.azurewebsites.net/api/quote/clear', {
+      method: 'POST',
+      headers: {
+        'accept': '*/*'
+      }
+    });
+  } catch (error) {
+    console.error('Error clearing chat:', error);
+  }
+};
