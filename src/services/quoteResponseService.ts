@@ -31,15 +31,14 @@ export const fetchQuoteResponse = async (data: QuoteFormData): Promise<QuoteResp
 
 export const sendChatMessage = async (question: string, quoteResponse: QuoteResponse | null): Promise<string> => {
   try {
-    const response = await fetch('https://quoteaiapi-cfe5abfdcuf7gqgd.uksouth-01.azurewebsites.net/api/quote/chat', {
+    const url = new URL('https://quoteaiapi-cfe5abfdcuf7gqgd.uksouth-01.azurewebsites.net/api/quote/chat');
+    url.searchParams.append('question', question);
+
+    const response = await fetch(url.toString(), {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ 
-        question,
-        quoteResponse 
-      }),
+        'accept': '*/*'
+      }
     });
 
     if (!response.ok) {
