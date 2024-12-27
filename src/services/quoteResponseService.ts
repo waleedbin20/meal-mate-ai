@@ -29,7 +29,7 @@ export const fetchQuoteResponse = async (data: QuoteFormData): Promise<QuoteResp
   }
 };
 
-export const sendChatMessage = async (question: string): Promise<string> => {
+export const sendChatMessage = async (question: string, quoteResponse: QuoteResponse | null): Promise<string> => {
   try {
     const response = await fetch('https://quoteaiapi-cfe5abfdcuf7gqgd.uksouth-01.azurewebsites.net/api/quote/chat', {
       method: 'POST',
@@ -37,7 +37,8 @@ export const sendChatMessage = async (question: string): Promise<string> => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ 
-        question: question 
+        question,
+        quoteResponse 
       }),
     });
 

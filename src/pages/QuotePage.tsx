@@ -104,7 +104,7 @@ const QuotePage = () => {
     setMessages(prev => [...prev, { content: message, isAi: false }]);
 
     try {
-      const aiResponse = await sendChatMessage(message);
+      const aiResponse = await sendChatMessage(message, quoteResponse);
       setMessages(prev => [...prev, { content: aiResponse, isAi: true }]);
     } catch (error) {
       toast({
