@@ -36,10 +36,13 @@ export const sendChatMessage = async (question: string): Promise<string> => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ question }),
+      body: JSON.stringify({ 
+        question: question 
+      }),
     });
 
     if (!response.ok) {
+      console.error('Error response:', response.status, response.statusText);
       throw new Error('Failed to send chat message');
     }
 
