@@ -3,10 +3,9 @@ import { QuoteForm } from "@/components/QuoteForm";
 import ChatSection from "@/components/ChatSection";
 import { QuoteFormData } from "@/components/quote-form/types";
 import { transformQuoteData } from "@/utils/transformQuoteData";
-import { submitQuote } from "@/services/quoteService";
+import { fetchQuoteResponse, sendChatMessage } from "@/services/quoteResponseService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
-import { fetchQuoteResponse } from "@/services/quoteResponseService";
 import type { QuoteResponse } from "@/types/quoteResponse";
 import QuoteResponseDisplay from "@/components/QuoteResponse";
 
@@ -21,7 +20,7 @@ const QuotePage = () => {
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
-    setLastFormData(data); // Store the form data for retry
+    setLastFormData(data);
     const summary = formatQuoteSummary(data);
     setMessages([{ content: summary, isAi: false }]);
     setShowForm(false);
@@ -105,8 +104,7 @@ const QuotePage = () => {
     setMessages(prev => [...prev, { content: message, isAi: false }]);
 
     try {
-      // Simulate AI response - replace with actual API call
-      const aiResponse = "I understand your question about the quote. Let me help you with that...";
+      const aiResponse = await sendChatMessage(message);
       setMessages(prev => [...prev, { content: aiResponse, isAi: true }]);
     } catch (error) {
       toast({

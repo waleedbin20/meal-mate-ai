@@ -28,3 +28,25 @@ export const fetchQuoteResponse = async (data: QuoteFormData): Promise<QuoteResp
     };
   }
 };
+
+export const sendChatMessage = async (question: string): Promise<string> => {
+  try {
+    const response = await fetch('https://quoteaiapi-cfe5abfdcuf7gqgd.uksouth-01.azurewebsites.net/api/quote/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ question }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send chat message');
+    }
+
+    const data = await response.json();
+    return data.response;
+  } catch (error) {
+    console.error('Error sending chat message:', error);
+    throw new Error('Failed to get AI response. Please try again.');
+  }
+};
