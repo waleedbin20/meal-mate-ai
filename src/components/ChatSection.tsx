@@ -2,7 +2,7 @@ import React from "react";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import { Button } from "./ui/button";
-import { PlusCircle, StopCircle } from "lucide-react";
+import { PlusCircle, StopCircle, FormIcon } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
 
@@ -13,6 +13,7 @@ interface ChatSectionProps {
   onNewChat: () => void;
   onStopChat: () => void;
   isChatActive: boolean;
+  onShowForm: () => void;
 }
 
 const ChatSection: React.FC<ChatSectionProps> = ({
@@ -22,9 +23,9 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   onNewChat,
   onStopChat,
   isChatActive,
+  onShowForm,
 }) => {
   const handleNewQuote = () => {
-    // Clear messages before triggering the new chat
     onNewChat();
   };
 
@@ -40,6 +41,14 @@ const ChatSection: React.FC<ChatSectionProps> = ({
           </p>
         </div>
         <div className="flex gap-2">
+          <Button
+            onClick={onShowForm}
+            variant="outline"
+            className="flex items-center gap-2 bg-white hover:bg-purple-50"
+          >
+            <FormIcon className="w-4 h-4" />
+            Create Quote Form
+          </Button>
           <Button
             onClick={handleNewQuote}
             variant="outline"

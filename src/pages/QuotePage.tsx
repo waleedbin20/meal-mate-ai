@@ -8,12 +8,14 @@ import { useToast } from "@/hooks/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
 import QuoteResponseDisplay from "@/components/QuoteResponse";
+import { Button } from "@/components/ui/button";
+import { FormIcon } from "lucide-react";
 
 const QuotePage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showForm, setShowForm] = useState(true);
-  const [isChatActive, setIsChatActive] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [isChatActive, setIsChatActive] = useState(true);
   const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
   const [lastFormData, setLastFormData] = useState<QuoteFormData | null>(null);
   const { toast } = useToast();
@@ -119,9 +121,9 @@ const QuotePage = () => {
 
   const handleNewChat = () => {
     clearChat();
-    setShowForm(true);
+    setShowForm(false);
     setMessages([]);
-    setIsChatActive(false);
+    setIsChatActive(true);
     setQuoteResponse(null);
     setLastFormData(null);
   };
@@ -139,12 +141,26 @@ const QuotePage = () => {
     setMessages([]);
   };
 
+  const toggleForm = () => {
+    setShowForm(!showForm);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {showForm ? (
             <div className="lg:col-span-8 lg:col-start-3">
+              <div className="mb-4">
+                <Button
+                  onClick={toggleForm}
+                  variant="outline"
+                  className="flex items-center gap-2 bg-white hover:bg-purple-50"
+                >
+                  <FormIcon className="w-4 h-4" />
+                  Switch to Chat
+                </Button>
+              </div>
               <QuoteForm 
                 onSubmit={handleQuoteSubmit} 
                 isLoading={isProcessing}
@@ -161,15 +177,18 @@ const QuotePage = () => {
                   onNewChat={handleNewChat}
                   onStopChat={handleStopChat}
                   isChatActive={isChatActive}
+                  onShowForm={toggleForm}
                 />
               </div>
-              <div className="lg:col-span-4">
-                <QuoteResponseDisplay 
-                  response={quoteResponse}
-                  onRetry={handleRetry}
-                  isLoading={isProcessing}
-                />
-              </div>
+              {quoteResponse && (
+                <div className="lg:col-span-4">
+                  <QuoteResponseDisplay 
+                    response={quoteResponse}
+                    onRetry={handleRetry}
+                    isLoading={isProcessing}
+                  />
+                </div>
+              )}
             </>
           )}
         </div>
