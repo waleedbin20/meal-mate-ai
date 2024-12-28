@@ -30,17 +30,17 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled }) => {
 
   return (
     <div className="space-y-3 p-4 border-t bg-white/50 backdrop-blur-sm">
-      <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
         {presetMessages.map((preset, index) => (
           <Button
             key={index}
             variant="outline"
-            className="flex items-center gap-2 whitespace-nowrap text-sm bg-white hover:bg-purple-50 border-purple-100"
+            className="flex items-center gap-2 whitespace-nowrap text-sm bg-white hover:bg-purple-50 border-purple-100 flex-shrink-0"
             onClick={() => handlePresetClick(preset)}
             disabled={disabled}
           >
             <MessageSquarePlus className="h-4 w-4 text-purple-500" />
-            <span className="truncate max-w-[300px]">
+            <span className="truncate max-w-[200px] md:max-w-[300px]">
               {preset.length > 50 ? preset.substring(0, 50) + "..." : preset}
             </span>
           </Button>

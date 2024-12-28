@@ -147,8 +147,8 @@ const QuotePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
-      <div className="container mx-auto py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="container mx-auto py-4 px-4 md:py-8 md:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8">
           {showForm ? (
             <div className="lg:col-span-8 lg:col-start-3">
               <div className="mb-4">
