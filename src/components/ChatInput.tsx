@@ -12,7 +12,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled }) => {
   const [message, setMessage] = useState("");
 
   const presetMessages = [
-    "Create a quote for [care home name] with [number of residents] and dining rooms like [Room A: 10, Room B: 15]. The customer ID is [customer ID], and the menu ID is [menu ID].",
+    "Create a quote for [Apetito] with [50 residents], [1 dining room] and dining rooms resident details [\"Dining Room 1\": 50 residents]. The customer ID is [2468], and the menu ID is [90667].",
     "Modify the quote with ID [quote ID] to update the resident details or change the menu to [new menu ID]."
   ];
 
