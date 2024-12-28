@@ -45,7 +45,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
             <Button
               onClick={onShowForm}
               variant="outline"
-              className="flex items-center justify-center gap-2 bg-white hover:bg-purple-50 w-full md:w-auto"
+              className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 w-full md:w-auto"
             >
               <PlusCircle className="w-4 h-4" />
               Create Quote Form
