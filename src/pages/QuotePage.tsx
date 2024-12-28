@@ -9,7 +9,7 @@ import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
 import QuoteResponseDisplay from "@/components/QuoteResponse";
 import { Button } from "@/components/ui/button";
-import { FormIcon } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 
 const QuotePage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -157,7 +157,7 @@ const QuotePage = () => {
                   variant="outline"
                   className="flex items-center gap-2 bg-white hover:bg-purple-50"
                 >
-                  <FormIcon className="w-4 h-4" />
+                  <PlusCircle className="w-4 h-4" />
                   Switch to Chat
                 </Button>
               </div>

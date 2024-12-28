@@ -2,7 +2,7 @@ import React from "react";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import { Button } from "./ui/button";
-import { PlusCircle, StopCircle, FormIcon } from "lucide-react";
+import { PlusCircle, StopCircle } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
 
@@ -46,7 +46,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
             variant="outline"
             className="flex items-center gap-2 bg-white hover:bg-purple-50"
           >
-            <FormIcon className="w-4 h-4" />
+            <PlusCircle className="w-4 h-4" />
             Create Quote Form
           </Button>
           <Button
