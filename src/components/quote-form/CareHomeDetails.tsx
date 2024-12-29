@@ -18,6 +18,13 @@ export const CareHomeDetails = ({ form }: CareHomeDetailsProps) => {
         <FormField
           control={form.control}
           name="careHomeName"
+          rules={{
+            required: "Care Home Name is required",
+            minLength: {
+              value: 2,
+              message: "Care Home Name must be at least 2 characters"
+            }
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Care Home Name</FormLabel>

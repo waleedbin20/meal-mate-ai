@@ -129,11 +129,35 @@ export const QuoteForm = ({
         hoursPerWeek: 0
       }
     },
+    mode: "onChange",
   });
 
   const { toast } = useToast();
   const diningRooms = form.watch('diningRooms') || [];
   const numberOfDiningRooms = form.watch('numberOfDiningRooms') || 1;
+
+  const handleSubmit = (data: QuoteFormData) => {
+    if (!data.careHomeName.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Care Home Name is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (data.numberOfDiningRooms < 1) {
+      toast({
+        title: "Validation Error",
+        description: "Number of Dining Rooms must be at least 1",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log('Form data being sent to API:', JSON.stringify(data, null, 2));
+    onSubmit(data);
+  };
 
   const handleLoadSample = () => {
     Object.keys(sampleQuoteData).forEach(key => {
@@ -194,11 +218,6 @@ export const QuoteForm = ({
       title: "Form Cleared",
       description: "All form fields have been reset.",
     });
-  };
-
-  const handleSubmit = (data: QuoteFormData) => {
-    console.log('Form data being sent to API:', JSON.stringify(data, null, 2));
-    onSubmit(data);
   };
 
   return (

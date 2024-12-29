@@ -65,6 +65,17 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
       <FormField
         control={form.control}
         name="numberOfDiningRooms"
+        rules={{
+          required: "Number of Dining Rooms is required",
+          min: {
+            value: 1,
+            message: "Must have at least 1 dining room"
+          },
+          max: {
+            value: 10,
+            message: "Cannot have more than 10 dining rooms"
+          }
+        }}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Number of Dining Rooms</FormLabel>
@@ -72,6 +83,7 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
               <Input 
                 type="number" 
                 min="1"
+                max="10"
                 onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
                 value={field.value}
               />
