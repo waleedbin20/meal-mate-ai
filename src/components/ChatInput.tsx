@@ -35,7 +35,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled }) => {
           <Button
             key={index}
             variant="outline"
-            className="flex items-center gap-2 whitespace-nowrap text-sm bg-white hover:bg-purple-50 border-purple-100 flex-shrink-0"
+            className="flex items-center gap-2 whitespace-nowrap text-sm bg-white hover:bg-purple-50 hover:text-purple-900 border-purple-100 flex-shrink-0"
             onClick={() => handlePresetClick(preset)}
             disabled={disabled}
           >
