@@ -12,8 +12,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled }) => {
   const [message, setMessage] = useState("");
 
   const presetMessages = [
-    "Create a quote for [Apetito] with [50 residents], [1 dining room] and dining rooms resident details [\"Dining Room 1\": 50 residents]. The customer ID is [2468], and the menu ID is [90667].",
-    "Modify the quote for customer [Apetito] to change the menu to [90670]."
+    "Create a quote for [Apetito] with [50 residents], [1 dining room] and dining rooms resident details [\"Dining Room 1\": 50 residents]. The customer ID is [2468], and the menu ID is [90667], and calculate the cost per resident.",
+    "Modify the quote for customer [Apetito] to change the menu to [90670] and calculate the cost per resident."
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
