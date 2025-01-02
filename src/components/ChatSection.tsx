@@ -27,7 +27,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   onShowForm,
 }) => {
   const [chatSettings, setChatSettings] = useState({
-    model: "llama-3.1-sonar-small-128k-online",
+    model: "gpt-4o",
     temperature: 0.2,
     maxTokens: 1000,
     topP: 0.9,

@@ -42,79 +42,84 @@ const ChatSettings: React.FC<ChatSettingsProps> = ({ settings, onSettingsChange 
         </Button>
       </SheetTrigger>
       <SheetContent>
-        <SheetHeader>
+        <SheetHeader className="mb-6">
           <SheetTitle>Chat Settings</SheetTitle>
         </SheetHeader>
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 py-4 px-2">
           <div className="space-y-2">
-            <Label>Model</Label>
+            <Label className="text-sm font-medium">Model</Label>
             <Select
               value={settings.model}
               onValueChange={(value) => handleSettingChange("model", value)}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full bg-white">
                 <SelectValue placeholder="Select model" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="llama-3.1-sonar-small-128k-online">Llama 3.1 Small</SelectItem>
-                <SelectItem value="llama-3.1-sonar-large-128k-online">Llama 3.1 Large</SelectItem>
-                <SelectItem value="llama-3.1-sonar-huge-128k-online">Llama 3.1 Huge</SelectItem>
+              <SelectContent className="bg-white">
+                <SelectItem value="gpt-4o">GPT-4 Optimized</SelectItem>
+                <SelectItem value="gpt-4o-mini">GPT-4 Mini</SelectItem>
+                <SelectItem value="gpt-35-turbo-16k">GPT-3.5 Turbo 16K</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label>Temperature ({settings.temperature})</Label>
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Temperature ({settings.temperature})</Label>
             <Slider
               value={[settings.temperature]}
               min={0}
               max={2}
               step={0.1}
               onValueChange={([value]) => handleSettingChange("temperature", value)}
+              className="my-4"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Max Tokens</Label>
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Max Tokens</Label>
             <Input
               type="number"
               value={settings.maxTokens}
               onChange={(e) => handleSettingChange("maxTokens", parseInt(e.target.value))}
               min={1}
               max={4000}
+              className="bg-white"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Top P ({settings.topP})</Label>
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Top P ({settings.topP})</Label>
             <Slider
               value={[settings.topP]}
               min={0}
               max={1}
               step={0.1}
               onValueChange={([value]) => handleSettingChange("topP", value)}
+              className="my-4"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Frequency Penalty ({settings.frequencyPenalty})</Label>
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Frequency Penalty ({settings.frequencyPenalty})</Label>
             <Slider
               value={[settings.frequencyPenalty]}
               min={0}
               max={2}
               step={0.1}
               onValueChange={([value]) => handleSettingChange("frequencyPenalty", value)}
+              className="my-4"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Presence Penalty ({settings.presencePenalty})</Label>
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Presence Penalty ({settings.presencePenalty})</Label>
             <Slider
               value={[settings.presencePenalty]}
               min={0}
               max={2}
               step={0.1}
               onValueChange={([value]) => handleSettingChange("presencePenalty", value)}
+              className="my-4"
             />
           </div>
         </div>
