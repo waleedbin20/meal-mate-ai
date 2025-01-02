@@ -6,12 +6,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { Settings2 } from "lucide-react";
+import { Settings2, Info } from "lucide-react";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Slider } from "./ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Input } from "./ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 interface ChatSettingsProps {
   settings: {
@@ -47,7 +53,19 @@ const ChatSettings: React.FC<ChatSettingsProps> = ({ settings, onSettingsChange 
         </SheetHeader>
         <div className="space-y-6 py-4 px-2">
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Model</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium">Model</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Select the AI model to use for generating responses.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <Select
               value={settings.model}
               onValueChange={(value) => handleSettingChange("model", value)}
@@ -64,7 +82,19 @@ const ChatSettings: React.FC<ChatSettingsProps> = ({ settings, onSettingsChange 
           </div>
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Temperature ({settings.temperature})</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium">Temperature ({settings.temperature})</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Controls randomness in responses. Higher values make output more creative but less focused.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <Slider
               value={[settings.temperature]}
               min={0}
@@ -76,7 +106,19 @@ const ChatSettings: React.FC<ChatSettingsProps> = ({ settings, onSettingsChange 
           </div>
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Max Tokens</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium">Max Tokens</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Maximum length of the generated response in tokens.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <Input
               type="number"
               value={settings.maxTokens}
@@ -88,7 +130,19 @@ const ChatSettings: React.FC<ChatSettingsProps> = ({ settings, onSettingsChange 
           </div>
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Top P ({settings.topP})</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium">Top P ({settings.topP})</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Controls diversity of responses. Lower values make output more focused and deterministic.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <Slider
               value={[settings.topP]}
               min={0}
@@ -100,7 +154,19 @@ const ChatSettings: React.FC<ChatSettingsProps> = ({ settings, onSettingsChange 
           </div>
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Frequency Penalty ({settings.frequencyPenalty})</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium">Frequency Penalty ({settings.frequencyPenalty})</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Reduces repetition by lowering the chance of reusing frequently used words.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <Slider
               value={[settings.frequencyPenalty]}
               min={0}
@@ -112,7 +178,19 @@ const ChatSettings: React.FC<ChatSettingsProps> = ({ settings, onSettingsChange 
           </div>
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Presence Penalty ({settings.presencePenalty})</Label>
+            <div className="flex items-center gap-2">
+              <Label className="text-sm font-medium">Presence Penalty ({settings.presencePenalty})</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Encourages the model to talk about new topics by penalizing tokens that have appeared in the text.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <Slider
               value={[settings.presencePenalty]}
               min={0}
