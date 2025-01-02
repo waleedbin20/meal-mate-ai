@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import { Button } from "./ui/button";
 import { PlusCircle, StopCircle } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
+import ChatSettings from "./ChatSettings";
 
 interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
@@ -25,6 +26,15 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   isChatActive,
   onShowForm,
 }) => {
+  const [chatSettings, setChatSettings] = useState({
+    model: "llama-3.1-sonar-small-128k-online",
+    temperature: 0.2,
+    maxTokens: 1000,
+    topP: 0.9,
+    frequencyPenalty: 1,
+    presencePenalty: 0,
+  });
+
   const handleNewQuote = () => {
     onNewChat();
   };
@@ -33,13 +43,19 @@ const ChatSection: React.FC<ChatSectionProps> = ({
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl h-[calc(100vh-2rem)] md:h-[800px] flex flex-col">
       <div className="p-4 md:p-6 border-b border-purple-100">
         <div className="mb-4 md:mb-0 md:flex md:justify-between md:items-center">
-          <div>
-            <h1 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              Care Home Meal Plan Quote
-            </h1>
-            <p className="text-sm text-gray-600 mt-1">
-              Chat with our AI to understand your quote better
-            </p>
+          <div className="flex items-center gap-2">
+            <div>
+              <h1 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                Care Home Meal Plan Quote
+              </h1>
+              <p className="text-sm text-gray-600 mt-1">
+                Chat with our AI to understand your quote better
+              </p>
+            </div>
+            <ChatSettings 
+              settings={chatSettings}
+              onSettingsChange={setChatSettings}
+            />
           </div>
           <div className="flex flex-col md:flex-row gap-2 mt-4 md:mt-0">
             <Button
