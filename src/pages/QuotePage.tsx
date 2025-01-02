@@ -146,7 +146,7 @@ const QuotePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
+    <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto py-4 px-4 md:py-8 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8">
           {showForm ? (
@@ -155,7 +155,7 @@ const QuotePage = () => {
                 <Button
                   onClick={toggleForm}
                   variant="outline"
-                  className="flex items-center gap-2 bg-white hover:bg-purple-50"
+                  className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white"
                 >
                   <PlusCircle className="w-4 h-4" />
                   Switch to Chat
