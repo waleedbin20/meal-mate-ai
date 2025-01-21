@@ -29,7 +29,7 @@ const Landing = () => {
               onClick={() => navigate("/retrieve")} 
               size="lg"
               variant="outline"
-              className="text-lg px-8 py-6 border-2 border-purple-600 text-purple-600 hover:bg-purple-50
+              className="text-lg px-8 py-6 border-2 border-purple-600 text-purple-600 hover:bg-purple-50 hover:text-black
                 transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
             >
               Retrieve a Quote
