@@ -44,6 +44,7 @@ export interface DiningRoom {
 }
 
 export interface QuoteFormData {
+  creatorName: string;  // Added this field
   careHomeName: string;
   numberOfDiningRooms: number;
   totalResidents: number;

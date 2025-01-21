@@ -16,6 +16,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 
 const sampleQuoteData: QuoteFormData = {
+  creatorName: "John Smith",
   careHomeName: "Sample Care Home",
   numberOfDiningRooms: 2,
   totalResidents: 70,
@@ -89,6 +90,7 @@ export const QuoteForm = ({
 }: QuoteFormProps) => {
   const form = useForm<QuoteFormData>({
     defaultValues: defaultValues || {
+      creatorName: "",
       careHomeName: "",
       numberOfDiningRooms: 1,
       totalResidents: 0,
@@ -137,8 +139,18 @@ export const QuoteForm = ({
   const { toast } = useToast();
   const diningRooms = form.watch('diningRooms') || [];
   const numberOfDiningRooms = form.watch('numberOfDiningRooms') || 1;
+  const creatorName = form.watch('creatorName') || '';
 
   const handleSubmit = (data: QuoteFormData) => {
+    if (!data.creatorName.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Creator Name is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!data.careHomeName.trim()) {
       toast({
         title: "Validation Error",
@@ -173,6 +185,7 @@ export const QuoteForm = ({
 
   const handleClearForm = () => {
     form.reset({
+      creatorName: "",
       careHomeName: "",
       numberOfDiningRooms: 1,
       totalResidents: 0,
@@ -232,44 +245,72 @@ export const QuoteForm = ({
         onClearForm={handleClearForm}
       />
 
-      <CareHomeDetails form={form} />
-      
-      <NumberOfDiningRooms form={form} />
-
-      <DiningRoomsSection form={form} diningRooms={diningRooms} />
-
-      <div className="space-y-4">
+      <div className="space-y-4 mb-6">
         <FormField
           control={form.control}
-          name="totalResidents"
+          name="creatorName"
+          rules={{
+            required: "Creator Name is required",
+            minLength: {
+              value: 2,
+              message: "Creator Name must be at least 2 characters"
+            }
+          }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Total Residents (All Dining Rooms)</FormLabel>
+              <FormLabel>Creator Name</FormLabel>
               <FormControl>
-                <Input 
-                  type="number"
-                  disabled
-                  value={field.value}
-                />
+                <Input {...field} placeholder="Enter your name" className="bg-white" />
               </FormControl>
+              <p className="text-sm text-muted-foreground">Name of the apetito user</p>
               <FormMessage />
             </FormItem>
           )}
         />
       </div>
 
-      <MenuSelection form={form} />
+      {creatorName.trim() && (
+        <>
+          <CareHomeDetails form={form} />
+          
+          <NumberOfDiningRooms form={form} />
 
-      <div className="space-y-4">
-        <PricingInformation form={form} />
-      </div>
+          <DiningRoomsSection form={form} diningRooms={diningRooms} />
 
-      <LaborCostFields form={form} />
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="totalResidents"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Total Residents (All Dining Rooms)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number"
+                      disabled
+                      value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-      <FormSubmitButton 
-        isLoading={isLoading}
-        onClick={form.handleSubmit(handleSubmit)}
-      />
+          <MenuSelection form={form} />
+
+          <div className="space-y-4">
+            <PricingInformation form={form} />
+          </div>
+
+          <LaborCostFields form={form} />
+
+          <FormSubmitButton 
+            isLoading={isLoading}
+            onClick={form.handleSubmit(handleSubmit)}
+          />
+        </>
+      )}
     </FormWrapper>
   );
 };
