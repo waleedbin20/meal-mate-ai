@@ -12,6 +12,8 @@ import { FormSubmitButton } from "./quote-form/FormSubmitButton";
 import { FormWrapper } from "./quote-form/FormWrapper";
 import { NumberOfDiningRooms } from "./quote-form/NumberOfDiningRooms";
 import { FormInitializer } from "./quote-form/FormInitializer";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const sampleQuoteData: QuoteFormData = {
   careHomeName: "Sample Care Home",
@@ -235,6 +237,26 @@ export const QuoteForm = ({
       <NumberOfDiningRooms form={form} />
 
       <DiningRoomsSection form={form} diningRooms={diningRooms} />
+
+      <div className="space-y-4">
+        <FormField
+          control={form.control}
+          name="totalResidents"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Total Residents (All Dining Rooms)</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  disabled
+                  value={field.value}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <MenuSelection form={form} />
 
