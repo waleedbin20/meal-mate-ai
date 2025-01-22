@@ -92,24 +92,6 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
           </FormItem>
         )}
       />
-
-      <FormField
-        control={form.control}
-        name="totalResidents"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Total Residents (All Dining Rooms)</FormLabel>
-            <FormControl>
-              <Input 
-                type="number"
-                disabled
-                value={field.value}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
     </div>
   );
 };
