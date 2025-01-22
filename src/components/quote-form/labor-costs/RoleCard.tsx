@@ -29,13 +29,20 @@ export const RoleCard = ({
   const weeklyTotal = hourlyRate * hoursPerWeek * numberOfSimilarRoles;
   const annualTotal = weeklyTotal * 52;
 
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent form submission
+    e.stopPropagation(); // Stop event propagation
+    onDelete();
+  };
+
   return (
     <Card className={`p-6 ${bgColor} transition-all duration-300 hover:shadow-lg relative`}>
       <Button
         variant="ghost"
         size="icon"
         className="absolute top-2 right-2 hover:bg-red-100"
-        onClick={onDelete}
+        onClick={handleDelete}
+        type="button"
       >
         <X className="h-4 w-4 text-red-500" />
       </Button>
