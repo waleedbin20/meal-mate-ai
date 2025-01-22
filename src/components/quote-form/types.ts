@@ -46,7 +46,7 @@ export interface DiningRoom {
 }
 
 export interface QuoteFormData {
-  creatorName: string;  // Added this field
+  creatorName: string;
   careHomeName: string;
   numberOfDiningRooms: number;
   totalResidents: number;
@@ -97,9 +97,7 @@ export interface TransformedQuoteData {
   };
   labourAndCost: {
     currentLabour: {
-      role1: LaborRole;
-      role2: LaborRole;
-      role3: LaborRole;
+      roles: LaborRole[];
       totalHours: number;
       totalCost: number;
     };
