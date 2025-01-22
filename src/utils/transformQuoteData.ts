@@ -1,11 +1,14 @@
 import { QuoteFormData, TransformedQuoteData } from "@/components/quote-form/types";
 
 export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData => {
-  const totalLabourHours = data.role1.hoursPerWeek + data.role2.hoursPerWeek + data.role3.hoursPerWeek;
-  const totalLabourCost = 
-    (data.role1.hourlyRate * data.role1.hoursPerWeek * 52) +
-    (data.role2.hourlyRate * data.role2.hoursPerWeek * 52) +
-    (data.role3.hourlyRate * data.role3.hoursPerWeek * 52);
+  // Calculate total labor hours and cost from all roles
+  const totalLabourHours = data.roles.reduce((total, role) => {
+    return total + (role.hoursPerWeek * role.numberOfSimilarRoles);
+  }, 0);
+
+  const totalLabourCost = data.roles.reduce((total, role) => {
+    return total + (role.hourlyRate * role.hoursPerWeek * 52 * role.numberOfSimilarRoles);
+  }, 0);
 
   const transformedDiningRooms = data.diningRooms.map(room => ({
     diningRoomName: room.name,
@@ -26,7 +29,7 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
         religiousDietsResidents: room.religiousDietsResidents,
       },
     },
-    menuInformation: data.selectedMenu, // Use the global selected menu
+    menuInformation: data.selectedMenu,
   }));
 
   return {
@@ -44,9 +47,7 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
     },
     labourAndCost: {
       currentLabour: {
-        role1: data.role1,
-        role2: data.role2,
-        role3: data.role3,
+        roles: data.roles,
         totalHours: totalLabourHours,
         totalCost: totalLabourCost,
       },
