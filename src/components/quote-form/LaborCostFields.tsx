@@ -30,7 +30,7 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
   const handleDeleteRole = (index: number) => {
     const updatedRoles = roles.filter((_, i) => i !== index);
     form.setValue('roles', updatedRoles);
-    form.setValue('numberOfRoles', numberOfRoles - 1);
+    form.setValue('numberOfRoles', Math.max(1, numberOfRoles - 1));
   };
 
   return (
@@ -48,11 +48,11 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
                 <FormControl>
                   <Input 
                     type="number"
-                    min="0"
+                    min="1"
                     defaultValue={1}
                     {...field}
                     onChange={(e) => {
-                      const newValue = parseInt(e.target.value);
+                      const newValue = Math.max(1, parseInt(e.target.value));
                       field.onChange(newValue);
                       
                       // Adjust roles array size
