@@ -57,21 +57,32 @@ const sampleQuoteData: QuoteFormData = {
   currentLabourCost: 50000,
   currentFoodSpend: 75000,
   estimatedNonApetitoSpend: 25000,
-  role1: {
-    hourlyRate: 12,
-    hoursPerWeek: 40
-  },
-  role2: {
-    hourlyRate: 15,
-    hoursPerWeek: 35
-  },
-  role3: {
-    hourlyRate: 18,
-    hoursPerWeek: 30
-  },
+  numberOfRoles: 3,
+  roles: [
+    {
+      name: "Kitchen Manager",
+      hourlyRate: 12,
+      hoursPerWeek: 40,
+      numberOfSimilarRoles: 1
+    },
+    {
+      name: "Chef",
+      hourlyRate: 15,
+      hoursPerWeek: 35,
+      numberOfSimilarRoles: 2
+    },
+    {
+      name: "Kitchen Assistant",
+      hourlyRate: 18,
+      hoursPerWeek: 30,
+      numberOfSimilarRoles: 3
+    }
+  ],
   apetitoLabor: {
+    name: "Apetito Labor",
     hourlyRate: 14,
-    hoursPerWeek: 35
+    hoursPerWeek: 35,
+    numberOfSimilarRoles: 1
   }
 };
 
@@ -116,21 +127,13 @@ export const QuoteForm = ({
       currentLabourCost: 0,
       currentFoodSpend: 0,
       estimatedNonApetitoSpend: 0,
-      role1: {
-        hourlyRate: 0,
-        hoursPerWeek: 0
-      },
-      role2: {
-        hourlyRate: 0,
-        hoursPerWeek: 0
-      },
-      role3: {
-        hourlyRate: 0,
-        hoursPerWeek: 0
-      },
+      numberOfRoles: 0,
+      roles: [],
       apetitoLabor: {
+        name: "",
         hourlyRate: 0,
-        hoursPerWeek: 0
+        hoursPerWeek: 0,
+        numberOfSimilarRoles: 0
       }
     },
     mode: "onChange",
@@ -211,21 +214,13 @@ export const QuoteForm = ({
       currentLabourCost: 0,
       currentFoodSpend: 0,
       estimatedNonApetitoSpend: 0,
-      role1: {
-        hourlyRate: 0,
-        hoursPerWeek: 0
-      },
-      role2: {
-        hourlyRate: 0,
-        hoursPerWeek: 0
-      },
-      role3: {
-        hourlyRate: 0,
-        hoursPerWeek: 0
-      },
+      numberOfRoles: 0,
+      roles: [],
       apetitoLabor: {
+        name: "",
         hourlyRate: 0,
-        hoursPerWeek: 0
+        hoursPerWeek: 0,
+        numberOfSimilarRoles: 0
       }
     });
     onClearForm?.();
@@ -316,3 +311,4 @@ export const QuoteForm = ({
 };
 
 export default QuoteForm;
+

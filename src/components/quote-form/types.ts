@@ -23,8 +23,10 @@ export interface PriceListOption {
 }
 
 export interface LaborRole {
+  name: string;
   hourlyRate: number;
   hoursPerWeek: number;
+  numberOfSimilarRoles: number;
 }
 
 export interface DiningRoom {
@@ -55,9 +57,8 @@ export interface QuoteFormData {
   currentLabourCost: number;
   currentFoodSpend: number;
   estimatedNonApetitoSpend: number;
-  role1: LaborRole;
-  role2: LaborRole;
-  role3: LaborRole;
+  numberOfRoles: number;
+  roles: LaborRole[];
   apetitoLabor: LaborRole;
 }
 
