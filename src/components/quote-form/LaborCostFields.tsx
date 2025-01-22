@@ -13,7 +13,7 @@ interface LaborCostFieldsProps {
 
 export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
   const roles = form.watch('roles') || [];
-  const numberOfRoles = form.watch('numberOfRoles') || 0;
+  const numberOfRoles = form.watch('numberOfRoles') || 1;
 
   const handleAddRole = () => {
     const newRole: LaborRole = {
@@ -49,6 +49,7 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
                   <Input 
                     type="number"
                     min="0"
+                    defaultValue={1}
                     {...field}
                     onChange={(e) => {
                       const newValue = parseInt(e.target.value);
