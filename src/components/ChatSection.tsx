@@ -3,7 +3,7 @@ import ChatMessage from "./ChatMessage";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Send } from "lucide-react";
 
 interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
@@ -57,12 +57,31 @@ const ChatSection: React.FC<ChatSectionProps> = ({
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-4">
           {messages.map((message, index) => (
-            <ChatMessage
-              key={index}
-              isAi={message.isAi}
-              content={message.content}
-              animate={index === messages.length - 1}
-            />
+            <React.Fragment key={index}>
+              <ChatMessage
+                isAi={message.isAi}
+                content={message.content}
+                animate={index === messages.length - 1}
+              />
+              {message.isAi && index === messages.length - 1 && (
+                <div className="space-y-4 pt-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-2">Save this quote for later reference</p>
+                    <Button className="w-full" variant="outline">
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Quote
+                    </Button>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-2">Submit this quote to Hubspot for processing</p>
+                    <Button className="w-full" variant="default">
+                      <Send className="h-4 w-4 mr-2" />
+                      Submit Quote to Hubspot
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </React.Fragment>
           ))}
           {isProcessing && <ChatSkeleton />}
         </div>
