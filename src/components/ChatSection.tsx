@@ -3,6 +3,7 @@ import ChatMessage from "./ChatMessage";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
+import { ArrowLeft, Save } from "lucide-react";
 
 interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
@@ -34,6 +35,21 @@ const ChatSection: React.FC<ChatSectionProps> = ({
               className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
             >
               Create Quote Form
+            </Button>
+            <Button
+              onClick={onShowForm}
+              variant="outline"
+              className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Edit Quote
+            </Button>
+            <Button
+              variant="outline"
+              className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
+            >
+              <Save className="h-4 w-4" />
+              Save Quote
             </Button>
           </div>
         </div>

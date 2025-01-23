@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { QuoteResponse } from "@/types/quoteResponse";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Send } from "lucide-react";
 
 interface QuoteResponseProps {
   response: QuoteResponse | null;
@@ -74,6 +74,14 @@ const QuoteResponseDisplay: React.FC<QuoteResponseProps> = ({ response, onRetry,
             </div>
           </div>
         )}
+
+        <div className="pt-4">
+          <p className="text-sm text-muted-foreground mb-2">Submit this quote to Hubspot for processing</p>
+          <Button className="w-full" variant="default">
+            <Send className="h-4 w-4 mr-2" />
+            Submit Quote to Hubspot
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
