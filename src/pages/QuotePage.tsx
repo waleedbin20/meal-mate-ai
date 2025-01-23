@@ -14,7 +14,7 @@ import { PlusCircle } from "lucide-react";
 const QuotePage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true); // Changed to true
   const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
   const [lastFormData, setLastFormData] = useState<QuoteFormData | null>(null);
   const { toast } = useToast();
