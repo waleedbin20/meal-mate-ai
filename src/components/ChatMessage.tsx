@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Bot } from "lucide-react";
+import { Bot, Save, Send } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface ChatMessageProps {
   isAi: boolean;
@@ -45,18 +46,38 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
           <Bot className="w-5 h-5 text-white" />
         </div>
       )}
-      <div
-        className={cn(
-          "max-w-[80%] rounded-2xl px-4 py-2.5 shadow-sm whitespace-pre-line",
-          isAi
-            ? "bg-gradient-to-br from-[#F2FCE2] to-[#E5DEFF] text-gray-800"
-            : "bg-gradient-to-br from-[#8B5CF6] to-[#6E59A5] text-white"
-        )}
-      >
-        {isAi && <div className="text-xs font-medium text-purple-700 mb-1">Quote AI</div>}
-        <div className="text-sm leading-relaxed [&_ul]:pl-4 [&_ul]:list-disc [&_p]:mb-2 [&_li]:mb-1">
-          {formatContent(content)}
+      <div className="flex flex-col max-w-[80%]">
+        <div
+          className={cn(
+            "rounded-2xl px-4 py-2.5 shadow-sm whitespace-pre-line",
+            isAi
+              ? "bg-gradient-to-br from-[#F2FCE2] to-[#E5DEFF] text-gray-800"
+              : "bg-gradient-to-br from-[#8B5CF6] to-[#6E59A5] text-white"
+          )}
+        >
+          {isAi && <div className="text-xs font-medium text-purple-700 mb-1">Quote AI</div>}
+          <div className="text-sm leading-relaxed [&_ul]:pl-4 [&_ul]:list-disc [&_p]:mb-2 [&_li]:mb-1">
+            {formatContent(content)}
+          </div>
         </div>
+        {isAi && (
+          <div className="mt-3 space-y-3 max-w-sm">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1.5">Save this quote for later reference</p>
+              <Button className="w-full" variant="outline" size="sm">
+                <Save className="h-4 w-4 mr-2" />
+                Save Quote
+              </Button>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1.5">Submit this quote to Hubspot for processing</p>
+              <Button className="w-full" variant="default" size="sm">
+                <Send className="h-4 w-4 mr-2" />
+                Submit Quote to Hubspot
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
