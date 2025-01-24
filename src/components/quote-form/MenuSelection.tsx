@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
 const menuOptions: MenuOption[] = [
   { menuName: "Menu A - Sep 2024", menuId: "90667" },
@@ -19,56 +20,53 @@ interface MenuSelectionProps {
 
 export const MenuSelection = ({ form }: MenuSelectionProps) => {
   return (
-    <div className="space-y-6">
-      <Card className="bg-white">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-purple-700">Menu Selection</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <FormField
-            control={form.control}
-            name="selectedMenu"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Menu</FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    const selectedMenu = menuOptions.find(menu => menu.menuId === value);
-                    if (selectedMenu) {
-                      field.onChange(selectedMenu);
-                    }
-                  }}
-                  value={field.value?.menuId.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger className="bg-white">
-                      <SelectValue placeholder="Select a menu" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-white">
-                    {menuOptions.map((menu) => (
-                      <SelectItem 
-                        key={menu.menuId} 
-                        value={menu.menuId.toString()}
-                        className="hover:bg-purple-50"
-                      >
-                        {menu.menuName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-      </Card>
+    <Card className="bg-white">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold text-purple-700">Menu Selection</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <FormField
+          control={form.control}
+          name="selectedMenu"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Menu</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  const selectedMenu = menuOptions.find(menu => menu.menuId === value);
+                  if (selectedMenu) {
+                    field.onChange(selectedMenu);
+                  }
+                }}
+                value={field.value?.menuId.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select a menu" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white">
+                  {menuOptions.map((menu) => (
+                    <SelectItem 
+                      key={menu.menuId} 
+                      value={menu.menuId.toString()}
+                      className="hover:bg-purple-50"
+                    >
+                      {menu.menuName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <Card className="bg-white">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-purple-700">Extras</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <Separator className="my-4" />
+
+        <div className="space-y-6">
+          <h3 className="text-md font-medium text-purple-700">Extra Options</h3>
+          
           <FormField
             control={form.control}
             name="extras.includeBreakfast"
@@ -143,8 +141,8 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
               </FormItem>
             )}
           />
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
