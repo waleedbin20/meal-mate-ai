@@ -8,9 +8,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
 
 const menuOptions: MenuOption[] = [
   { menuName: "Menu A - Sep 2024", menuId: "90667" },
@@ -83,7 +80,12 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                        if (!checked) {
+                          form.setValue("extras.breakfastQuantity", 0);
+                        }
+                      }}
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
@@ -95,56 +97,23 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                 </FormItem>
               )}
             />
-            
-            {watchBreakfast && (
-              <FormField
-                control={form.control}
-                name="extras.breakfastQuantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="1"
-                        placeholder="Enter number of breakfasts"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                        className="w-48"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <FormLabel>Lighter Meal Options</FormLabel>
-              {watchLighterMeal && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    form.setValue("extras.lighterMealOption", null);
-                    form.setValue("extras.lighterMealQuantity", 0);
-                  }}
-                  className="h-8 px-2"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
             <FormField
               control={form.control}
               name="extras.lighterMealOption"
               render={({ field }) => (
                 <FormItem className="space-y-3">
+                  <FormLabel>Lighter Meal Options</FormLabel>
                   <FormControl>
                     <RadioGroup
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value === null) {
+                          form.setValue("extras.lighterMealQuantity", 0);
+                        }
+                      }}
                       value={field.value || ""}
                       className="space-y-2"
                     >
@@ -166,28 +135,6 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                 </FormItem>
               )}
             />
-            
-            {watchLighterMeal && (
-              <FormField
-                control={form.control}
-                name="extras.lighterMealQuantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="1"
-                        placeholder="Enter number of lighter meals"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                        className="w-48"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
           </div>
 
           <div className="space-y-4">
@@ -199,7 +146,12 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                        if (!checked) {
+                          form.setValue("extras.dessertQuantity", 0);
+                        }
+                      }}
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
@@ -211,28 +163,6 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                 </FormItem>
               )}
             />
-            
-            {watchDessert && (
-              <FormField
-                control={form.control}
-                name="extras.dessertQuantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="1"
-                        placeholder="Enter number of desserts"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                        className="w-48"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
           </div>
         </div>
       </CardContent>
