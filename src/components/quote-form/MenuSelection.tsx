@@ -2,12 +2,15 @@ import React from "react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
-import { QuoteFormData, MenuOption, ExtraOptions } from "./types";
+import { QuoteFormData, MenuOption } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 const menuOptions: MenuOption[] = [
   { menuName: "Menu A - Sep 2024", menuId: "90667" },
@@ -19,6 +22,10 @@ interface MenuSelectionProps {
 }
 
 export const MenuSelection = ({ form }: MenuSelectionProps) => {
+  const watchBreakfast = form.watch("extras.includeBreakfast");
+  const watchLighterMeal = form.watch("extras.lighterMealOption");
+  const watchDessert = form.watch("extras.includeLighterMealDessert");
+
   return (
     <Card className="bg-white">
       <CardHeader>
@@ -67,38 +74,78 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
         <div className="space-y-6">
           <h3 className="text-md font-medium text-purple-700">Extra Options</h3>
           
-          <FormField
-            control={form.control}
-            name="extras.includeBreakfast"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Include Breakfast</FormLabel>
-                  <p className="text-sm text-muted-foreground">
-                    Add breakfast service to your meal plan
-                  </p>
-                </div>
-              </FormItem>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="extras.includeBreakfast"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Include Breakfast</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      Add breakfast service to your meal plan
+                    </p>
+                  </div>
+                </FormItem>
+              )}
+            />
+            
+            {watchBreakfast && (
+              <FormField
+                control={form.control}
+                name="extras.breakfastQuantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="1"
+                        placeholder="Enter quantity"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        className="w-32"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
-          />
+          </div>
 
           <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <FormLabel>Lighter Meal Options</FormLabel>
+              {watchLighterMeal && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    form.setValue("extras.lighterMealOption", null);
+                    form.setValue("extras.lighterMealQuantity", 0);
+                  }}
+                  className="h-8 px-2"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
             <FormField
               control={form.control}
               name="extras.lighterMealOption"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel>Lighter Meal Options</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
-                      value={field.value}
+                      value={field.value || ""}
                       className="space-y-2"
                     >
                       <div className="flex items-center space-x-3">
@@ -119,28 +166,74 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                 </FormItem>
               )}
             />
+            
+            {watchLighterMeal && (
+              <FormField
+                control={form.control}
+                name="extras.lighterMealQuantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="1"
+                        placeholder="Enter quantity"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        className="w-32"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
 
-          <FormField
-            control={form.control}
-            name="extras.includeLighterMealDessert"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Include Lighter Meal Dessert</FormLabel>
-                  <p className="text-sm text-muted-foreground">
-                    Add dessert to lighter meal options
-                  </p>
-                </div>
-              </FormItem>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="extras.includeLighterMealDessert"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Include Lighter Meal Dessert</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      Add dessert to lighter meal options
+                    </p>
+                  </div>
+                </FormItem>
+              )}
+            />
+            
+            {watchDessert && (
+              <FormField
+                control={form.control}
+                name="extras.dessertQuantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="1"
+                        placeholder="Enter quantity"
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        className="w-32"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
-          />
+          </div>
         </div>
       </CardContent>
     </Card>

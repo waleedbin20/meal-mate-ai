@@ -11,7 +11,7 @@ export type MealCategory =
 
 export type MultiTwinSize = "Standard" | "Small" | "Large";
 
-export type LighterMealOption = "standard" | "two-course" | "premium";
+export type LighterMealOption = "standard" | "two-course" | "premium" | null;
 
 export interface MenuOption {
   menuName: string;
@@ -20,8 +20,11 @@ export interface MenuOption {
 
 export interface ExtraOptions {
   includeBreakfast: boolean;
+  breakfastQuantity: number;
   lighterMealOption: LighterMealOption;
+  lighterMealQuantity: number;
   includeLighterMealDessert: boolean;
+  dessertQuantity: number;
 }
 
 export interface PriceListOption {
