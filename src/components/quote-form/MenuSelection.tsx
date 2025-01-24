@@ -8,6 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 const menuOptions: MenuOption[] = [
   { menuName: "Menu A - Sep 2024", menuId: "90667" },
@@ -19,6 +21,10 @@ interface MenuSelectionProps {
 }
 
 export const MenuSelection = ({ form }: MenuSelectionProps) => {
+  const handleRemoveLighterMeal = () => {
+    form.setValue("extras.lighterMealOption", null);
+  };
+
   return (
     <Card className="bg-white">
       <CardHeader>
@@ -96,7 +102,20 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
               name="extras.lighterMealOption"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel>Lighter Meal Options</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Lighter Meal Options</FormLabel>
+                    {field.value && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleRemoveLighterMeal}
+                        className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
