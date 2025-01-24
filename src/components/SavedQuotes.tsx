@@ -10,6 +10,7 @@ const mockSavedQuotes = [
   {
     id: 1,
     careHomeName: "Sunrise Care Home",
+    creatorName: "John Smith",
     createdAt: "2024-03-15",
     totalResidents: 45,
     status: "Approved",
@@ -17,11 +18,11 @@ const mockSavedQuotes = [
   {
     id: 2,
     careHomeName: "Golden Years Living",
+    creatorName: "Sarah Johnson",
     createdAt: "2024-03-14",
     totalResidents: 32,
     status: "Pending",
   },
-  // Add more mock quotes as needed
 ];
 
 const SavedQuotes = () => {
@@ -50,8 +51,9 @@ const SavedQuotes = () => {
                       <CardTitle className="text-lg font-semibold">
                         {quote.careHomeName}
                       </CardTitle>
-                      <CardDescription>
-                        Created on {new Date(quote.createdAt).toLocaleDateString()}
+                      <CardDescription className="space-y-1">
+                        <p>Created on {new Date(quote.createdAt).toLocaleDateString()}</p>
+                        <p className="text-purple-600">Created by {quote.creatorName}</p>
                       </CardDescription>
                     </div>
                     <Button
