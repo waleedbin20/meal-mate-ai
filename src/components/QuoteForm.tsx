@@ -54,8 +54,11 @@ const sampleQuoteData: QuoteFormData = {
   selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
   extras: {
     includeBreakfast: false,
+    breakfastQuantity: 0,
     lighterMealOption: "standard",
-    includeLighterMealDessert: false
+    lighterMealQuantity: 0,
+    includeLighterMealDessert: false,
+    dessertQuantity: 0
   },
   priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
   currentLabourHours: 40,
