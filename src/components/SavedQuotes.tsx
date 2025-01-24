@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, List } from "lucide-react";
+import { FileText, List, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 // Mock data for demonstration - replace with actual data fetching
 const mockSavedQuotes = [
@@ -26,6 +27,13 @@ const mockSavedQuotes = [
 ];
 
 const SavedQuotes = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredQuotes = mockSavedQuotes.filter((quote) =>
+    quote.careHomeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    quote.creatorName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -37,10 +45,19 @@ const SavedQuotes = () => {
       <SheetContent side="right" className="w-full sm:w-[540px]">
         <SheetHeader className="pb-6">
           <SheetTitle className="text-2xl font-bold">Saved Quotes</SheetTitle>
+          <div className="relative mt-4">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search quotes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
         </SheetHeader>
-        <ScrollArea className="h-[calc(100vh-8rem)] pr-4">
+        <ScrollArea className="h-[calc(100vh-12rem)] pr-4">
           <div className="space-y-4">
-            {mockSavedQuotes.map((quote) => (
+            {filteredQuotes.map((quote) => (
               <Card
                 key={quote.id}
                 className="group transition-all hover:shadow-md hover:border-purple-200"
