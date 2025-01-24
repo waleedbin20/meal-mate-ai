@@ -19,10 +19,6 @@ interface MenuSelectionProps {
 }
 
 export const MenuSelection = ({ form }: MenuSelectionProps) => {
-  const watchBreakfast = form.watch("extras.includeBreakfast");
-  const watchLighterMeal = form.watch("extras.lighterMealOption");
-  const watchDessert = form.watch("extras.includeLighterMealDessert");
-
   return (
     <Card className="bg-white">
       <CardHeader>
@@ -80,12 +76,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={(checked) => {
-                        field.onChange(checked);
-                        if (!checked) {
-                          form.setValue("extras.breakfastQuantity", 0);
-                        }
-                      }}
+                      onCheckedChange={field.onChange}
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
@@ -108,12 +99,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                   <FormLabel>Lighter Meal Options</FormLabel>
                   <FormControl>
                     <RadioGroup
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        if (value === null) {
-                          form.setValue("extras.lighterMealQuantity", 0);
-                        }
-                      }}
+                      onValueChange={field.onChange}
                       value={field.value || ""}
                       className="space-y-2"
                     >
@@ -146,12 +132,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                   <FormControl>
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={(checked) => {
-                        field.onChange(checked);
-                        if (!checked) {
-                          form.setValue("extras.dessertQuantity", 0);
-                        }
-                      }}
+                      onCheckedChange={field.onChange}
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">

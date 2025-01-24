@@ -54,11 +54,8 @@ const sampleQuoteData: QuoteFormData = {
   selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
   extras: {
     includeBreakfast: false,
-    breakfastQuantity: 0,
-    lighterMealOption: "standard",
-    lighterMealQuantity: 0,
-    includeLighterMealDessert: false,
-    dessertQuantity: 0
+    lighterMealOption: null,
+    includeLighterMealDessert: false
   },
   priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
   currentLabourHours: 40,
@@ -108,52 +105,47 @@ export const QuoteForm = ({
   onClearForm 
 }: QuoteFormProps) => {
   const form = useForm<QuoteFormData>({
-
-defaultValues: defaultValues || {
-  creatorName: "",
-  careHomeName: "",
-  numberOfDiningRooms: 1,
-  totalResidents: 0,
-  diningRooms: [
-    {
-      name: "",
-      mealCategories: [],
-      multiTwinResidents: 0,
-      level3Residents: 0,
-      level4Residents: 0,
-      level5Residents: 0,
-      level6Residents: 0,
-      allergyFreeResidents: 0,
-      fingerFoodResidents: 0,
-      miniMealResidents: 0,
-      religiousDietsResidents: 0,
-      totalResidentsInDiningRoom: 0
-    }
-  ],
-  selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-  extras: {
-    includeBreakfast: false,
-    breakfastQuantity: 0,
-    lighterMealOption: null,
-    lighterMealQuantity: 0,
-    includeLighterMealDessert: false,
-    dessertQuantity: 0
-  },
-  priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
-  currentLabourHours: 0,
-  currentLabourCost: 0,
-  currentFoodSpend: 0,
-  estimatedNonApetitoSpend: 0,
-  numberOfRoles: 0,
-  roles: [],
-  apetitoLabor: {
-    name: "",
-    hourlyRate: 0,
-    hoursPerWeek: 0,
-    numberOfSimilarRoles: 0
-  }
-},
-
+    defaultValues: defaultValues || {
+      creatorName: "",
+      careHomeName: "",
+      numberOfDiningRooms: 1,
+      totalResidents: 0,
+      diningRooms: [
+        {
+          name: "",
+          mealCategories: [],
+          multiTwinResidents: 0,
+          level3Residents: 0,
+          level4Residents: 0,
+          level5Residents: 0,
+          level6Residents: 0,
+          allergyFreeResidents: 0,
+          fingerFoodResidents: 0,
+          miniMealResidents: 0,
+          religiousDietsResidents: 0,
+          totalResidentsInDiningRoom: 0
+        }
+      ],
+      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
+      extras: {
+        includeBreakfast: false,
+        lighterMealOption: null,
+        includeLighterMealDessert: false
+      },
+      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
+      currentLabourHours: 0,
+      currentLabourCost: 0,
+      currentFoodSpend: 0,
+      estimatedNonApetitoSpend: 0,
+      numberOfRoles: 0,
+      roles: [],
+      apetitoLabor: {
+        name: "",
+        hourlyRate: 0,
+        hoursPerWeek: 0,
+        numberOfSimilarRoles: 0
+      }
+    },
     mode: "onChange",
   });
 
