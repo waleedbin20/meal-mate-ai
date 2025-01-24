@@ -20,11 +20,8 @@ export interface MenuOption {
 
 export interface ExtraOptions {
   includeBreakfast: boolean;
-  breakfastQuantity: number;
   lighterMealOption: LighterMealOption;
-  lighterMealQuantity: number;
   includeLighterMealDessert: boolean;
-  dessertQuantity: number;
 }
 
 export interface PriceListOption {
