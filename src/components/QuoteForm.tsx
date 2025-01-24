@@ -52,6 +52,11 @@ const sampleQuoteData: QuoteFormData = {
     },
   ],
   selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
+  extras: {
+    includeBreakfast: false,
+    lighterMealOption: "standard",
+    includeLighterMealDessert: false
+  },
   priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
   currentLabourHours: 40,
   currentLabourCost: 50000,
@@ -122,6 +127,11 @@ export const QuoteForm = ({
         }
       ],
       selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
+      extras: {
+        includeBreakfast: false,
+        lighterMealOption: "standard",
+        includeLighterMealDessert: false
+      },
       priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
       currentLabourHours: 0,
       currentLabourCost: 0,
@@ -311,4 +321,3 @@ export const QuoteForm = ({
 };
 
 export default QuoteForm;
-
