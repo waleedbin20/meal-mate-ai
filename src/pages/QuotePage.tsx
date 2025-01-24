@@ -7,14 +7,13 @@ import { fetchQuoteResponse } from "@/services/quoteResponseService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
-import QuoteResponseDisplay from "@/components/QuoteResponse";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 
 const QuotePage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showForm, setShowForm] = useState(true); // Changed to true
+  const [showForm, setShowForm] = useState(true);
   const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
   const [lastFormData, setLastFormData] = useState<QuoteFormData | null>(null);
   const { toast } = useToast();
@@ -104,7 +103,7 @@ const QuotePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
       <div className="container mx-auto py-4 px-4 md:py-8 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8">
+        <div className="grid grid-cols-1 gap-4 md:gap-8">
           {showForm ? (
             <div className="lg:col-span-8 lg:col-start-3">
               <div className="mb-4">
@@ -123,24 +122,13 @@ const QuotePage = () => {
               />
             </div>
           ) : (
-            <>
-              <div className="lg:col-span-8">
-                <ChatSection
-                  messages={messages}
-                  isProcessing={isProcessing}
-                  onShowForm={toggleForm}
-                />
-              </div>
-              {quoteResponse && (
-                <div className="lg:col-span-4">
-                  <QuoteResponseDisplay 
-                    response={quoteResponse}
-                    onRetry={handleRetry}
-                    isLoading={isProcessing}
-                  />
-                </div>
-              )}
-            </>
+            <div className="max-w-5xl mx-auto w-full">
+              <ChatSection
+                messages={messages}
+                isProcessing={isProcessing}
+                onShowForm={toggleForm}
+              />
+            </div>
           )}
         </div>
       </div>
