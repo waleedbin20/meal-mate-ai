@@ -106,10 +106,10 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                       <Input
                         type="number"
                         min="1"
-                        placeholder="Enter quantity"
+                        placeholder="Enter number of breakfasts"
                         {...field}
                         onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                        className="w-32"
+                        className="w-48"
                       />
                     </FormControl>
                     <FormMessage />
@@ -177,10 +177,10 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                       <Input
                         type="number"
                         min="1"
-                        placeholder="Enter quantity"
+                        placeholder="Enter number of lighter meals"
                         {...field}
                         onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                        className="w-32"
+                        className="w-48"
                       />
                     </FormControl>
                     <FormMessage />
@@ -222,10 +222,10 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                       <Input
                         type="number"
                         min="1"
-                        placeholder="Enter quantity"
+                        placeholder="Enter number of desserts"
                         {...field}
                         onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                        className="w-32"
+                        className="w-48"
                       />
                     </FormControl>
                     <FormMessage />
