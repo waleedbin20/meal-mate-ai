@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
 import { ArrowLeft, Save } from "lucide-react";
+import SavedQuotes from "./SavedQuotes";
 
 interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
@@ -44,6 +45,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
               <ArrowLeft className="h-4 w-4" />
               Edit Quote
             </Button>
+            <SavedQuotes />
             <Button
               variant="outline"
               className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
