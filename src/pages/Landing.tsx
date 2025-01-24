@@ -26,7 +26,7 @@ const Landing = () => {
               Create a Quote
             </Button>
             <Button 
-              onClick={() => navigate("/retrieve")} 
+              onClick={() => navigate("/saved-quotes")} 
               size="lg"
               variant="outline"
               className="text-lg px-8 py-6 border-2 border-purple-600 text-purple-600 hover:bg-purple-50 hover:text-black
