@@ -1,5 +1,4 @@
 import { QuoteFormData } from "@/components/quote-form/types";
-import { useQueryClient } from "@tanstack/react-query";
 
 const API_BASE_URL = 'https://wa-quote-api-dev-gwewavh3ddace9g7.uksouth-01.azurewebsites.net/api';
 
@@ -32,9 +31,7 @@ export const createQuote = async (quoteData: QuoteFormData): Promise<SavedQuote>
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({
-        data: quoteData
-      })
+      body: JSON.stringify(quoteData) // Remove the data wrapper since API expects direct quote data
     });
 
     if (!response.ok) {
