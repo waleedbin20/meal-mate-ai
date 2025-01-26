@@ -21,6 +21,31 @@ interface ApiResponse<T> {
   errors: null | any;
 }
 
+export const getLatestQuote = async (): Promise<SavedQuote> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/quote`, {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch quotes');
+    }
+
+    const data: ApiResponse<SavedQuote[]> = await response.json();
+    // Get the most recent quote
+    const quotes = data.data;
+    if (!quotes || quotes.length === 0) {
+      throw new Error('No quotes found');
+    }
+    return quotes[0]; // Return the most recent quote
+  } catch (error) {
+    console.error('Error fetching latest quote:', error);
+    throw error;
+  }
+};
+
 export const createQuote = async (quoteData: QuoteFormData): Promise<SavedQuote> => {
   try {
     console.log('Sending quote data:', JSON.stringify(quoteData, null, 2));
@@ -31,7 +56,7 @@ export const createQuote = async (quoteData: QuoteFormData): Promise<SavedQuote>
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify(quoteData) // Remove the data wrapper since API expects direct quote data
+      body: JSON.stringify(quoteData)
     });
 
     if (!response.ok) {
@@ -44,8 +69,15 @@ export const createQuote = async (quoteData: QuoteFormData): Promise<SavedQuote>
       throw new Error(`API error: ${response.status} ${response.statusText}`);
     }
 
-    const result: ApiResponse<SavedQuote> = await response.json();
-    return result.data;
+    const result: ApiResponse<boolean> = await response.json();
+    
+    if (!result.success) {
+      throw new Error(result.message || 'Failed to create quote');
+    }
+
+    // Get the newly created quote
+    const newQuote = await getLatestQuote();
+    return newQuote;
   } catch (error) {
     console.error('Error creating quote:', error);
     throw error;

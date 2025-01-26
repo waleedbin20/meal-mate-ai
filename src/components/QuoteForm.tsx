@@ -122,9 +122,14 @@ export const QuoteForm = ({
       const savedQuote = await createQuote(data);
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
       
-      // Navigate to the chat page with the new quote ID
       if (savedQuote && savedQuote.id) {
         navigate(`/quote/${savedQuote.id}/chat`);
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to get quote ID after creation",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Error creating quote:', error);
