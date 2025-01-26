@@ -9,6 +9,7 @@ import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const QuotePage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -17,6 +18,8 @@ const QuotePage = () => {
   const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
   const [lastFormData, setLastFormData] = useState<QuoteFormData | null>(null);
   const { toast } = useToast();
+  const location = useLocation();
+  const defaultValues = location.state?.defaultValues;
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
@@ -118,6 +121,7 @@ const QuotePage = () => {
             <QuoteForm 
               onSubmit={handleQuoteSubmit} 
               isLoading={isProcessing}
+              defaultValues={defaultValues}
             />
           </div>
         ) : (
