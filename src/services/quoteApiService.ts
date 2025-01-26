@@ -74,3 +74,46 @@ export const getAllQuotes = async (): Promise<SavedQuote[]> => {
     throw error;
   }
 };
+
+export const getQuoteById = async (id: number): Promise<QuoteFormData> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/quote/${id}`, {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch quote ${id}`);
+    }
+
+    const data: ApiResponse<QuoteFormData> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error(`Error fetching quote ${id}:`, error);
+    throw error;
+  }
+};
+
+export const deleteQuote = async (id: number): Promise<void> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/quote/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete quote ${id}`);
+    }
+
+    const data: ApiResponse<boolean> = await response.json();
+    if (!data.success) {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error(`Error deleting quote ${id}:`, error);
+    throw error;
+  }
+};

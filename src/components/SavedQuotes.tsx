@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,12 +16,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { getAllQuotes, SavedQuote } from "@/services/quoteApiService";
-import { useQuery } from "@tanstack/react-query";
+import { getAllQuotes, SavedQuote, deleteQuote, getQuoteById } from "@/services/quoteApiService";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const SavedQuotes = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [quoteToDelete, setQuoteToDelete] = useState<number | null>(null);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: quotes = [], isLoading, error } = useQuery({
     queryKey: ['quotes'],
@@ -33,11 +36,27 @@ const SavedQuotes = () => {
     quote.creatorName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDelete = (quoteId: number) => {
-    // Here you would implement the actual deletion logic
-    console.log("Deleting quote:", quoteId);
-    toast.success("Quote deleted successfully");
-    setQuoteToDelete(null);
+  const handleDelete = async (quoteId: number) => {
+    try {
+      await deleteQuote(quoteId);
+      await queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      toast.success("Quote deleted successfully");
+      setQuoteToDelete(null);
+    } catch (error) {
+      console.error("Error deleting quote:", error);
+      toast.error("Failed to delete quote");
+    }
+  };
+
+  const handleViewQuote = async (quoteId: number) => {
+    try {
+      const quoteData = await getQuoteById(quoteId);
+      // Navigate to the quote form page with the quote data
+      navigate('/quote', { state: { defaultValues: quoteData } });
+    } catch (error) {
+      console.error("Error fetching quote:", error);
+      toast.error("Failed to fetch quote details");
+    }
   };
 
   if (error) {
@@ -95,7 +114,7 @@ const SavedQuotes = () => {
                             variant="ghost"
                             size="sm"
                             className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={() => console.log("View quote", quote.id)}
+                            onClick={() => handleViewQuote(quote.id)}
                           >
                             <FileText className="h-4 w-4" />
                           </Button>
