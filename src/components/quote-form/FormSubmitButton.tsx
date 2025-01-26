@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 interface FormSubmitButtonProps {
   isLoading?: boolean;
@@ -14,7 +15,14 @@ export const FormSubmitButton = ({ isLoading, onClick }: FormSubmitButtonProps) 
         disabled={isLoading}
         className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl"
       >
-        Generate Quote
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Generating Quote...
+          </>
+        ) : (
+          'Generate Quote'
+        )}
       </Button>
     </div>
   );

@@ -16,7 +16,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { createQuote } from "@/services/quoteApiService";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -32,6 +32,7 @@ export const QuoteForm = ({
   onClearForm 
 }: QuoteFormProps) => {
   const navigate = useNavigate();
+  const { id } = useParams(); // Add this to get the quote ID from URL
   const form = useForm<QuoteFormData>({
     defaultValues: defaultValues || {
       creatorName: "",
@@ -123,6 +124,10 @@ export const QuoteForm = ({
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
       
       if (savedQuote && savedQuote.id) {
+        toast({
+          title: "Success",
+          description: "Quote generated successfully!",
+        });
         navigate(`/quote/${savedQuote.id}/chat`);
       }
     } catch (error) {

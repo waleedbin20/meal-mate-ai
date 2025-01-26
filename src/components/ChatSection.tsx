@@ -5,6 +5,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
 import { ArrowLeft, Save } from "lucide-react";
 import SavedQuotes from "./SavedQuotes";
+import { useParams, useNavigate } from "react-router-dom";
 
 interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
@@ -17,6 +18,15 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   isProcessing,
   onShowForm,
 }) => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const handleEditQuote = () => {
+    if (id) {
+      navigate(`/quote/${id}`);
+    }
+  };
+
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl h-[calc(100vh-2rem)] md:h-[800px] flex flex-col">
       <div className="p-4 md:p-6 border-b border-purple-100">
@@ -38,7 +48,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
               Create Quote Form
             </Button>
             <Button
-              onClick={onShowForm}
+              onClick={handleEditQuote}
               variant="outline"
               className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
             >
