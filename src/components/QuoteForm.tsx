@@ -16,6 +16,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { createQuote } from "@/services/quoteApiService";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -30,6 +31,7 @@ export const QuoteForm = ({
   defaultValues, 
   onClearForm 
 }: QuoteFormProps) => {
+  const navigate = useNavigate();
   const form = useForm<QuoteFormData>({
     defaultValues: defaultValues || {
       creatorName: "",
@@ -117,28 +119,18 @@ export const QuoteForm = ({
     }
 
     try {
-      // Send the create quote request without waiting for response
-      createQuote(data)
-        .then(() => {
-          // Invalidate and refetch quotes after successful creation
-          queryClient.invalidateQueries({ queryKey: ['quotes'] });
-        })
-        .catch(error => {
-          console.error('Error creating quote:', error);
-          toast({
-            title: "Error",
-            description: "Failed to save quote",
-            variant: "destructive",
-          });
-        });
-
-      console.log('Form data being sent to API:', JSON.stringify(data, null, 2));
-      onSubmit(data);
+      const response = await createQuote(data);
+      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      
+      // Navigate to the chat page with the new quote ID
+      if (response && response.id) {
+        navigate(`/quote/${response.id}/chat`);
+      }
     } catch (error) {
-      console.error('Error handling form submission:', error);
+      console.error('Error creating quote:', error);
       toast({
         title: "Error",
-        description: "An error occurred while processing your request",
+        description: "Failed to save quote",
         variant: "destructive",
       });
     }
