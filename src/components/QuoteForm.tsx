@@ -14,6 +14,7 @@ import { NumberOfDiningRooms } from "./quote-form/NumberOfDiningRooms";
 import { FormInitializer } from "./quote-form/FormInitializer";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createQuote } from "@/services/quoteApiService";
 
 const sampleQuoteData: QuoteFormData = {
   creatorName: "John Smith",
@@ -154,7 +155,7 @@ export const QuoteForm = ({
   const numberOfDiningRooms = form.watch('numberOfDiningRooms') || 1;
   const creatorName = form.watch('creatorName') || '';
 
-  const handleSubmit = (data: QuoteFormData) => {
+  const handleSubmit = async (data: QuoteFormData) => {
     if (!data.creatorName.trim()) {
       toast({
         title: "Validation Error",
@@ -182,8 +183,28 @@ export const QuoteForm = ({
       return;
     }
 
-    console.log('Form data being sent to API:', JSON.stringify(data, null, 2));
-    onSubmit(data);
+    try {
+      // Send the create quote request without waiting for response
+      createQuote(data).catch(error => {
+        console.error('Error creating quote:', error);
+        toast({
+          title: "Error",
+          description: "Failed to save quote",
+          variant: "destructive",
+        });
+      });
+
+      // Continue with the original onSubmit handler
+      console.log('Form data being sent to API:', JSON.stringify(data, null, 2));
+      onSubmit(data);
+    } catch (error) {
+      console.error('Error handling form submission:', error);
+      toast({
+        title: "Error",
+        description: "An error occurred while processing your request",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleLoadSample = () => {
@@ -319,3 +340,5 @@ export const QuoteForm = ({
     </FormWrapper>
   );
 };
+
+export default QuoteForm;
