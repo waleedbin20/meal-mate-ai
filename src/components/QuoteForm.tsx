@@ -124,12 +124,6 @@ export const QuoteForm = ({
       
       if (savedQuote && savedQuote.id) {
         navigate(`/quote/${savedQuote.id}/chat`);
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to get quote ID after creation",
-          variant: "destructive",
-        });
       }
     } catch (error) {
       console.error('Error creating quote:', error);
