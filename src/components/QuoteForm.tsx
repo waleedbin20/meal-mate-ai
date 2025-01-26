@@ -15,6 +15,7 @@ import { FormInitializer } from "./quote-form/FormInitializer";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createQuote } from "@/services/quoteApiService";
+import { useQueryClient } from "@tanstack/react-query";
 
 const sampleQuoteData: QuoteFormData = {
   creatorName: "John Smith",
@@ -151,6 +152,7 @@ export const QuoteForm = ({
   });
 
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const diningRooms = form.watch('diningRooms') || [];
   const numberOfDiningRooms = form.watch('numberOfDiningRooms') || 1;
   const creatorName = form.watch('creatorName') || '';
@@ -185,16 +187,20 @@ export const QuoteForm = ({
 
     try {
       // Send the create quote request without waiting for response
-      createQuote(data).catch(error => {
-        console.error('Error creating quote:', error);
-        toast({
-          title: "Error",
-          description: "Failed to save quote",
-          variant: "destructive",
+      createQuote(data)
+        .then(() => {
+          // Invalidate and refetch quotes after successful creation
+          queryClient.invalidateQueries({ queryKey: ['quotes'] });
+        })
+        .catch(error => {
+          console.error('Error creating quote:', error);
+          toast({
+            title: "Error",
+            description: "Failed to save quote",
+            variant: "destructive",
+          });
         });
-      });
 
-      // Continue with the original onSubmit handler
       console.log('Form data being sent to API:', JSON.stringify(data, null, 2));
       onSubmit(data);
     } catch (error) {
