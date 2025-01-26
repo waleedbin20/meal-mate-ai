@@ -145,9 +145,83 @@ export const QuoteForm = ({
   };
 
   const handleLoadSample = () => {
-    Object.keys(sampleQuoteData).forEach(key => {
-      form.setValue(key as keyof QuoteFormData, sampleQuoteData[key as keyof QuoteFormData]);
-    });
+    const sampleData: QuoteFormData = {
+      creatorName: "John Smith",
+      careHomeName: "Sample Care Home",
+      numberOfDiningRooms: 2,
+      totalResidents: 70,
+      diningRooms: [
+        {
+          name: "Main Dining Room",
+          mealCategories: ["Multi Twin", "Level 4 IDDSI", "Allergy-Free"],
+          multiTwinSize: "Large",
+          multiTwinResidents: 40,
+          level3Residents: 0,
+          level4Residents: 5,
+          level5Residents: 0,
+          level6Residents: 0,
+          allergyFreeResidents: 5,
+          fingerFoodResidents: 0,
+          miniMealResidents: 0,
+          religiousDietsResidents: 0,
+          totalResidentsInDiningRoom: 50
+        },
+        {
+          name: "Special Care Dining",
+          mealCategories: ["Level 3 IDDSI", "Finger Foods"],
+          multiTwinResidents: 0,
+          level3Residents: 12,
+          level4Residents: 0,
+          level5Residents: 0,
+          level6Residents: 0,
+          allergyFreeResidents: 0,
+          fingerFoodResidents: 8,
+          miniMealResidents: 0,
+          religiousDietsResidents: 0,
+          totalResidentsInDiningRoom: 20
+        }
+      ],
+      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
+      extras: {
+        includeBreakfast: false,
+        lighterMealOption: null,
+        includeLighterMealDessert: false
+      },
+      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
+      currentLabourHours: 40,
+      currentLabourCost: 50000,
+      currentFoodSpend: 75000,
+      estimatedNonApetitoSpend: 25000,
+      numberOfRoles: 3,
+      roles: [
+        {
+          name: "Kitchen Manager",
+          hourlyRate: 12,
+          hoursPerWeek: 40,
+          numberOfSimilarRoles: 1
+        },
+        {
+          name: "Chef",
+          hourlyRate: 15,
+          hoursPerWeek: 35,
+          numberOfSimilarRoles: 2
+        },
+        {
+          name: "Kitchen Assistant",
+          hourlyRate: 18,
+          hoursPerWeek: 30,
+          numberOfSimilarRoles: 3
+        }
+      ],
+      apetitoLabor: {
+        name: "Apetito Labor",
+        hourlyRate: 14,
+        hoursPerWeek: 35,
+        numberOfSimilarRoles: 1
+      }
+    };
+
+    form.reset(sampleData);
     toast({
       title: "Sample Data Loaded",
       description: "The form has been populated with sample data.",
