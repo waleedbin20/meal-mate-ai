@@ -28,16 +28,20 @@ export interface PriceListOption {
   customerNo: string;
   priceHierarchy: string;
   customerId: string;
+  customerName?: string;
 }
 
 export interface LaborRole {
+  id?: number;
   name: string;
   hourlyRate: number;
   hoursPerWeek: number;
   numberOfSimilarRoles: number;
+  quoteId?: number;
 }
 
 export interface DiningRoom {
+  id?: number;
   name: string;
   mealCategories: MealCategory[];
   multiTwinSize?: MultiTwinSize;
@@ -51,9 +55,11 @@ export interface DiningRoom {
   miniMealResidents: number;
   religiousDietsResidents: number;
   totalResidentsInDiningRoom: number;
+  quoteId?: number;
 }
 
 export interface QuoteFormData {
+  id?: number;
   creatorName: string;
   careHomeName: string;
   numberOfDiningRooms: number;
@@ -69,6 +75,8 @@ export interface QuoteFormData {
   numberOfRoles: number;
   roles: LaborRole[];
   apetitoLabor: LaborRole;
+  quoteStatus?: string;
+  quoteNo?: string;
 }
 
 export interface TransformedQuoteData {

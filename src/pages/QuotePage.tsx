@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { QuoteForm } from "@/components/QuoteForm";
 import ChatSection from "@/components/ChatSection";
 import { QuoteFormData } from "@/components/quote-form/types";
@@ -9,7 +9,8 @@ import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import { getQuoteById } from "@/services/quoteApiService";
 
 const QuotePage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -17,9 +18,34 @@ const QuotePage = () => {
   const [showForm, setShowForm] = useState(true);
   const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
   const [lastFormData, setLastFormData] = useState<QuoteFormData | null>(null);
+  const [quoteData, setQuoteData] = useState<QuoteFormData | null>(null);
   const { toast } = useToast();
   const location = useLocation();
-  const defaultValues = location.state?.defaultValues;
+  const { id } = useParams();
+  
+  useEffect(() => {
+    const fetchQuote = async () => {
+      if (id) {
+        try {
+          const data = await getQuoteById(parseInt(id));
+          setQuoteData(data);
+        } catch (error) {
+          console.error("Error fetching quote:", error);
+          toast({
+            title: "Error",
+            description: "Failed to fetch quote details",
+            variant: "destructive",
+          });
+        }
+      }
+    };
+
+    if (id) {
+      fetchQuote();
+    } else if (location.state?.defaultValues) {
+      setQuoteData(location.state.defaultValues);
+    }
+  }, [id, location.state, toast]);
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
@@ -121,7 +147,7 @@ const QuotePage = () => {
             <QuoteForm 
               onSubmit={handleQuoteSubmit} 
               isLoading={isProcessing}
-              defaultValues={defaultValues}
+              defaultValues={quoteData || undefined}
             />
           </div>
         ) : (

@@ -51,8 +51,8 @@ const SavedQuotes = () => {
   const handleViewQuote = async (quoteId: number) => {
     try {
       const quoteData = await getQuoteById(quoteId);
-      // Navigate to the quote form page with the quote data
-      navigate('/quote', { state: { defaultValues: quoteData } });
+      // Navigate to the quote details page with the ID
+      navigate(`/quote/${quoteId}`, { state: { defaultValues: quoteData } });
     } catch (error) {
       console.error("Error fetching quote:", error);
       toast.error("Failed to fetch quote details");
