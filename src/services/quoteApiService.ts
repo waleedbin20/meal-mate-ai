@@ -23,17 +23,31 @@ interface ApiResponse<T> {
 
 export const createQuote = async (quoteData: QuoteFormData): Promise<void> => {
   try {
+    console.log('Sending quote data:', JSON.stringify(quoteData, null, 2));
+    
     const response = await fetch(`${API_BASE_URL}/quote`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
-      body: JSON.stringify(quoteData),
+      body: JSON.stringify({
+        data: quoteData
+      })
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create quote');
+      const errorText = await response.text();
+      console.error('API Error Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
     }
+
+    const result = await response.json();
+    console.log('Quote creation response:', result);
   } catch (error) {
     console.error('Error creating quote:', error);
     throw error;
@@ -42,7 +56,11 @@ export const createQuote = async (quoteData: QuoteFormData): Promise<void> => {
 
 export const getAllQuotes = async (): Promise<SavedQuote[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/quote`);
+    const response = await fetch(`${API_BASE_URL}/quote`, {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
     
     if (!response.ok) {
       throw new Error('Failed to fetch quotes');
