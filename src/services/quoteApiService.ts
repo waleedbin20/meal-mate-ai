@@ -22,7 +22,7 @@ interface ApiResponse<T> {
   errors: null | any;
 }
 
-export const createQuote = async (quoteData: QuoteFormData): Promise<void> => {
+export const createQuote = async (quoteData: QuoteFormData): Promise<SavedQuote> => {
   try {
     console.log('Sending quote data:', JSON.stringify(quoteData, null, 2));
     
@@ -47,8 +47,8 @@ export const createQuote = async (quoteData: QuoteFormData): Promise<void> => {
       throw new Error(`API error: ${response.status} ${response.statusText}`);
     }
 
-    const result = await response.json();
-    console.log('Quote creation response:', result);
+    const result: ApiResponse<SavedQuote> = await response.json();
+    return result.data;
   } catch (error) {
     console.error('Error creating quote:', error);
     throw error;
