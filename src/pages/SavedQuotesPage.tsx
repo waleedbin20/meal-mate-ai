@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileText, Search } from "lucide-react";
+import { FileText, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -33,6 +33,16 @@ const SavedQuotesPage = () => {
     quote.creatorName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Group quotes by creator name
+  const groupedQuotes = filteredQuotes.reduce((acc, quote) => {
+    const creatorName = quote.creatorName;
+    if (!acc[creatorName]) {
+      acc[creatorName] = [];
+    }
+    acc[creatorName].push(quote);
+    return acc;
+  }, {} as Record<string, typeof mockSavedQuotes>);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2] py-8">
       <div className="container mx-auto px-4">
@@ -56,52 +66,62 @@ const SavedQuotesPage = () => {
           </div>
           
           <ScrollArea className="h-[calc(100vh-12rem)]">
-            <div className="grid gap-4">
-              {filteredQuotes.map((quote) => (
-                <Card
-                  key={quote.id}
-                  className="group transition-all hover:shadow-lg hover:border-purple-200"
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-xl font-semibold">
-                          {quote.careHomeName}
-                        </CardTitle>
-                        <CardDescription className="space-y-1">
-                          <p>Created on {new Date(quote.createdAt).toLocaleDateString()}</p>
-                          <p className="text-purple-600">Created by {quote.creatorName}</p>
-                        </CardDescription>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => console.log("View quote", quote.id)}
+            <div className="space-y-8">
+              {Object.entries(groupedQuotes).map(([creatorName, quotes]) => (
+                <div key={creatorName} className="space-y-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <User className="h-4 w-4" />
+                    <span className="font-medium">{creatorName}</span>
+                    <span className="text-xs">({quotes.length} quotes)</span>
+                  </div>
+                  <div className="space-y-4 pl-6 border-l-2 border-purple-100">
+                    {quotes.map((quote) => (
+                      <Card
+                        key={quote.id}
+                        className="group transition-all hover:shadow-lg hover:border-purple-200"
                       >
-                        <FileText className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="space-x-4">
-                        <span className="text-muted-foreground">
-                          {quote.totalResidents} Residents
-                        </span>
-                      </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          quote.status === "Approved"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
-                        {quote.status}
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
+                        <CardHeader className="pb-3">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <CardTitle className="text-xl font-semibold">
+                                {quote.careHomeName}
+                              </CardTitle>
+                              <CardDescription className="space-y-1">
+                                <p>Created on {new Date(quote.createdAt).toLocaleDateString()}</p>
+                              </CardDescription>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => console.log("View quote", quote.id)}
+                            >
+                              <FileText className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center justify-between text-sm">
+                            <div className="space-x-4">
+                              <span className="text-muted-foreground">
+                                {quote.totalResidents} Residents
+                              </span>
+                            </div>
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                quote.status === "Approved"
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-yellow-100 text-yellow-700"
+                              }`}
+                            >
+                              {quote.status}
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </ScrollArea>
