@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import ChatMessage from "./ChatMessage";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Loader2 } from "lucide-react";
 import SavedQuotes from "./SavedQuotes";
 import { useParams, useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
@@ -20,10 +21,32 @@ const ChatSection: React.FC<ChatSectionProps> = ({
 }) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { toast } = useToast();
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleEditQuote = () => {
     if (id) {
       navigate(`/quote/${id}`);
+    }
+  };
+
+  const handleSaveQuote = async () => {
+    setIsSaving(true);
+    try {
+      // Simulate API call with timeout
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast({
+        title: "Success",
+        description: "Quote saved successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save quote",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -59,8 +82,14 @@ const ChatSection: React.FC<ChatSectionProps> = ({
             <Button
               variant="outline"
               className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
+              onClick={handleSaveQuote}
+              disabled={isSaving}
             >
-              <Save className="h-4 w-4" />
+              {isSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4" />
+              )}
               Save Quote
             </Button>
           </div>
