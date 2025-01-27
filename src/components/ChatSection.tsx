@@ -29,7 +29,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
 
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl h-[calc(100vh-2rem)] md:h-[800px] flex flex-col">
-      <div className="p-4 md:p-6 border-b border-purple-100">
+      <div className="p-4 md:p-6 border-b border-purple-100 sticky top-0 bg-white/80 backdrop-blur-sm z-10">
         <div className="mb-4 md:mb-0 md:flex md:justify-between md:items-center">
           <div>
             <h1 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
