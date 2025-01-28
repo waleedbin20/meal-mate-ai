@@ -50,18 +50,21 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className="py-6">
         <SidebarGroup>
-          <SidebarGroupLabel>Quote Management</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-6 py-4 text-xl font-semibold text-purple-600">
+            Quote Management
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.title} className="px-2">
                   <SidebarMenuButton
                     onClick={() => navigate(item.url)}
                     tooltip={item.title}
+                    className="w-full px-4 py-3 text-base font-medium transition-colors hover:bg-purple-50 hover:text-purple-600 rounded-lg"
                   >
-                    <item.icon className="w-4 h-4" />
+                    <item.icon className="w-5 h-5" />
                     <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
