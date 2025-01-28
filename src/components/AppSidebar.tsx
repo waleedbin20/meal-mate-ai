@@ -52,7 +52,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent className="py-6">
         <SidebarGroup>
-          <SidebarGroupLabel className="px-6 py-4 text-xl font-semibold text-purple-600">
+          <SidebarGroupLabel className="px-6 py-4 mb-4 text-xl font-semibold text-purple-600">
             Quote Management
           </SidebarGroupLabel>
           <SidebarGroupContent>
