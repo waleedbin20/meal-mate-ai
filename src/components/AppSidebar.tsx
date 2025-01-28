@@ -58,7 +58,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title} className="px-2">
+                <SidebarMenuItem key={item.title} className="px-2 mb-3">
                   <SidebarMenuButton
                     onClick={() => navigate(item.url)}
                     tooltip={item.title}
