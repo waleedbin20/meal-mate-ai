@@ -49,10 +49,10 @@ export function AppSidebar() {
   const navigate = useNavigate();
 
   return (
-    <Sidebar variant="sidebar" collapsible="icon">
-      <SidebarContent className="py-6 group hover:w-64 transition-all duration-300">
+    <Sidebar>
+      <SidebarContent className="py-6">
         <SidebarGroup>
-          <SidebarGroupLabel className="px-6 py-4 mb-4 text-xl font-semibold text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <SidebarGroupLabel className="px-6 py-4 mb-4 text-xl font-semibold text-purple-600">
             Quote Management
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -62,10 +62,10 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     onClick={() => navigate(item.url)}
                     tooltip={item.title}
-                    className="w-full px-4 py-3 text-base font-medium transition-colors hover:bg-purple-50 hover:text-purple-600 rounded-lg group"
+                    className="w-full px-4 py-3 text-base font-medium transition-colors hover:bg-purple-50 hover:text-purple-600 rounded-lg"
                   >
                     <item.icon className="w-5 h-5" />
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">{item.title}</span>
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
