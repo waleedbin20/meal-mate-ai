@@ -6,6 +6,7 @@ import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/for
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface LaborCostFieldsProps {
   form: UseFormReturn<QuoteFormData>;
@@ -13,24 +14,35 @@ interface LaborCostFieldsProps {
 
 export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
   const roles = form.watch('roles') || [];
-  const numberOfRoles = form.watch('numberOfRoles') || 1;
+  const { toast } = useToast();
 
   const handleAddRole = () => {
     const newRole: LaborRole = {
-      name: `New Role ${roles.length + 1}`,
+      name: `Role ${roles.length + 1}`,
       hourlyRate: 0,
       hoursPerWeek: 0,
       numberOfSimilarRoles: 1
     };
     
-    form.setValue('roles', [...roles, newRole]);
-    form.setValue('numberOfRoles', numberOfRoles + 1);
+    const updatedRoles = [...roles, newRole];
+    form.setValue('roles', updatedRoles);
+    form.setValue('numberOfRoles', updatedRoles.length);
+
+    toast({
+      title: "Role Added",
+      description: "A new role has been added to the form.",
+    });
   };
 
   const handleDeleteRole = (index: number) => {
     const updatedRoles = roles.filter((_, i) => i !== index);
     form.setValue('roles', updatedRoles);
-    form.setValue('numberOfRoles', Math.max(1, numberOfRoles - 1));
+    form.setValue('numberOfRoles', updatedRoles.length);
+
+    toast({
+      title: "Role Removed",
+      description: "The role has been removed from the form.",
+    });
   };
 
   return (
@@ -48,34 +60,24 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
                 <FormControl>
                   <Input 
                     type="number"
-                    min="1"
-                    defaultValue={1}
                     {...field}
-                    onChange={(e) => {
-                      const newValue = Math.max(1, parseInt(e.target.value));
-                      field.onChange(newValue);
-                      
-                      // Adjust roles array size
-                      if (newValue > roles.length) {
-                        const newRoles = [...roles];
-                        for (let i = roles.length; i < newValue; i++) {
-                          newRoles.push({
-                            name: `New Role ${i + 1}`,
-                            hourlyRate: 0,
-                            hoursPerWeek: 0,
-                            numberOfSimilarRoles: 1
-                          });
-                        }
-                        form.setValue('roles', newRoles);
-                      } else if (newValue < roles.length) {
-                        form.setValue('roles', roles.slice(0, newValue));
-                      }
-                    }}
+                    value={roles.length}
+                    disabled
+                    className="bg-gray-100"
                   />
                 </FormControl>
               </FormItem>
             )}
           />
+
+          <Button
+            type="button"
+            onClick={handleAddRole}
+            className="mt-4 bg-purple-600 hover:bg-purple-700"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add New Role
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -90,16 +92,6 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
             />
           ))}
         </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleAddRole}
-          className="mt-4"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Role
-        </Button>
       </div>
 
       <div className="mt-8">
