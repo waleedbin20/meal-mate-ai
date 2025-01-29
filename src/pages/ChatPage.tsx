@@ -5,11 +5,11 @@ import { getQuoteById, getQuoteHistoryById } from "@/services/quoteService";
 import { fetchQuoteResponse } from "@/services/quoteResponseService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteRequest, formatQuoteResponse } from "@/utils/formatQuoteSummary";
-import type { QuoteFormData } from "@/components/quote-form/types";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useQuery } from "@tanstack/react-query";
 import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
+import ChatInput from "@/components/ChatInput";
 
 const ChatPage = () => {
     const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -34,11 +34,11 @@ const ChatPage = () => {
         },
     });
 
-    // Fetch quote data
+    // Fetch quote data only if no history exists
     const { data: quoteData } = useQuery({
         queryKey: ["quote", id],
         queryFn: async () => (id ? await getQuoteById(parseInt(id)) : null),
-        enabled: !!id && !historyData?.length, // Only fetch if no history exists
+        enabled: !!id && (!historyData || historyData.length === 0),
         meta: {
             onError: () => {
                 toast({
@@ -61,37 +61,10 @@ const ChatPage = () => {
                     const historyMessages = historyData.map(item => ({
                         content: item.type === 0 ? 
                             formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : 
-                            formatQuoteResponse(mapQuoteHistoryToResponse(item)),
+                            item.summary || formatQuoteResponse(mapQuoteHistoryToResponse(item)),
                         isAi: item.type === 1
                     }));
                     setMessages(historyMessages);
-                    return; // Don't generate new quote if we have history
-                }
-
-                // If we have quote data but no history, generate initial quote
-                if (quoteData && !historyData?.length) {
-                    console.log("Generating initial quote");
-                    setIsProcessing(true);
-                    const summary = formatQuoteRequest(quoteData);
-                    setMessages([{ content: summary, isAi: false }]);
-
-                    try {
-                        const response = await fetchQuoteResponse(quoteData);
-                        if (response) {
-                            setMessages(prev => [...prev, {
-                                content: formatQuoteResponse(response),
-                                isAi: true
-                            }]);
-                        }
-                    } catch (error) {
-                        toast({
-                            title: "Error",
-                            description: "Failed to generate quote response",
-                            variant: "destructive",
-                        });
-                    } finally {
-                        setIsProcessing(false);
-                    }
                 }
             } catch (error) {
                 console.error("Error initializing chat:", error);
@@ -104,7 +77,36 @@ const ChatPage = () => {
         };
 
         initializeChat();
-    }, [id, historyData, quoteData, toast]);
+    }, [id, historyData, toast]);
+
+    const handleGenerateQuote = async () => {
+        if (!quoteData) return;
+
+        setIsProcessing(true);
+        const summary = formatQuoteRequest(quoteData);
+        
+        // Add the request message
+        setMessages(prev => [...prev, { content: summary, isAi: false }]);
+
+        try {
+            const response = await fetchQuoteResponse(quoteData);
+            if (response) {
+                // Add the response message
+                setMessages(prev => [...prev, {
+                    content: formatQuoteResponse(response),
+                    isAi: true
+                }]);
+            }
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to generate quote response",
+                variant: "destructive",
+            });
+        } finally {
+            setIsProcessing(false);
+        }
+    };
 
     const handleShowForm = () => {
         navigate(`/quote/${id}`);
@@ -125,6 +127,7 @@ const ChatPage = () => {
                                     messages={messages}
                                     isProcessing={isProcessing}
                                     onShowForm={handleShowForm}
+                                    onGenerateQuote={handleGenerateQuote}
                                 />
                             </div>
                         </div>

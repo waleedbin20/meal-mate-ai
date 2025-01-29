@@ -3,7 +3,7 @@ import ChatMessage from "./ChatMessage";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronDown, Wand2 } from "lucide-react";
 import SavedQuotes from "./SavedQuote";
 import { useParams, useNavigate } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@radix-ui/react-accordion";
@@ -12,12 +12,14 @@ interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
   isProcessing: boolean;
   onShowForm: () => void;
+  onGenerateQuote: () => void;
 }
 
 const ChatSection: React.FC<ChatSectionProps> = ({
   messages,
   isProcessing,
   onShowForm,
+  onGenerateQuote,
 }) => {
   // Split messages into history and current messages
   const currentMessages = messages.slice(-2); // Last request and response
@@ -42,7 +44,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({
     }
   };
 
-
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl h-[calc(100vh-2rem)] md:h-[950px] flex flex-col">
       <div className="p-4 md:p-6 border-b border-purple-100 sticky top-0 bg-white/80 backdrop-blur-sm z-10">
@@ -56,6 +57,14 @@ const ChatSection: React.FC<ChatSectionProps> = ({
             </p>
           </div>
           <div className="flex flex-col md:flex-row gap-2 mt-4 md:mt-0">
+            <Button
+              onClick={onGenerateQuote}
+              variant="outline"
+              className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
+            >
+              <Wand2 className="h-4 w-4" />
+              Generate Quote
+            </Button>
             <Button
               onClick={handleNewQuote}
               variant="outline"
@@ -73,7 +82,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({
             </Button>
 
             <SavedQuotes onClose={handleSheetClose} />
-
           </div>
         </div>
       </div>
@@ -116,7 +124,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
           {isProcessing && <ChatSkeleton />}
         </div>
       </ScrollArea>
-    </div >
+    </div>
   );
 };
 
