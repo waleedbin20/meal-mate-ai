@@ -41,8 +41,11 @@ export interface DiningRoom {
 	multiTwinResidents: number;
 	level3Residents: number;
 	level4Residents: number;
+	level4Options?: Level4Options[];
 	level5Residents: number;
+	level5Options?: Level5Options[];
 	level6Residents: number;
+	level6Options?: Level6Options[];
 	allergyFreeResidents: number;
 	fingerFoodResidents: number;
 	miniMealResidents: number;
@@ -118,3 +121,7 @@ export interface ExtraOptions {
 	lighterMealOption: LighterMealOption;
 	includeLighterMealDessert: boolean;
 }
+
+export type Level4Options = "Breakfast" | "Snacks" | "Dessert";
+export type Level5Options = "Dessert";
+export type Level6Options = "Dessert";
