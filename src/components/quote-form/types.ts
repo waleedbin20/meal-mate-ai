@@ -20,6 +20,9 @@ export type Level6Options = "Dessert";
 export interface MenuOption {
   menuName?: string;
   menuId?: string;
+  level4Options?: Level4Options[];
+  level5Options?: Level5Options[];
+  level6Options?: Level6Options[];
 }
 
 export interface PriceListOption {
@@ -46,11 +49,8 @@ export interface DiningRoom {
   multiTwinResidents: number;
   level3Residents: number;
   level4Residents: number;
-  level4Options?: Level4Options[];
   level5Residents: number;
-  level5Options?: Level5Options[];
   level6Residents: number;
-  level6Options?: Level6Options[];
   allergyFreeResidents: number;
   fingerFoodResidents: number;
   miniMealResidents: number;

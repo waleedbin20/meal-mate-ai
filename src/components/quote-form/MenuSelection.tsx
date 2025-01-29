@@ -2,7 +2,7 @@ import React from "react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
-import { QuoteFormData, MenuOption } from "./types";
+import { QuoteFormData, MenuOption, Level4Options, Level5Options, Level6Options } from "./types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -15,6 +15,10 @@ const menuOptions: MenuOption[] = [
   { menuName: "Menu A - Jan 2025", menuId: "97481" },
   { menuName: "Menu B - Sep 2024", menuId: "90670" }
 ];
+
+const level4Options: Level4Options[] = ["Breakfast", "Snacks", "Dessert"];
+const level5Options: Level5Options[] = ["Dessert"];
+const level6Options: Level6Options[] = ["Dessert"];
 
 interface MenuSelectionProps {
   form: UseFormReturn<QuoteFormData>;
@@ -30,10 +34,12 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
 
   React.useEffect(() => {
     if (!isMenuA) {
-      // Reset extra options when Menu B is selected
       form.setValue("extras.includeBreakfast", false);
       form.setValue("extras.lighterMealOption", null);
       form.setValue("extras.includeLighterMealDessert", false);
+      form.setValue("selectedMenu.level4Options", []);
+      form.setValue("selectedMenu.level5Options", []);
+      form.setValue("selectedMenu.level6Options", []);
     }
   }, [isMenuA, form]);
 
@@ -56,7 +62,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                     field.onChange(selectedMenu);
                   }
                 }}
-                value={field.value?.menuId.toString()}
+                value={field.value?.menuId?.toString()}
               >
                 <FormControl>
                   <SelectTrigger className="bg-white">
@@ -85,7 +91,99 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
             <Separator className="my-4" />
 
             <div className="space-y-6">
-              <h3 className="text-md font-medium text-purple-700">Extra Options</h3>
+              <div className="space-y-4">
+                <h3 className="text-md font-medium text-purple-700">Level 4 IDDSI Options</h3>
+                <FormField
+                  control={form.control}
+                  name="selectedMenu.level4Options"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="grid grid-cols-2 gap-2">
+                        {level4Options.map((option) => (
+                          <FormItem key={option} className="flex items-center space-x-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(option)}
+                                onCheckedChange={(checked) => {
+                                  const currentValue = field.value || [];
+                                  const newValue = checked
+                                    ? [...currentValue, option]
+                                    : currentValue.filter((v) => v !== option);
+                                  field.onChange(newValue);
+                                }}
+                              />
+                            </FormControl>
+                            <Label className="font-normal">{option}</Label>
+                          </FormItem>
+                        ))}
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-md font-medium text-purple-700">Level 5 IDDSI Options</h3>
+                <FormField
+                  control={form.control}
+                  name="selectedMenu.level5Options"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="grid grid-cols-2 gap-2">
+                        {level5Options.map((option) => (
+                          <FormItem key={option} className="flex items-center space-x-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(option)}
+                                onCheckedChange={(checked) => {
+                                  const currentValue = field.value || [];
+                                  const newValue = checked
+                                    ? [...currentValue, option]
+                                    : currentValue.filter((v) => v !== option);
+                                  field.onChange(newValue);
+                                }}
+                              />
+                            </FormControl>
+                            <Label className="font-normal">{option}</Label>
+                          </FormItem>
+                        ))}
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-md font-medium text-purple-700">Level 6 IDDSI Options</h3>
+                <FormField
+                  control={form.control}
+                  name="selectedMenu.level6Options"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="grid grid-cols-2 gap-2">
+                        {level6Options.map((option) => (
+                          <FormItem key={option} className="flex items-center space-x-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(option)}
+                                onCheckedChange={(checked) => {
+                                  const currentValue = field.value || [];
+                                  const newValue = checked
+                                    ? [...currentValue, option]
+                                    : currentValue.filter((v) => v !== option);
+                                  field.onChange(newValue);
+                                }}
+                              />
+                            </FormControl>
+                            <Label className="font-normal">{option}</Label>
+                          </FormItem>
+                        ))}
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <div className="space-y-4">
                 <FormField
                   control={form.control}
