@@ -74,6 +74,7 @@ const QuotePage = () => {
 
   useEffect(() => {
     if (historyData && historyData.length > 0) {
+      console.log("Setting history messages:", historyData);
       const historyMessages = historyData.map(item => ({
         content: item.type === 0 ? 
           formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : 
@@ -90,6 +91,7 @@ const QuotePage = () => {
     
     // Add the request message to chat
     const requestSummary = formatQuoteRequest(data);
+    console.log("Adding request message:", requestSummary);
     setMessages(prevMessages => [...prevMessages, { content: requestSummary, isAi: false }]);
     
     setShowForm(false);
@@ -98,6 +100,12 @@ const QuotePage = () => {
       const response = await fetchQuoteResponse(data);
       if (response) {
         setQuoteResponse(response);
+        console.log("Adding response message:", response);
+        // Add the response message to chat
+        setMessages(prevMessages => [...prevMessages, {
+          content: formatQuoteResponse(response),
+          isAi: true
+        }]);
 
         if (response === null) {
           toast({
@@ -107,12 +115,6 @@ const QuotePage = () => {
           });
           return;
         }
-
-        // Add the response message to chat
-        setMessages(prevMessages => [...prevMessages, {
-          content: formatQuoteResponse(response),
-          isAi: true
-        }]);
       }
     } catch (error) {
       toast({
