@@ -19,6 +19,7 @@ const ChatPage = () => {
     const navigate = useNavigate();
     const { toast } = useToast();
 
+    // Fetch quote history
     const { data: historyData } = useQuery({
         queryKey: ["quoteHistory", id],
         queryFn: () => (id ? fetchQuoteHistory(parseInt(id)) : null),
@@ -40,18 +41,29 @@ const ChatPage = () => {
                 try {
                     const data = await getQuoteById(parseInt(id));
                     setQuoteData(data);
-                    const summary = formatQuoteRequest(data);
                     
+                    // Initialize messages with history if available
                     if (historyData?.data && historyData.data.length > 0) {
-                        const formattedMessages = historyData.data.map(item => ({
-                            content: item.type === 0 ? formatQuoteRequest(data) : item.managerQuoteSummary,
-                            isAi: item.type === 1,
+                        const historyMessages = historyData.data.map(item => ({
+                            content: item.type === 0 ? formatQuoteRequest(data) : formatQuoteResponse({
+                                quoteDetails: {
+                                    customerName: item.careHomeName,
+                                    apetitoCostResidentPerDay: item.costPerDayPerResident || 0,
+                                    menuOrderTotal: item.menuOrderTotal || 0,
+                                    annualLaborSavings: item.annualLaborSavings || 0,
+                                    annualFoodSavings: item.annualFoodSavings || 0,
+                                    annualTotalSavings: item.annualTotalSavings || 0
+                                }
+                            }),
+                            isAi: item.type === 1
                         }));
-                        setMessages(formattedMessages);
-                    } else {
-                        setMessages([{ content: summary, isAi: false }]);
-                        handleInitialResponse(data);
+                        setMessages(historyMessages);
                     }
+                    
+                    // Add new request message and generate response
+                    const summary = formatQuoteRequest(data);
+                    setMessages(prev => [...prev, { content: summary, isAi: false }]);
+                    handleInitialResponse(data);
                 } catch (error) {
                     console.error("Error fetching quote:", error);
                     toast({
