@@ -57,6 +57,8 @@ const LevelOptions = ({
   level: string; 
   options: string[] 
 }) => {
+  const fieldName = `diningRooms.${index}.${level.toLowerCase()}Options` as const;
+  
   return (
     <div className="ml-6 space-y-2 mt-2">
       <p className="text-sm font-medium text-purple-700">Additional Options:</p>
@@ -65,24 +67,27 @@ const LevelOptions = ({
           <FormField
             key={option}
             control={form.control}
-            name={`diningRooms.${index}.${level.toLowerCase()}Options`}
-            render={({ field }) => (
-              <FormItem className="flex items-center space-x-2">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value?.includes(option)}
-                    onCheckedChange={(checked) => {
-                      const currentValue = field.value || [];
-                      const newValue = checked
-                        ? [...currentValue, option]
-                        : currentValue.filter((v) => v !== option);
-                      field.onChange(newValue);
-                    }}
-                  />
-                </FormControl>
-                <FormLabel className="font-normal text-sm">{option}</FormLabel>
-              </FormItem>
-            )}
+            name={fieldName}
+            render={({ field }) => {
+              const values = field.value || [];
+              return (
+                <FormItem className="flex items-center space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={Array.isArray(values) && values.includes(option)}
+                      onCheckedChange={(checked) => {
+                        const currentValue = Array.isArray(values) ? values : [];
+                        const newValue = checked
+                          ? [...currentValue, option]
+                          : currentValue.filter((v) => v !== option);
+                        field.onChange(newValue);
+                      }}
+                    />
+                  </FormControl>
+                  <FormLabel className="font-normal text-sm">{option}</FormLabel>
+                </FormItem>
+              );
+            }}
           />
         ))}
       </div>
