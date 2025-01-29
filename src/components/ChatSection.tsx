@@ -3,7 +3,7 @@ import ChatMessage from "./ChatMessage";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
-import { ArrowLeft, ChevronDown, Wand2 } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import SavedQuotes from "./SavedQuote";
 import { useParams, useNavigate } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@radix-ui/react-accordion";
@@ -21,7 +21,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   onShowForm,
   onGenerateQuote,
 }) => {
-  // Split messages into history and current messages
   const currentMessages = messages.slice(-2); // Last request and response
   const historyMessages = messages.slice(0, -2);
   const navigate = useNavigate();
@@ -58,14 +57,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({
           </div>
           <div className="flex flex-col md:flex-row gap-2 mt-4 md:mt-0">
             <Button
-              onClick={onGenerateQuote}
-              variant="outline"
-              className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
-            >
-              <Wand2 className="h-4 w-4" />
-              Generate Quote
-            </Button>
-            <Button
               onClick={handleNewQuote}
               variant="outline"
               className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
@@ -80,7 +71,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({
               <ArrowLeft className="h-4 w-4" />
               Edit Quote
             </Button>
-
             <SavedQuotes onClose={handleSheetClose} />
           </div>
         </div>

@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import ChatSection from "@/components/ChatSection";
 import { useParams, useNavigate } from "react-router-dom";
 import { getQuoteById, getQuoteHistoryById } from "@/services/quoteService";
-import { fetchQuoteResponse } from "@/services/quoteResponseService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteRequest, formatQuoteResponse } from "@/utils/formatQuoteSummary";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useQuery } from "@tanstack/react-query";
 import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
-import ChatInput from "@/components/ChatInput";
 
 const ChatPage = () => {
     const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -28,22 +26,6 @@ const ChatPage = () => {
                 toast({
                     title: "Error",
                     description: "Failed to fetch quote history",
-                    variant: "destructive",
-                });
-            },
-        },
-    });
-
-    // Fetch quote data only if no history exists
-    const { data: quoteData } = useQuery({
-        queryKey: ["quote", id],
-        queryFn: async () => (id ? await getQuoteById(parseInt(id)) : null),
-        enabled: !!id && (!historyData || historyData.length === 0),
-        meta: {
-            onError: () => {
-                toast({
-                    title: "Error",
-                    description: "Failed to fetch quote details",
                     variant: "destructive",
                 });
             },
@@ -79,35 +61,6 @@ const ChatPage = () => {
         initializeChat();
     }, [id, historyData, toast]);
 
-    const handleGenerateQuote = async () => {
-        if (!quoteData) return;
-
-        setIsProcessing(true);
-        const summary = formatQuoteRequest(quoteData);
-        
-        // Add the request message
-        setMessages(prev => [...prev, { content: summary, isAi: false }]);
-
-        try {
-            const response = await fetchQuoteResponse(quoteData);
-            if (response) {
-                // Add the response message
-                setMessages(prev => [...prev, {
-                    content: formatQuoteResponse(response),
-                    isAi: true
-                }]);
-            }
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to generate quote response",
-                variant: "destructive",
-            });
-        } finally {
-            setIsProcessing(false);
-        }
-    };
-
     const handleShowForm = () => {
         navigate(`/quote/${id}`);
     };
@@ -127,7 +80,7 @@ const ChatPage = () => {
                                     messages={messages}
                                     isProcessing={isProcessing}
                                     onShowForm={handleShowForm}
-                                    onGenerateQuote={handleGenerateQuote}
+                                    onGenerateQuote={() => {}} // Empty function since we don't need this functionality here
                                 />
                             </div>
                         </div>
