@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { formatQuoteRequest, formatQuoteResponse } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, PlusCircle, Save } from "lucide-react";
+import { MessageCircle, PlusCircle } from "lucide-react";
 import SavedQuotes from "@/components/SavedQuote";
 import { useLocation, useParams } from "react-router-dom";
 import { getQuoteById } from "@/services/quoteService";
@@ -27,8 +27,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 
 const QuotePage = () => {
-
-
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showForm, setShowForm] = useState(true);
@@ -63,12 +61,14 @@ const QuotePage = () => {
     }
   }, [id, location.state, toast]);
 
-
   const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
     setLastFormData(data);
-    const summary = formatQuoteRequest(data);
-    setMessages([{ content: summary, isAi: false }]);
+    
+    // Add the request message to chat
+    const requestSummary = formatQuoteRequest(data);
+    setMessages(prevMessages => [...prevMessages, { content: requestSummary, isAi: false }]);
+    
     setShowForm(false);
 
     try {
@@ -82,9 +82,11 @@ const QuotePage = () => {
             description: response.summary,
             variant: "destructive",
           });
+          return;
         }
 
-        setMessages(prev => [...prev, {
+        // Add the response message to chat
+        setMessages(prevMessages => [...prevMessages, {
           content: formatQuoteResponse(response),
           isAi: true
         }]);
@@ -100,6 +102,7 @@ const QuotePage = () => {
       setIsProcessing(false);
     }
   };
+
   const navigate = useNavigate();
 
   const handleSwitchToChat = () => {
