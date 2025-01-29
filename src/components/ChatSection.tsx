@@ -3,7 +3,7 @@ import ChatMessage from "./ChatMessage";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import SavedQuotes from "./SavedQuote";
 import { useParams, useNavigate } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@radix-ui/react-accordion";
@@ -12,7 +12,7 @@ interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
   isProcessing: boolean;
   onShowForm: () => void;
-  onGenerateQuote?: () => void; // Made optional with ?
+  onGenerateQuote?: () => void;
 }
 
 const ChatSection: React.FC<ChatSectionProps> = ({
@@ -26,16 +26,19 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   const navigate = useNavigate();
   const { id } = useParams();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const handleSheetClose = () => {
     setIsSheetOpen(false);
   };
+  
   const handleEditQuote = () => {
     if (id) {
       console.log(`Editing quote id`, id);
       navigate(`/quote/${id}`);
     }
   };
+  
   const handleNewQuote = () => {
     if (id) {
       console.log(`Creating new quote`, id);
@@ -80,13 +83,24 @@ const ChatSection: React.FC<ChatSectionProps> = ({
           {historyMessages.length > 0 && (
             <Accordion type="single" collapsible className="w-full mb-8">
               <AccordionItem value="history" className="border-none">
-                <AccordionTrigger className="py-2 px-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                  <span className="flex items-center gap-2 text-purple-700">
-                    <ChevronDown className="h-4 w-4" />
-                    View Chat History ({historyMessages.length} messages)
+                <AccordionTrigger 
+                  onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+                  className={`py-2 px-4 rounded-lg transition-all duration-300 ${
+                    isHistoryOpen 
+                      ? "bg-purple-100 text-purple-900" 
+                      : "bg-purple-50 text-purple-700 hover:bg-purple-100"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {isHistoryOpen ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                    {isHistoryOpen ? "Hide" : "View"} Chat History ({historyMessages.length} message{historyMessages.length !== 1 ? 's' : ''})
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="pt-4">
+                <AccordionContent className="pt-4 animate-slide-in">
                   <div className="space-y-4">
                     {historyMessages.map((message, index) => (
                       <ChatMessage
