@@ -1,37 +1,55 @@
 import { QuoteFormData } from "@/components/quote-form/types";
-import { QuoteHistoryItem } from "@/types/quoteHistory";
+import { QuoteResponse } from "@/types/quoteResponse";
 
-export const formatQuoteSummary = (data: QuoteHistoryItem | QuoteFormData): string => {
-  // If it's a QuoteHistoryItem (from history API)
-  if ('type' in data) {
-    if (data.type === 0) { // Request
-      return `Quote Request Summary:
-Care Home: ${data.careHomeName}
-Total Residents: ${data.numberOfResidents}
-Number of Dining Rooms: ${data.numberOfDiningRooms}
-Selected Menu: ${data.selectedMenu}
-Current Annual Food Spend: £${data.currentAnnualFoodSpend?.toLocaleString() || 0}
-Estimated Non-Apetito Spend: £${data.estimatedNonApetitoSpend?.toLocaleString() || 0}
-Current Annual Labour Cost: £${data.currentAnnualLabourCost?.toLocaleString() || 0}
-Apetito Estimated Annual Labour Cost: £${data.apetitoEstimatedAnnualLabourCost?.toLocaleString() || 0}`;
-    } else { // Response
-      return `Quote Response Summary:
-Cost per resident per day: £${data.costPerDayPerResident?.toFixed(2) || 0}
-Menu order total: £${data.menuOrderTotal?.toLocaleString() || 0}
-Annual labor savings: £${data.annualLaborSavings?.toLocaleString() || 0}
-Annual food savings: £${data.annualFoodSavings?.toLocaleString() || 0}
-Total annual savings: £${data.annualTotalSavings?.toLocaleString() || 0}`;
+export const formatQuoteRequest = (data: QuoteFormData): string => {
+    const extraMealOptions = [];
+    if (data.extras.includeBreakfast) {
+        extraMealOptions.push(
+            `<li>Include Breakfast: ${data.extras.includeBreakfast}</li>`
+        );
     }
-  }
+    if (data.extras.includeLighterMealDessert) {
+        extraMealOptions.push(
+            `<li>Include Lighter Meal Dessert: <strong>${data.extras.includeLighterMealDessert}</strong></li>`
+        );
+    }
+    if (data.extras.lighterMealOption) {
+        extraMealOptions.push(
+            `<li>Lighter Meal Option: <strong>${data.extras.lighterMealOption}</strong></li>`
+        );
+    }
 
-  // If it's a QuoteFormData (from form submission)
-  return `Create me a Quote for:
-Care Home: ${data.careHomeName}
-Total Residents: ${data.totalResidents}
-Number of Dining Rooms: ${data.numberOfDiningRooms}
-Selected Menu: ${data.selectedMenu?.menuName || 'Not selected'}
-Current Labour Hours: ${data.currentLabourHours} per day
-Current Labour Cost: £${data.currentLabourCost.toLocaleString()} per year
-Current Food Spend: £${data.currentFoodSpend.toLocaleString()} per year
-Estimated Non-Apetito Spend: £${data.estimatedNonApetitoSpend.toLocaleString()} per year`;
+    return `
+    <div style="font-family: Arial, sans-serif; padding: 10px; background-color: #f9f9f9; border-radius: 8px; color: #2c3e50;">
+      <p style="color: #34495e; font-size: 18px;">📌 <strong>Quote Request Summary</strong></p>
+      <p><strong>Care Home:</strong> ${data.careHomeName}</p>
+      <p><strong>Total Residents:</strong> ${data.totalResidents}</p>
+      <p><strong>Number of Dining Rooms:</strong> ${data.numberOfDiningRooms}</p>
+      <p><strong>Selected Menu:</strong> ${data.selectedMenu?.menuName || "Not selected"}</p>
+
+      ${extraMealOptions.length > 0
+            ? `<p><strong>Extra Meal Options:</strong></p><ul>${extraMealOptions.join("")}</ul>`
+            : ""
+        }
+
+      <p><strong>Labour Hours:</strong> ${data.currentLabourHours} per day</p>
+      <p><strong>Labour Cost:</strong> £${data.currentLabourCost.toLocaleString()} per year</p>
+      <p><strong>Food Spend:</strong> £${data.currentFoodSpend.toLocaleString()} per year</p>
+      <p><strong>Estimated Non-Apetito Spend:</strong> £${data.estimatedNonApetitoSpend.toLocaleString()} per year</p>
+    </div>
+  `;
+};
+
+export const formatQuoteResponse = (data: QuoteResponse): string => {
+    return `
+    <div style="font-family: Arial, sans-serif; padding: 10px; background-color: #f9f9f9; border-radius: 8px;">
+      <p style="color: #34495e; font-size:18px">📢 Here is your generated quote for <strong>${data.quoteDetails.customerName}</strong> </p>
+      <p><strong>Apetito Cost Per Resident Per Day:</strong> £${data.quoteDetails.apetitoCostResidentPerDay.toFixed(2)}</p>
+      <p><strong>Menu Order Total:</strong> £${data.quoteDetails.menuOrderTotal.toLocaleString()}</p>
+      <h3 style="margin-top: 10px; color: #27ae60;">📉 Annual Savings:</h3>
+      <p><strong>Labour Savings:</strong> £${data.quoteDetails.annualLaborSavings.toLocaleString()}</p>
+      <p><strong>Food Savings:</strong> £${data.quoteDetails.annualFoodSavings.toLocaleString()}</p>
+      <p><strong>Total Annual Savings:</strong> £${data.quoteDetails.annualTotalSavings.toLocaleString()}</p>
+    </div>
+  `;
 };
