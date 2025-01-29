@@ -5,8 +5,7 @@ import { getQuoteById } from "@/services/quoteApiService";
 import { fetchQuoteHistory } from "@/services/quoteHistoryService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
-import type { QuoteFormData } from "@/components/quote-form/types";
-import { QuoteHistoryType } from "@/types/quoteHistory";
+import { QuoteFormData } from "@/components/quote-form/types";
 import { useQuery } from "@tanstack/react-query";
 
 const ChatPage = () => {
@@ -26,21 +25,8 @@ const ChatPage = () => {
   useEffect(() => {
     if (historyData?.data) {
       const formattedMessages = historyData.data.map(item => ({
-        content: item.type === QuoteHistoryType.Request 
-          ? formatQuoteSummary({
-              careHomeName: item.careHomeName,
-              numberOfResidents: item.numberOfResidents || 0,
-              numberOfDiningRooms: item.numberOfDiningRooms || 0,
-              selectedMenu: item.selectedMenu,
-              extraMealOptions: item.extraMealOptions,
-              currentAnnualFoodSpend: item.currentAnnualFoodSpend || 0,
-              estimatedNonApetitoSpend: item.estimatedNonApetitoSpend || 0,
-              numberOfRoles: item.numberOfRoles || 0,
-              currentAnnualLabourCost: item.currentAnnualLabourCost || 0,
-              apetitoEstimatedAnnualLabourCost: item.apetitoEstimatedAnnualLabourCost || 0,
-            } as QuoteFormData)
-          : `Version ${item.versionNumber} Quote Summary:\n\nCost per resident per day: £${item.costPerDayPerResident}\nMenu order total: £${item.menuOrderTotal}\nAnnual labor savings: £${item.annualLaborSavings}\nAnnual food savings: £${item.annualFoodSavings}\nTotal annual savings: £${item.annualTotalSavings}`,
-        isAi: item.type === QuoteHistoryType.Response,
+        content: formatQuoteSummary(item),
+        isAi: item.type === 1,
       }));
       setMessages(formattedMessages);
     }
