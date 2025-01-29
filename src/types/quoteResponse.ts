@@ -34,7 +34,7 @@ export interface QuoteHistory {
 	versionNumber: number;
 	type: HistoryType;
 	createdOn: string;
-
+	summary?: string; // Added summary property
 	careHomeName: string;
 	numberOfResidents?: number;
 	numberOfDiningRooms?: number;
@@ -47,7 +47,6 @@ export interface QuoteHistory {
 	numberOfRoles?: number;
 	currentAnnualLabourCost?: number;
 	apetitoEstimatedAnnualLabourCost?: number;
-
 	costPerDayPerResident?: number;
 	menuOrderTotal?: number;
 	annualLaborSavings?: number;
