@@ -26,7 +26,18 @@ interface MenuSelectionProps {
 
 export const MenuSelection = ({ form }: MenuSelectionProps) => {
   const selectedMenu = form.watch('selectedMenu');
+  const diningRooms = form.watch('diningRooms');
   const isMenuA = selectedMenu?.menuId === "97481";
+
+  const hasLevel4Selected = diningRooms.some(room => 
+    room.mealCategories?.includes("Level 4 IDDSI")
+  );
+  const hasLevel5Selected = diningRooms.some(room => 
+    room.mealCategories?.includes("Level 5 IDDSI")
+  );
+  const hasLevel6Selected = diningRooms.some(room => 
+    room.mealCategories?.includes("Level 6 IDDSI")
+  );
 
   const handleRemoveLighterMeal = () => {
     form.setValue("extras.lighterMealOption", null);
@@ -90,7 +101,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
           <>
             <Separator className="my-4" />
 
-            <div className="space-y-6">
+            {hasLevel4Selected && (
               <div className="space-y-4">
                 <h3 className="text-md font-medium text-purple-700">Level 4 IDDSI Options</h3>
                 <FormField
@@ -121,7 +132,9 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                   )}
                 />
               </div>
+            )}
 
+            {hasLevel5Selected && (
               <div className="space-y-4">
                 <h3 className="text-md font-medium text-purple-700">Level 5 IDDSI Options</h3>
                 <FormField
@@ -152,7 +165,9 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                   )}
                 />
               </div>
+            )}
 
+            {hasLevel6Selected && (
               <div className="space-y-4">
                 <h3 className="text-md font-medium text-purple-700">Level 6 IDDSI Options</h3>
                 <FormField
@@ -183,98 +198,98 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                   )}
                 />
               </div>
+            )}
 
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="extras.includeBreakfast"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>Include Breakfast</FormLabel>
-                        <p className="text-sm text-muted-foreground">
-                          Add breakfast service to your meal plan
-                        </p>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              </div>
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="extras.includeBreakfast"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Include Breakfast</FormLabel>
+                      <p className="text-sm text-muted-foreground">
+                        Add breakfast service to your meal plan
+                      </p>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="extras.lighterMealOption"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <FormLabel>Lighter Meal Options</FormLabel>
-                        {field.value && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={handleRemoveLighterMeal}
-                            className="h-8 px-2 text-muted-foreground hover:text-foreground"
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          value={field.value || ""}
-                          className="space-y-2"
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="extras.lighterMealOption"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Lighter Meal Options</FormLabel>
+                      {field.value && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleRemoveLighterMeal}
+                          className="h-8 px-2 text-muted-foreground hover:text-foreground"
                         >
-                          <div className="flex items-center space-x-3">
-                            <RadioGroupItem value="standard" id="standard" />
-                            <Label htmlFor="standard" className="font-normal">Standard Lighter Meal</Label>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <RadioGroupItem value="two-course" id="two-course" />
-                            <Label htmlFor="two-course" className="font-normal">Two Course Lighter Meal</Label>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <RadioGroupItem value="premium" id="premium" />
-                            <Label htmlFor="premium" className="font-normal">Premium Lighter Meal</Label>
-                          </div>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        value={field.value || ""}
+                        className="space-y-2"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <RadioGroupItem value="standard" id="standard" />
+                          <Label htmlFor="standard" className="font-normal">Standard Lighter Meal</Label>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <RadioGroupItem value="two-course" id="two-course" />
+                          <Label htmlFor="two-course" className="font-normal">Two Course Lighter Meal</Label>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <RadioGroupItem value="premium" id="premium" />
+                          <Label htmlFor="premium" className="font-normal">Premium Lighter Meal</Label>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="extras.includeLighterMealDessert"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>Include Lighter Meal Dessert</FormLabel>
-                        <p className="text-sm text-muted-foreground">
-                          Add dessert to lighter meal options
-                        </p>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              </div>
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="extras.includeLighterMealDessert"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Include Lighter Meal Dessert</FormLabel>
+                      <p className="text-sm text-muted-foreground">
+                        Add dessert to lighter meal options
+                      </p>
+                    </div>
+                  </FormItem>
+                )}
+              />
             </div>
           </>
         )}

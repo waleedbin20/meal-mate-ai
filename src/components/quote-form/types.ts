@@ -49,17 +49,20 @@ export interface DiningRoom {
   multiTwinResidents: number;
   level3Residents: number;
   level4Residents: number;
-  level4Options?: Level4Options[];
   level5Residents: number;
-  level5Options?: Level5Options[];
   level6Residents: number;
-  level6Options?: Level6Options[];
   allergyFreeResidents: number;
   fingerFoodResidents: number;
   miniMealResidents: number;
   religiousDietsResidents: number;
   totalResidentsInDiningRoom: number;
   quoteId?: number;
+}
+
+export interface ExtraOptions {
+  includeBreakfast: boolean;
+  lighterMealOption: LighterMealOption | null;
+  includeLighterMealDessert: boolean;
 }
 
 export interface QuoteFormData {
@@ -70,11 +73,7 @@ export interface QuoteFormData {
   totalResidents: number;
   diningRooms: DiningRoom[];
   selectedMenu: MenuOption;
-  extras?: {
-    includeBreakfast: boolean;
-    lighterMealOption: LighterMealOption | null;
-    includeLighterMealDessert: boolean;
-  };
+  extras?: ExtraOptions;
   priceListName: PriceListOption;
   currentLabourHours: number;
   currentLabourCost: number;
