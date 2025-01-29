@@ -19,12 +19,14 @@ const ChatPage = () => {
     queryKey: ["quoteHistory", id],
     queryFn: () => (id ? fetchQuoteHistory(parseInt(id)) : null),
     enabled: !!id,
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to fetch quote history",
-        variant: "destructive",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Failed to fetch quote history",
+          variant: "destructive",
+        });
+      },
     },
   });
 
