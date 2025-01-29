@@ -10,6 +10,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useQuery } from "@tanstack/react-query";
 import { fetchQuoteHistory } from "@/services/quoteHistoryService";
+import type { QuoteHistoryItem } from "@/types/quoteHistory";
 
 const ChatPage = () => {
     const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -44,10 +45,10 @@ const ChatPage = () => {
                     
                     // Initialize messages with history if available
                     if (historyData?.data && historyData.data.length > 0) {
-                        const historyMessages = historyData.data.map(item => ({
+                        const historyMessages = historyData.data.map((item: QuoteHistoryItem) => ({
                             content: item.type === 0 ? formatQuoteRequest(data) : formatQuoteResponse({
                                 managerQuoteApproval: true,
-                                managerQuoteSummary: item.summary || "",
+                                managerQuoteSummary: item.managerQuoteSummary || "",
                                 quoteDetails: {
                                     customerName: item.careHomeName,
                                     apetitoCostResidentPerDay: item.costPerDayPerResident || 0,

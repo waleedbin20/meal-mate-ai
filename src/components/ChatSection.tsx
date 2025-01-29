@@ -3,10 +3,16 @@ import ChatMessage from "./ChatMessage";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Loader2, ChevronDown } from "lucide-react";
 import SavedQuotes from "./SavedQuotes";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
@@ -26,6 +32,10 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
 
+  // Split messages into history and current messages
+  const currentMessages = messages.slice(-2); // Last request and response
+  const historyMessages = messages.slice(0, -2); // All previous messages
+
   const handleEditQuote = () => {
     if (id) {
       navigate(`/quote/${id}`);
@@ -35,7 +45,6 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   const handleSaveQuote = async () => {
     setIsSaving(true);
     try {
-      // Simulate API call with timeout
       await new Promise(resolve => setTimeout(resolve, 1000));
       toast({
         title: "Success",
@@ -99,12 +108,36 @@ const ChatSection: React.FC<ChatSectionProps> = ({
       </div>
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-4">
-          {messages.map((message, index) => (
+          {historyMessages.length > 0 && (
+            <Accordion type="single" collapsible className="w-full mb-8">
+              <AccordionItem value="history" className="border-none">
+                <AccordionTrigger className="py-2 px-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                  <span className="flex items-center gap-2 text-purple-700">
+                    <ChevronDown className="h-4 w-4" />
+                    View Chat History ({historyMessages.length} messages)
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="pt-4">
+                  <div className="space-y-4">
+                    {historyMessages.map((message, index) => (
+                      <ChatMessage
+                        key={index}
+                        isAi={message.isAi}
+                        content={message.content}
+                        animate={false}
+                      />
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
+          {currentMessages.map((message, index) => (
             <ChatMessage
-              key={index}
+              key={`current-${index}`}
               isAi={message.isAi}
               content={message.content}
-              animate={index === messages.length - 1}
+              animate={index === currentMessages.length - 1}
             />
           ))}
           {isProcessing && <ChatSkeleton />}
