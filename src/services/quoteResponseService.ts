@@ -23,7 +23,12 @@ export const fetchQuoteResponse = async (data: QuoteFormData): Promise<QuoteResp
       managerQuoteApproval: false,
       managerQuoteSummary: "Sorry, something went wrong while generating the quote. Please try again.",
       quoteDetails: {
-        apetitoCostResidentPerDay: 0.0
+        customerName: "",
+        apetitoCostResidentPerDay: 0,
+        menuOrderTotal: 0,
+        annualLaborSavings: 0,
+        annualFoodSavings: 0,
+        annualTotalSavings: 0
       }
     };
   }

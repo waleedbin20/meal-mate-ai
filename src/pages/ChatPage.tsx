@@ -46,6 +46,8 @@ const ChatPage = () => {
                     if (historyData?.data && historyData.data.length > 0) {
                         const historyMessages = historyData.data.map(item => ({
                             content: item.type === 0 ? formatQuoteRequest(data) : formatQuoteResponse({
+                                managerQuoteApproval: true,
+                                managerQuoteSummary: item.managerQuoteSummary || "",
                                 quoteDetails: {
                                     customerName: item.careHomeName,
                                     apetitoCostResidentPerDay: item.costPerDayPerResident || 0,
