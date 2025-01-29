@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import ChatSection from "@/components/ChatSection";
 import { useParams, useNavigate } from "react-router-dom";
 import { getQuoteById } from "@/services/quoteApiService";
-import { fetchQuoteResponse } from "@/services/quoteResponseService";
+import { fetchQuoteHistory } from "@/services/quoteHistoryService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
 import type { QuoteFormData } from "@/components/quote-form/types";
+import { QuoteHistoryType } from "@/types/quoteHistory";
+import { useQuery } from "@tanstack/react-query";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -15,59 +17,34 @@ const ChatPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const { data: historyData } = useQuery({
+    queryKey: ["quoteHistory", id],
+    queryFn: () => (id ? fetchQuoteHistory(parseInt(id)) : null),
+    enabled: !!id,
+  });
+
   useEffect(() => {
-    const fetchQuote = async () => {
-      if (id) {
-        try {
-          const data = await getQuoteById(parseInt(id));
-          setQuoteData(data);
-          // Generate initial summary
-          const summary = formatQuoteSummary(data);
-          setMessages([{ content: summary, isAi: false }]);
-          // Fetch AI response
-          handleInitialResponse(data);
-        } catch (error) {
-          console.error("Error fetching quote:", error);
-          toast({
-            title: "Error",
-            description: "Failed to fetch quote details",
-            variant: "destructive",
-          });
-        }
-      }
-    };
-
-    fetchQuote();
-  }, [id, toast]);
-
-  const handleInitialResponse = async (data: QuoteFormData) => {
-    setIsProcessing(true);
-    try {
-      const response = await fetchQuoteResponse(data);
-      if (response) {
-        if (!response.managerQuoteApproval) {
-          toast({
-            title: "Quote Generation Failed",
-            description: response.managerQuoteSummary,
-            variant: "destructive",
-          });
-        }
-
-        setMessages(prev => [...prev, { 
-          content: response.managerQuoteSummary, 
-          isAi: true 
-        }]);
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to generate quote response",
-        variant: "destructive",
-      });
-    } finally {
-      setIsProcessing(false);
+    if (historyData?.data) {
+      const formattedMessages = historyData.data.map(item => ({
+        content: item.type === QuoteHistoryType.Request 
+          ? formatQuoteSummary({
+              careHomeName: item.careHomeName,
+              numberOfResidents: item.numberOfResidents || 0,
+              numberOfDiningRooms: item.numberOfDiningRooms || 0,
+              selectedMenu: item.selectedMenu,
+              extraMealOptions: item.extraMealOptions,
+              currentAnnualFoodSpend: item.currentAnnualFoodSpend || 0,
+              estimatedNonApetitoSpend: item.estimatedNonApetitoSpend || 0,
+              numberOfRoles: item.numberOfRoles || 0,
+              currentAnnualLabourCost: item.currentAnnualLabourCost || 0,
+              apetitoEstimatedAnnualLabourCost: item.apetitoEstimatedAnnualLabourCost || 0,
+            } as QuoteFormData)
+          : `Version ${item.versionNumber} Quote Summary:\n\nCost per resident per day: £${item.costPerDayPerResident}\nMenu order total: £${item.menuOrderTotal}\nAnnual labor savings: £${item.annualLaborSavings}\nAnnual food savings: £${item.annualFoodSavings}\nTotal annual savings: £${item.annualTotalSavings}`,
+        isAi: item.type === QuoteHistoryType.Response,
+      }));
+      setMessages(formattedMessages);
     }
-  };
+  }, [historyData]);
 
   const handleShowForm = () => {
     navigate(`/quote/${id}`);
