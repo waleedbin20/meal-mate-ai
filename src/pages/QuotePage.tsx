@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { QuoteForm } from "@/components/QuoteForm";
 import ChatSection from "@/components/ChatSection";
 import { QuoteFormData } from "@/components/quote-form/types";
 import { transformQuoteData } from "@/utils/transformQuoteData";
 import { fetchQuoteResponse } from "@/services/quoteResponseService";
 import { useToast } from "@/hooks/use-toast";
-import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
+import { formatQuoteRequest, formatQuoteResponse } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";

@@ -19,7 +19,6 @@ const ChatPage = () => {
     const navigate = useNavigate();
     const { toast } = useToast();
 
-    // Fetch quote history
     const { data: historyData } = useQuery({
         queryKey: ["quoteHistory", id],
         queryFn: () => (id ? fetchQuoteHistory(parseInt(id)) : null),
@@ -43,10 +42,9 @@ const ChatPage = () => {
                     setQuoteData(data);
                     const summary = formatQuoteRequest(data);
                     
-                    // If we have history, use that instead of creating new messages
                     if (historyData?.data && historyData.data.length > 0) {
                         const formattedMessages = historyData.data.map(item => ({
-                            content: formatQuoteRequest(item),
+                            content: item.type === 0 ? formatQuoteRequest(data) : item.managerQuoteSummary,
                             isAi: item.type === 1,
                         }));
                         setMessages(formattedMessages);
