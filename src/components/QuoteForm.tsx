@@ -14,9 +14,10 @@ import { NumberOfDiningRooms } from "./quote-form/NumberOfDiningRooms";
 import { FormInitializer } from "./quote-form/FormInitializer";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createQuote } from "@/services/quoteApiService";
+import { createQuote, updateQuoteById } from "@/services/quoteService";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { sampleQuoteData } from "@/types/sampleQuoteData";
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -25,14 +26,12 @@ interface QuoteFormProps {
   onClearForm?: () => void;
 }
 
-export const QuoteForm = ({ 
-  onSubmit, 
-  isLoading, 
-  defaultValues, 
-  onClearForm 
+export const QuoteForm = ({
+  onSubmit,
+  isLoading,
+  defaultValues,
+  onClearForm
 }: QuoteFormProps) => {
-  const navigate = useNavigate();
-  const { id } = useParams(); // Add this to get the quote ID from URL
   const form = useForm<QuoteFormData>({
     defaultValues: defaultValues || {
       creatorName: "",
@@ -55,13 +54,13 @@ export const QuoteForm = ({
           totalResidentsInDiningRoom: 0
         }
       ],
-      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
+      selectedMenu: { menuName: "Menu A - Jan 2025", menuId: "97481" },
       extras: {
         includeBreakfast: false,
         lighterMealOption: null,
-        includeLighterMealDessert: false
+        includeLighterMealDessert: false,
       },
-      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
+      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406", customerName: "National" },
       currentLabourHours: 0,
       currentLabourCost: 0,
       currentFoodSpend: 0,
@@ -83,8 +82,9 @@ export const QuoteForm = ({
   const diningRooms = form.watch('diningRooms') || [];
   const numberOfDiningRooms = form.watch('numberOfDiningRooms') || 1;
   const creatorName = form.watch('creatorName') || '';
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-  // Reset form with new values when defaultValues change
   React.useEffect(() => {
     if (defaultValues) {
       form.reset(defaultValues);
@@ -118,106 +118,43 @@ export const QuoteForm = ({
       });
       return;
     }
-
+    isLoading = true;
     try {
-      const savedQuote = await createQuote(data);
-      queryClient.invalidateQueries({ queryKey: ['quotes'] });
-      
-      if (savedQuote && savedQuote.id) {
+      let savedQuote;
+      if (id) {
+        savedQuote = await updateQuoteById(parseInt(id), data);
+        toast({
+          title: "Success",
+          description: "Quote updated successfully!",
+        });
+      } else {
+        savedQuote = await createQuote(data);
         toast({
           title: "Success",
           description: "Quote generated successfully!",
         });
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+
+      if (savedQuote && savedQuote.id) {
         navigate(`/quote/${savedQuote.id}/chat`);
       }
     } catch (error) {
-      console.error('Error creating quote:', error);
       toast({
         title: "Error",
-        description: "Failed to save quote",
+        description: "Failed to save quote. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      isLoading = false;
     }
   };
 
   const handleLoadSample = () => {
-    const sampleData: QuoteFormData = {
-      creatorName: "John Smith",
-      careHomeName: "Sample Care Home",
-      numberOfDiningRooms: 2,
-      totalResidents: 70,
-      diningRooms: [
-        {
-          name: "Main Dining Room",
-          mealCategories: ["Multi Twin", "Level 4 IDDSI", "Allergy-Free"],
-          multiTwinSize: "Large",
-          multiTwinResidents: 40,
-          level3Residents: 0,
-          level4Residents: 5,
-          level5Residents: 0,
-          level6Residents: 0,
-          allergyFreeResidents: 5,
-          fingerFoodResidents: 0,
-          miniMealResidents: 0,
-          religiousDietsResidents: 0,
-          totalResidentsInDiningRoom: 50
-        },
-        {
-          name: "Special Care Dining",
-          mealCategories: ["Level 3 IDDSI", "Finger Foods"],
-          multiTwinResidents: 0,
-          level3Residents: 12,
-          level4Residents: 0,
-          level5Residents: 0,
-          level6Residents: 0,
-          allergyFreeResidents: 0,
-          fingerFoodResidents: 8,
-          miniMealResidents: 0,
-          religiousDietsResidents: 0,
-          totalResidentsInDiningRoom: 20
-        }
-      ],
-      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-      extras: {
-        includeBreakfast: false,
-        lighterMealOption: null,
-        includeLighterMealDessert: false
-      },
-      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
-      currentLabourHours: 40,
-      currentLabourCost: 50000,
-      currentFoodSpend: 75000,
-      estimatedNonApetitoSpend: 25000,
-      numberOfRoles: 3,
-      roles: [
-        {
-          name: "Kitchen Manager",
-          hourlyRate: 12,
-          hoursPerWeek: 40,
-          numberOfSimilarRoles: 1
-        },
-        {
-          name: "Chef",
-          hourlyRate: 15,
-          hoursPerWeek: 35,
-          numberOfSimilarRoles: 2
-        },
-        {
-          name: "Kitchen Assistant",
-          hourlyRate: 18,
-          hoursPerWeek: 30,
-          numberOfSimilarRoles: 3
-        }
-      ],
-      apetitoLabor: {
-        name: "Apetito Labor",
-        hourlyRate: 14,
-        hoursPerWeek: 35,
-        numberOfSimilarRoles: 1
-      }
-    };
-
-    form.reset(sampleData);
+    Object.keys(sampleQuoteData).forEach(key => {
+      form.setValue(key as keyof QuoteFormData, sampleQuoteData[key as keyof QuoteFormData]);
+    });
     toast({
       title: "Sample Data Loaded",
       description: "The form has been populated with sample data.",
@@ -246,8 +183,8 @@ export const QuoteForm = ({
           totalResidentsInDiningRoom: 0
         }
       ],
-      selectedMenu: { menuName: "Menu A - Sep 2024", menuId: "90667" },
-      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
+      selectedMenu: { menuName: "Menu A - Jan 2025", menuId: "97481" },
+      priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406", customerName: "National" },
       currentLabourHours: 0,
       currentLabourCost: 0,
       currentFoodSpend: 0,
@@ -271,8 +208,8 @@ export const QuoteForm = ({
   return (
     <FormWrapper form={form}>
       <FormInitializer form={form} numberOfDiningRooms={numberOfDiningRooms} />
-      
-      <FormActions 
+
+      <FormActions
         form={form}
         onLoadSample={handleLoadSample}
         onClearForm={handleClearForm}
@@ -305,7 +242,13 @@ export const QuoteForm = ({
       {creatorName.trim() && (
         <>
           <CareHomeDetails form={form} />
-          
+
+          <MenuSelection form={form} />
+
+          <div className="space-y-4">
+            <PricingInformation form={form} />
+          </div>
+
           <NumberOfDiningRooms form={form} />
 
           <DiningRoomsSection form={form} diningRooms={diningRooms} />
@@ -318,7 +261,7 @@ export const QuoteForm = ({
                 <FormItem>
                   <FormLabel>Total Residents (All Dining Rooms)</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       type="number"
                       disabled
                       value={field.value}
@@ -330,15 +273,13 @@ export const QuoteForm = ({
             />
           </div>
 
-          <MenuSelection form={form} />
 
-          <div className="space-y-4">
-            <PricingInformation form={form} />
-          </div>
+
+
 
           <LaborCostFields form={form} />
 
-          <FormSubmitButton 
+          <FormSubmitButton
             isLoading={isLoading}
             onClick={form.handleSubmit(handleSubmit)}
           />
@@ -349,3 +290,4 @@ export const QuoteForm = ({
 };
 
 export default QuoteForm;
+

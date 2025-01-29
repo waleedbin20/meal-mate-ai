@@ -23,7 +23,7 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
       hoursPerWeek: 0,
       numberOfSimilarRoles: 1
     };
-    
+
     const updatedRoles = [...roles, newRole];
     form.setValue('roles', updatedRoles);
     form.setValue('numberOfRoles', updatedRoles.length);
@@ -35,21 +35,18 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
   };
 
   const handleDeleteRole = (index: number) => {
-    const updatedRoles = roles.filter((_, i) => i !== index);
-    form.setValue('roles', updatedRoles);
-    form.setValue('numberOfRoles', updatedRoles.length);
-
-    toast({
-      title: "Role Removed",
-      description: "The role has been removed from the form.",
-    });
+    if (roles.length > 1) {
+      const updatedRoles = roles.filter((_, i) => i !== index);
+      form.setValue('roles', updatedRoles);
+      form.setValue('numberOfRoles', updatedRoles.length);
+    }
   };
 
   return (
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold text-purple-700 mb-4">Current Labour Costs</h3>
-        
+
         <div className="mb-6">
           <FormField
             control={form.control}
@@ -58,7 +55,7 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
               <FormItem>
                 <FormLabel>Number of Roles</FormLabel>
                 <FormControl>
-                  <Input 
+                  <Input
                     type="number"
                     {...field}
                     value={roles.length}
@@ -82,7 +79,7 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {roles.map((role, index) => (
-            <RoleCard 
+            <RoleCard
               key={index}
               form={form}
               roleIndex={index}

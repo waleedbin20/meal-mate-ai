@@ -1,35 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Bot, Save, Send } from "lucide-react";
 import { Button } from "./ui/button";
+import { getAllQuotes, saveQuote } from "@/services/quoteService";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ChatMessageProps {
   isAi: boolean;
   content: string;
   animate?: boolean;
+  quoteId: number;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true }) => {
-  // Function to handle content that may contain HTML or needs formatting
+const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true, quoteId }) => {
+  const queryClient = useQueryClient();
+  const [isSaved, setIsSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const formatContent = (text: string) => {
-    // Check if the content appears to contain HTML tags
     const containsHtml = /<[a-z][\s\S]*>/i.test(text);
-    
+
     if (containsHtml) {
-      // If it contains HTML, render it directly
       return <div dangerouslySetInnerHTML={{ __html: text }} />;
     } else {
-      // If it's plain text, apply our custom formatting
-      // Make numbers and £ symbol bold
       const textWithBoldElements = text.replace(/\b(\d+|£)\b/g, '<strong>$1</strong>');
-      
-      // Split by any number of consecutive newlines
+
       return textWithBoldElements.split(/\n+/).map((paragraph, index, array) => (
         <React.Fragment key={index}>
           <span dangerouslySetInnerHTML={{ __html: paragraph }} />
           {index < array.length - 1 && <br />}
         </React.Fragment>
       ));
+    }
+  };
+  const handleSaveQuote = async () => {
+    setIsLoading(true);
+    try {
+      await saveQuote(quoteId, 'Approved')
+      setIsSaved(true);
+      queryClient.invalidateQueries({ queryKey: ['quotes'] });
+      console.log('Quote saved successfully');
+    } catch (error) {
+      console.error('Error saving quote:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -61,22 +74,33 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
           </div>
         </div>
         {isAi && (
-          <div className="mt-3 space-y-3 max-w-sm">
-            <div>
+          <div className="mt-3 flex flex-col sm:flex-row gap-4 max-w-sm sm:max-w-md">
+            <div className="flex-1">
               <p className="text-sm text-muted-foreground mb-1.5">Save this quote for later reference</p>
-              <Button className="w-full" variant="outline" size="sm">
-                <Save className="h-4 w-4 mr-2" />
+              <Button
+                className={`w-full ${isSaved ? 'bg-green-100 text-green-700' : 'bg-white text-black'}`}
+                variant="outline"
+                size="sm"
+                onClick={handleSaveQuote}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2"></div>
+                ) : (
+                  <Save className="h-4 w-4 mr-2" />
+                )}
                 Save Quote
               </Button>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1.5">Submit this quote to Hubspot for processing</p>
-              <Button className="w-full" variant="default" size="sm">
+            <div className="flex-1">
+              <p className="text-sm text-muted-foreground mb-1.5">Submit this quote to HubSpot for processing</p>
+              <Button className="w-full bg-slate-700 hover:bg-purple-100 hover:text-purple-900" variant="default" size="sm">
                 <Send className="h-4 w-4 mr-2" />
-                Submit Quote to Hubspot
+                Submit Quote
               </Button>
             </div>
           </div>
+
         )}
       </div>
     </div>

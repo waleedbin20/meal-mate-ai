@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
 const menuOptions: MenuOption[] = [
-  { menuName: "Menu A - Sep 2024", menuId: "90667" },
+  { menuName: "Menu A - Jan 2025", menuId: "97481" },
   { menuName: "Menu B - Sep 2024", menuId: "90670" }
 ];
 
@@ -22,7 +22,7 @@ interface MenuSelectionProps {
 
 export const MenuSelection = ({ form }: MenuSelectionProps) => {
   const selectedMenu = form.watch('selectedMenu');
-  const isMenuA = selectedMenu?.menuId === "90667";
+  const isMenuA = selectedMenu?.menuId === "97481";
 
   const handleRemoveLighterMeal = () => {
     form.setValue("extras.lighterMealOption", null);
@@ -65,8 +65,8 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                 </FormControl>
                 <SelectContent className="bg-white">
                   {menuOptions.map((menu) => (
-                    <SelectItem 
-                      key={menu.menuId} 
+                    <SelectItem
+                      key={menu.menuId}
                       value={menu.menuId.toString()}
                       className="hover:bg-purple-50"
                     >
@@ -86,7 +86,6 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
 
             <div className="space-y-6">
               <h3 className="text-md font-medium text-purple-700">Extra Options</h3>
-              
               <div className="space-y-4">
                 <FormField
                   control={form.control}
