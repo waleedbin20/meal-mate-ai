@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, PlusCircle } from "lucide-react";
 import SavedQuotes from "@/components/SavedQuote";
 import { useLocation, useParams } from "react-router-dom";
-import { getQuoteById } from "@/services/quoteService";
+import { getQuoteById, getQuoteHistoryById } from "@/services/quoteService";
 import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { useQuery } from "@tanstack/react-query";
+import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
 
 const QuotePage = () => {
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
@@ -37,6 +39,14 @@ const QuotePage = () => {
   const { toast } = useToast();
   const location = useLocation();
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  // Fetch quote history
+  const { data: historyData } = useQuery({
+    queryKey: ["quoteHistory", id],
+    queryFn: async () => (id ? await getQuoteHistoryById(parseInt(id)) : null),
+    enabled: !!id,
+  });
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -54,12 +64,25 @@ const QuotePage = () => {
         }
       }
     };
+
     if (id) {
       fetchQuote();
     } else if (location.state?.defaultValues) {
       setQuoteData(location.state.defaultValues);
     }
   }, [id, location.state, toast]);
+
+  useEffect(() => {
+    if (historyData && historyData.length > 0) {
+      const historyMessages = historyData.map(item => ({
+        content: item.type === 0 ? 
+          formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : 
+          item.summary || formatQuoteResponse(mapQuoteHistoryToResponse(item)),
+        isAi: item.type === 1
+      }));
+      setMessages(historyMessages);
+    }
+  }, [historyData]);
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
@@ -103,14 +126,11 @@ const QuotePage = () => {
     }
   };
 
-  const navigate = useNavigate();
-
   const handleSwitchToChat = () => {
     if (id) {
       console.log(`Switch to chat for quote id`, id);
       navigate(`/quote/${id}/chat`);
-    }
-    else {
+    } else {
       setIsAlertDialogOpen(true);
     }
   };
