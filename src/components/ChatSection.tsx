@@ -12,12 +12,14 @@ interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
   isProcessing: boolean;
   onShowForm: () => void;
+  onNewMessage?: (message: { content: string; isAi: boolean }) => void;
 }
 
 const ChatSection: React.FC<ChatSectionProps> = ({
   messages,
   isProcessing,
   onShowForm,
+  onNewMessage,
 }) => {
   const navigate = useNavigate();
   const { id } = useParams();

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ChatSection from "@/components/ChatSection";
 import { useParams, useNavigate } from "react-router-dom";
-import { getQuoteById } from "@/services/quoteApiService";
 import { fetchQuoteHistory } from "@/services/quoteHistoryService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteSummary } from "@/utils/formatQuoteSummary";
@@ -20,10 +19,18 @@ const ChatPage = () => {
     queryKey: ["quoteHistory", id],
     queryFn: () => (id ? fetchQuoteHistory(parseInt(id)) : null),
     enabled: !!id,
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to fetch quote history",
+        variant: "destructive",
+      });
+    },
   });
 
+  // Load chat history when available
   useEffect(() => {
-    if (historyData?.data) {
+    if (historyData?.data && historyData.data.length > 0) {
       const formattedMessages = historyData.data.map(item => ({
         content: formatQuoteSummary(item),
         isAi: item.type === 1,
@@ -31,6 +38,11 @@ const ChatPage = () => {
       setMessages(formattedMessages);
     }
   }, [historyData]);
+
+  // Handle new messages
+  const handleNewMessage = (newMessage: { content: string; isAi: boolean }) => {
+    setMessages(prevMessages => [...prevMessages, newMessage]);
+  };
 
   const handleShowForm = () => {
     navigate(`/quote/${id}`);
@@ -44,6 +56,7 @@ const ChatPage = () => {
             messages={messages}
             isProcessing={isProcessing}
             onShowForm={handleShowForm}
+            onNewMessage={handleNewMessage}
           />
         </div>
       </div>
