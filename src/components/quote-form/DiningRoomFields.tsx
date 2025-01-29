@@ -132,7 +132,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                 control={form.control}
                 name={`diningRooms.${index}.mealCategories` as const}
                 render={({ field }) => (
-                  <FormItem className="flex items-center space-x-2">
+                  <FormItem className="flex items-center space-x-3">
                     <FormControl>
                       <Checkbox
                         checked={field.value?.includes(category)}
@@ -152,9 +152,12 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                             }
                           }
                         }}
+                        className="border-purple-200 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                       />
                     </FormControl>
-                    <FormLabel className="font-normal">{category}</FormLabel>
+                    <FormLabel className="font-normal text-base leading-none m-0 cursor-pointer">
+                      {category}
+                    </FormLabel>
                   </FormItem>
                 )}
               />
@@ -211,7 +214,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                           name={field.name}
                           ref={field.ref}
                           placeholder={`Number of ${category} residents`}
-                          className="w-full max-w-xs"
+                          className="w-full max-w-xs border-purple-200 focus:border-purple-300 focus:ring-purple-200"
                         />
                       </FormControl>
                       <FormMessage />
