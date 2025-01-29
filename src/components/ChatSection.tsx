@@ -12,7 +12,7 @@ interface ChatSectionProps {
   messages: Array<{ content: string; isAi: boolean }>;
   isProcessing: boolean;
   onShowForm: () => void;
-  onGenerateQuote: () => void;
+  onGenerateQuote?: () => void; // Made optional with ?
 }
 
 const ChatSection: React.FC<ChatSectionProps> = ({
@@ -21,7 +21,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   onShowForm,
   onGenerateQuote,
 }) => {
-  const currentMessages = messages.slice(-2); // Last request and response
+  const currentMessages = messages.slice(-2);
   const historyMessages = messages.slice(0, -2);
   const navigate = useNavigate();
   const { id } = useParams();
