@@ -20,7 +20,7 @@ const ChatPage = () => {
     const navigate = useNavigate();
     const { toast } = useToast();
 
-    // Fetch quote history
+    // Fetch quote history using React Query
     const { data: historyData } = useQuery({
         queryKey: ["quoteHistory", id],
         queryFn: () => (id ? fetchQuoteHistory(parseInt(id)) : null),
@@ -36,49 +36,52 @@ const ChatPage = () => {
         },
     });
 
+    // Fetch quote data only once and handle history initialization
     useEffect(() => {
         const fetchQuote = async () => {
-            if (id) {
-                try {
-                    const data = await getQuoteById(parseInt(id));
-                    setQuoteData(data);
-                    
-                    // Initialize messages with history if available
-                    if (historyData?.data && historyData.data.length > 0) {
-                        const historyMessages = historyData.data.map((item: QuoteHistoryItem) => ({
-                            content: item.type === 0 ? formatQuoteRequest(data) : formatQuoteResponse({
-                                managerQuoteApproval: true,
-                                managerQuoteSummary: item.managerQuoteSummary || "",
-                                quoteDetails: {
-                                    customerName: item.careHomeName,
-                                    apetitoCostResidentPerDay: item.costPerDayPerResident || 0,
-                                    menuOrderTotal: item.menuOrderTotal || 0,
-                                    annualLaborSavings: item.annualLaborSavings || 0,
-                                    annualFoodSavings: item.annualFoodSavings || 0,
-                                    annualTotalSavings: item.annualTotalSavings || 0
-                                }
-                            }),
-                            isAi: item.type === 1
-                        }));
-                        setMessages(historyMessages);
-                    }
-                    
-                    // Add new request message and generate response
+            if (!id || quoteData) return; // Prevent duplicate fetches if we already have data
+
+            try {
+                const data = await getQuoteById(parseInt(id));
+                setQuoteData(data);
+                
+                // Initialize messages with history if available
+                if (historyData?.data && historyData.data.length > 0) {
+                    const historyMessages = historyData.data.map((item: QuoteHistoryItem) => ({
+                        content: item.type === 0 ? formatQuoteRequest(data) : formatQuoteResponse({
+                            managerQuoteApproval: true,
+                            managerQuoteSummary: item.summary || "", // Using summary instead of managerQuoteSummary
+                            quoteDetails: {
+                                customerName: item.careHomeName,
+                                apetitoCostResidentPerDay: item.costPerDayPerResident || 0,
+                                menuOrderTotal: item.menuOrderTotal || 0,
+                                annualLaborSavings: item.annualLaborSavings || 0,
+                                annualFoodSavings: item.annualFoodSavings || 0,
+                                annualTotalSavings: item.annualTotalSavings || 0
+                            }
+                        }),
+                        isAi: item.type === 1
+                    }));
+                    setMessages(historyMessages);
+                }
+                
+                // Only add new request if there's no history
+                if (!historyData?.data?.length) {
                     const summary = formatQuoteRequest(data);
                     setMessages(prev => [...prev, { content: summary, isAi: false }]);
                     handleInitialResponse(data);
-                } catch (error) {
-                    console.error("Error fetching quote:", error);
-                    toast({
-                        title: "Error",
-                        description: "Failed to fetch quote details",
-                        variant: "destructive",
-                    });
                 }
+            } catch (error) {
+                console.error("Error fetching quote:", error);
+                toast({
+                    title: "Error",
+                    description: "Failed to fetch quote details",
+                    variant: "destructive",
+                });
             }
         };
         fetchQuote();
-    }, [id, toast, historyData]);
+    }, [id, historyData, quoteData, toast]); // Added dependencies to useEffect
 
     const handleInitialResponse = async (data: QuoteFormData) => {
         setIsProcessing(true);
