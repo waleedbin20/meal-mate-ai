@@ -46,6 +46,8 @@ const ChatSection: React.FC<ChatSectionProps> = ({
     }
   };
 
+  const totalMessages = isHistoryOpen ? messages.length : currentMessages.length;
+
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl h-[calc(100vh-2rem)] md:h-[950px] flex flex-col">
       <div className="p-4 md:p-6 border-b border-purple-100 sticky top-0 bg-white/80 backdrop-blur-sm z-10">
@@ -97,7 +99,7 @@ const ChatSection: React.FC<ChatSectionProps> = ({
                     ) : (
                       <Eye className="h-4 w-4" />
                     )}
-                    {isHistoryOpen ? "Hide" : "View"} Chat History ({historyMessages.length} message{historyMessages.length !== 1 ? 's' : ''})
+                    {isHistoryOpen ? "Hide" : "View"} Chat History ({totalMessages} message{totalMessages !== 1 ? 's' : ''})
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="pt-4 animate-slide-in">
