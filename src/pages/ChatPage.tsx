@@ -10,14 +10,15 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useQuery } from "@tanstack/react-query";
 import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
+
 const ChatPage = () => {
     const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
     const [isProcessing, setIsProcessing] = useState(false);
-    const [quoteData, setQuoteData] = useState<QuoteFormData | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
 
+    // Fetch quote history
     const { data: historyData } = useQuery({
         queryKey: ["quoteHistory", id],
         queryFn: async () => (id ? await getQuoteHistoryById(parseInt(id)) : null),
@@ -32,71 +33,83 @@ const ChatPage = () => {
             },
         },
     });
+
+    // Fetch quote data
+    const { data: quoteData } = useQuery({
+        queryKey: ["quote", id],
+        queryFn: async () => (id ? await getQuoteById(parseInt(id)) : null),
+        enabled: !!id && !historyData?.length, // Only fetch if no history exists
+        meta: {
+            onError: () => {
+                toast({
+                    title: "Error",
+                    description: "Failed to fetch quote details",
+                    variant: "destructive",
+                });
+            },
+        },
+    });
+
     useEffect(() => {
-        const fetchQuote = async () => {
-            if (!
-                id
-                || quoteData) {
-                try {
-                    const data = await getQuoteById(parseInt(id));
-                    setQuoteData(data);
+        const initializeChat = async () => {
+            if (!id) return;
 
-                    if (historyData != null && historyData.length > 0) {
-                        console.log("got the history")
-                        const historyMessages = historyData.map(item => ({
-                            content: item.type === 0 ? formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : formatQuoteResponse(mapQuoteHistoryToResponse(item)),
-                            isAi: item.type === 1
-                        }));
-                        setMessages(historyMessages);
-                    }
-
-                    // Add new request message and generate response
-                    const summary = formatQuoteRequest(data);
-                    setMessages(prev => [...prev, { content: summary, isAi: false }]);
-                    handleInitialResponse(data);
-                } catch (error) {
-                    console.error("Error fetching quote:", error);
-                    toast({
-                        title: "Error",
-                        description: "Failed to fetch quote details",
-                        variant: "destructive",
-                    });
+            try {
+                // If we have history, display it
+                if (historyData && historyData.length > 0) {
+                    console.log("Setting up history messages");
+                    const historyMessages = historyData.map(item => ({
+                        content: item.type === 0 ? 
+                            formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : 
+                            formatQuoteResponse(mapQuoteHistoryToResponse(item)),
+                        isAi: item.type === 1
+                    }));
+                    setMessages(historyMessages);
+                    return; // Don't generate new quote if we have history
                 }
+
+                // If we have quote data but no history, generate initial quote
+                if (quoteData && !historyData?.length) {
+                    console.log("Generating initial quote");
+                    setIsProcessing(true);
+                    const summary = formatQuoteRequest(quoteData);
+                    setMessages([{ content: summary, isAi: false }]);
+
+                    try {
+                        const response = await fetchQuoteResponse(quoteData);
+                        if (response) {
+                            setMessages(prev => [...prev, {
+                                content: formatQuoteResponse(response),
+                                isAi: true
+                            }]);
+                        }
+                    } catch (error) {
+                        toast({
+                            title: "Error",
+                            description: "Failed to generate quote response",
+                            variant: "destructive",
+                        });
+                    } finally {
+                        setIsProcessing(false);
+                    }
+                }
+            } catch (error) {
+                console.error("Error initializing chat:", error);
+                toast({
+                    title: "Error",
+                    description: "Failed to initialize chat",
+                    variant: "destructive",
+                });
             }
         };
-        fetchQuote();
+
+        initializeChat();
     }, [id, historyData, quoteData, toast]);
 
-    const handleInitialResponse = async (data: QuoteFormData) => {
-        setIsProcessing(true);
-        try {
-            const response = await fetchQuoteResponse(data);
-            if (response) {
-                if (response === null) {
-                    toast({
-                        title: "Quote Generation Failed",
-                        description: response.summary,
-                        variant: "destructive",
-                    });
-                }
-                setMessages(prev => [...prev, {
-                    content: formatQuoteResponse(response),
-                    isAi: true
-                }]);
-            }
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to generate quote response",
-                variant: "destructive",
-            });
-        } finally {
-            setIsProcessing(false);
-        }
-    };
     const handleShowForm = () => {
         navigate(`/quote/${id}`);
     };
+
     return (
         <SidebarProvider defaultOpen={true}>
             <div className="min-h-screen flex w-full bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
@@ -121,4 +134,5 @@ const ChatPage = () => {
         </SidebarProvider>
     );
 };
+
 export default ChatPage;
