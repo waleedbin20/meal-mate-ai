@@ -50,7 +50,7 @@ const QuotePage = () => {
   const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
     setLastFormData(data);
-    const summary = formatQuoteSummary(data);
+    const summary = formatQuoteRequest(data);
     setMessages([{ content: summary, isAi: false }]);
     setShowForm(false);
 
