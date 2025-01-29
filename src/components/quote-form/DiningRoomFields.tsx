@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
-import { QuoteFormData, MealCategory, MultiTwinSize } from "./types";
+import { QuoteFormData, MealCategory, MultiTwinSize, Level4Options, Level5Options, Level6Options } from "./types";
 import { useToast } from "@/hooks/use-toast";
 
 interface DiningRoomFieldsProps {
@@ -26,6 +26,10 @@ const mealCategories: MealCategory[] = [
 ];
 
 const multiTwinSizes: MultiTwinSize[] = ["Standard", "Large"];
+
+const level4Options: Level4Options[] = ["Breakfast", "Snacks", "Dessert"];
+const level5Options: Level5Options[] = ["Dessert"];
+const level6Options: Level6Options[] = ["Dessert"];
 
 const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['diningRooms'][0] => {
   const mapping: Record<MealCategory, keyof QuoteFormData['diningRooms'][0]> = {
@@ -93,6 +97,55 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
     return true;
   };
 
+  const renderLevelOptions = (level: "Level 4 IDDSI" | "Level 5 IDDSI" | "Level 6 IDDSI") => {
+    if (!diningRoom.mealCategories?.includes(level)) return null;
+
+    const options = level === "Level 4 IDDSI" 
+      ? level4Options 
+      : level === "Level 5 IDDSI" 
+        ? level5Options 
+        : level6Options;
+
+    const fieldName = `diningRooms.${index}.${level === "Level 4 IDDSI" 
+      ? "level4Options" 
+      : level === "Level 5 IDDSI" 
+        ? "level5Options" 
+        : "level6Options"}`;
+
+    return (
+      <div className="ml-6 mt-2 space-y-2">
+        <p className="text-sm font-medium text-purple-700">Additional Options</p>
+        <FormField
+          control={form.control}
+          name={fieldName as any}
+          render={({ field }) => (
+            <FormItem>
+              <div className="space-y-2">
+                {options.map((option) => (
+                  <FormItem key={option} className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value?.includes(option)}
+                        onCheckedChange={(checked) => {
+                          const currentValue = field.value || [];
+                          const newValue = checked
+                            ? [...currentValue, option]
+                            : currentValue.filter((v) => v !== option);
+                          field.onChange(newValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel className="font-normal">{option}</FormLabel>
+                  </FormItem>
+                ))}
+              </div>
+            </FormItem>
+          )}
+        />
+      </div>
+    );
+  };
+
   return (
     <div className={`${bgColor} space-y-4 p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-md`}>
       <div className="flex justify-between items-center">
@@ -150,6 +203,14 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                             if (category === "Multi Twin") {
                               form.setValue(`diningRooms.${index}.multiTwinSize`, undefined);
                             }
+                            // Clear options when unchecking IDDSI levels
+                            if (category === "Level 4 IDDSI") {
+                              form.setValue(`diningRooms.${index}.level4Options`, []);
+                            } else if (category === "Level 5 IDDSI") {
+                              form.setValue(`diningRooms.${index}.level5Options`, []);
+                            } else if (category === "Level 6 IDDSI") {
+                              form.setValue(`diningRooms.${index}.level6Options`, []);
+                            }
                           }
                         }}
                       />
@@ -159,7 +220,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                 )}
               />
 
-              {category === "Multi Twin" && form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
+              {category === "Multi Twin" && diningRoom.mealCategories?.includes(category) && (
                 <div className="ml-6 space-y-4">
                   <FormField
                     control={form.control}
@@ -192,11 +253,19 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                       </FormItem>
                     )}
                   />
+                </div>
+              )}
+
+              {(category === "Level 4 IDDSI" || 
+                category === "Level 5 IDDSI" || 
+                category === "Level 6 IDDSI") && 
+                diningRoom.mealCategories?.includes(category) && (
+                <>
                   <FormField
                     control={form.control}
-                    name={`diningRooms.${index}.multiTwinResidents` as const}
+                    name={`diningRooms.${index}.${getResidentFieldName(category)}` as const}
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="ml-6">
                         <FormControl>
                           <Input
                             type="number"
@@ -206,7 +275,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                             onBlur={field.onBlur}
                             name={field.name}
                             ref={field.ref}
-                            placeholder="Number of Multi Twin residents"
+                            placeholder={`Number of ${category} residents`}
                             className="w-full max-w-xs"
                           />
                         </FormControl>
@@ -214,42 +283,15 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                       </FormItem>
                     )}
                   />
-                </div>
-              )}
-
-              {(category === "Level 4 IDDSI" || 
-                category === "Level 5 IDDSI" || 
-                category === "Level 6 IDDSI") && 
-                form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
-                <FormField
-                  control={form.control}
-                  name={`diningRooms.${index}.${getResidentFieldName(category)}` as const}
-                  render={({ field }) => (
-                    <FormItem className="ml-6">
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          onChange={(e) => field.onChange(Number(e.target.value))}
-                          value={String(field.value || '')}
-                          onBlur={field.onBlur}
-                          name={field.name}
-                          ref={field.ref}
-                          placeholder={`Number of ${category} residents`}
-                          className="w-full max-w-xs"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  {renderLevelOptions(category)}
+                </>
               )}
 
               {category !== "Multi Twin" && 
                category !== "Level 4 IDDSI" && 
                category !== "Level 5 IDDSI" && 
                category !== "Level 6 IDDSI" && 
-               form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
+               diningRoom.mealCategories?.includes(category) && (
                 <FormField
                   control={form.control}
                   name={`diningRooms.${index}.${getResidentFieldName(category)}` as const}
