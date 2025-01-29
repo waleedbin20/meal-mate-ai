@@ -25,7 +25,7 @@ const mealCategories: MealCategory[] = [
   "Religious Diets"
 ];
 
-const multiTwinSizes: MultiTwinSize[] = ["Standard", "Small", "Large"];
+const multiTwinSizes: MultiTwinSize[] = ["Standard", "Large"];
 
 const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['diningRooms'][0] => {
   const mapping: Record<MealCategory, keyof QuoteFormData['diningRooms'][0]> = {
@@ -50,7 +50,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
 
   // Calculate total residents for this dining room
   React.useEffect(() => {
-    const total = 
+    const total =
       (diningRoom.multiTwinResidents || 0) +
       (diningRoom.level3Residents || 0) +
       (diningRoom.level4Residents || 0) +
@@ -78,8 +78,8 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
 
   const validateUniqueName = (value: string) => {
     const isDuplicate = allDiningRooms.some(
-      (room, roomIndex) => 
-        roomIndex !== index && 
+      (room, roomIndex) =>
+        roomIndex !== index &&
         room.name.toLowerCase() === value.toLowerCase()
     );
 
@@ -143,7 +143,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                             ? [...currentValue, category]
                             : currentValue.filter((v) => v !== category);
                           field.onChange(newValue);
-                          
+
                           if (!checked) {
                             const fieldName = getResidentFieldName(category);
                             const path = `diningRooms.${index}.${fieldName}` as const;
@@ -159,7 +159,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                   </FormItem>
                 )}
               />
-              
+
               {category === "Multi Twin" && form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <div className="ml-6 space-y-4">
                   <FormField
@@ -179,8 +179,8 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                           </FormControl>
                           <SelectContent className="bg-white">
                             {multiTwinSizes.map((size) => (
-                              <SelectItem 
-                                key={size} 
+                              <SelectItem
+                                key={size}
                                 value={size}
                                 className="hover:bg-purple-50 focus:bg-purple-50 focus:text-purple-900"
                               >
@@ -217,7 +217,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                   />
                 </div>
               )}
-              
+
               {category !== "Multi Twin" && form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <FormField
                   control={form.control}

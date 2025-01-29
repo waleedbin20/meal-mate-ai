@@ -6,10 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const priceListOptions = [
-  { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406" },
-  { customerNo: "1103999", priceHierarchy: "0008801130", customerId: "2407" },
-  { customerNo: "1104000", priceHierarchy: "0008801097", customerId: "2408" },
-  { customerNo: "1104045", priceHierarchy: "0008801128", customerId: "2468" },
+  { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406", customerName: "National" },
+  { customerNo: "1104045", priceHierarchy: "0008801128", customerId: "2468", customerName: "Regional" },
+  { customerNo: "1104000", priceHierarchy: "0008801097", customerId: "2408", customerName: "Independent" },
+  { customerNo: "1103999", priceHierarchy: "0008801130", customerId: "2407", customerName: "Small Groups" },
 ];
 
 interface PricingInformationProps {
@@ -31,24 +31,26 @@ export const PricingInformation = ({ form }: PricingInformationProps) => {
               <FormLabel>Price List</FormLabel>
               <Select
                 onValueChange={(value) => {
-                  const [customerNo, priceHierarchy, customerId] = value.split(',');
-                  field.onChange({ customerNo, priceHierarchy, customerId });
+                  const [customerNo, priceHierarchy, customerId, customerName] = value.split(',');
+                  field.onChange({ customerNo, priceHierarchy, customerId, customerName });
                 }}
-                value={`${field.value.customerNo},${field.value.priceHierarchy},${field.value.customerId}`}
+                value={`${field.value.customerNo},${field.value.priceHierarchy},${field.value.customerId},${field.value.customerName}`}
               >
                 <FormControl>
                   <SelectTrigger className="bg-white border-gray-200">
-                    <SelectValue placeholder="Select a price list" />
+                    <SelectValue placeholder="Select a price list">
+                      {field.value.customerName || "Select a price list"}
+                    </SelectValue>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-white">
                   {priceListOptions.map((option) => (
-                    <SelectItem 
+                    <SelectItem
                       key={`${option.customerNo}-${option.priceHierarchy}`}
-                      value={`${option.customerNo},${option.priceHierarchy},${option.customerId}`}
+                      value={`${option.customerNo},${option.priceHierarchy},${option.customerId}, ${option.customerName}`}
                       className="hover:bg-gray-100"
                     >
-                      {`Customer: ${option.customerNo}, Price Hierarchy: ${option.priceHierarchy}`}
+                      {`${option.customerName}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -66,8 +68,8 @@ export const PricingInformation = ({ form }: PricingInformationProps) => {
               <FormItem>
                 <FormLabel>Current Food Spend Per Year (£)</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="number" 
+                  <Input
+                    type="number"
                     min="0"
                     step="0.01"
                     placeholder="Enter current food spend"
@@ -88,8 +90,8 @@ export const PricingInformation = ({ form }: PricingInformationProps) => {
               <FormItem>
                 <FormLabel>Estimated Non-apetito Food Spend Per Year (£)</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="number" 
+                  <Input
+                    type="number"
                     min="0"
                     step="0.01"
                     placeholder="Enter estimated non-apetito spend"

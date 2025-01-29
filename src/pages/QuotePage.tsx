@@ -8,21 +8,38 @@ import { useToast } from "@/hooks/use-toast";
 import { formatQuoteRequest, formatQuoteResponse } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { MessageCircle, PlusCircle, Save } from "lucide-react";
+import SavedQuotes from "@/components/SavedQuote";
 import { useLocation, useParams } from "react-router-dom";
-import { getQuoteById } from "@/services/quoteApiService";
+import { getQuoteById } from "@/services/quoteService";
+import { useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 const QuotePage = () => {
+
+
   const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
   const [lastFormData, setLastFormData] = useState<QuoteFormData | null>(null);
   const [quoteData, setQuoteData] = useState<QuoteFormData | null>(null);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const { toast } = useToast();
   const location = useLocation();
   const { id } = useParams();
-  
+
   useEffect(() => {
     const fetchQuote = async () => {
       if (id) {
@@ -39,13 +56,13 @@ const QuotePage = () => {
         }
       }
     };
-
     if (id) {
       fetchQuote();
     } else if (location.state?.defaultValues) {
       setQuoteData(location.state.defaultValues);
     }
   }, [id, location.state, toast]);
+
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
@@ -58,18 +75,18 @@ const QuotePage = () => {
       const response = await fetchQuoteResponse(data);
       if (response) {
         setQuoteResponse(response);
-        
-        if (!response.managerQuoteApproval) {
+
+        if (response === null) {
           toast({
             title: "Quote Generation Failed",
-            description: response.managerQuoteSummary,
+            description: response.summary,
             variant: "destructive",
           });
         }
 
-        setMessages(prev => [...prev, { 
-          content: response.managerQuoteSummary, 
-          isAi: true 
+        setMessages(prev => [...prev, {
+          content: formatQuoteResponse(response),
+          isAi: true
         }]);
       }
     } catch (error) {
@@ -83,6 +100,17 @@ const QuotePage = () => {
       setIsProcessing(false);
     }
   };
+  const navigate = useNavigate();
+
+  const handleSwitchToChat = () => {
+    if (id) {
+      console.log(`Switch to chat for quote id`, id);
+      navigate(`/quote/${id}/chat`);
+    }
+    else {
+      setIsAlertDialogOpen(true);
+    }
+  };
 
   const handleRetry = async () => {
     if (!lastFormData) {
@@ -93,24 +121,24 @@ const QuotePage = () => {
       });
       return;
     }
-    
+
     setIsProcessing(true);
     try {
       const response = await fetchQuoteResponse(lastFormData);
       if (response) {
         setQuoteResponse(response);
-        
-        if (!response.managerQuoteApproval) {
+
+        if (response === null) {
           toast({
             title: "Quote Generation Failed",
-            description: response.managerQuoteSummary,
+            description: response.summary,
             variant: "destructive",
           });
         }
 
-        setMessages(prev => [...prev, { 
-          content: response.managerQuoteSummary, 
-          isAi: true 
+        setMessages(prev => [...prev, {
+          content: formatQuoteResponse(response),
+          isAi: true
         }]);
       }
     } catch (error) {
@@ -129,38 +157,78 @@ const QuotePage = () => {
     setShowForm(!showForm);
   };
 
+  const handleNewQuote = () => {
+    if (id) {
+      console.log(`Creating new quote`, id);
+      navigate(`/quote`);
+      window.location.reload();
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
-      <div className="container mx-auto py-4 px-4 md:py-8 md:px-8">
-        {showForm ? (
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-4">
-              <Button
-                onClick={toggleForm}
-                variant="outline"
-                className="flex items-center gap-2 bg-white hover:bg-purple-50"
-              >
-                <PlusCircle className="w-4 h-4" />
-                Switch to Chat
-              </Button>
+    <SidebarProvider defaultOpen={true}>
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
+        <AppSidebar />
+        <main className="flex-1 p-8">
+          <div className="flex justify-between items-center mb-8">
+            <SidebarTrigger />
+          </div>
+          <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
+            <div className="container mx-auto py-4 px-4 md:py-8 md:px-8">
+              {showForm ? (
+                <div className="max-w-4xl mx-auto">
+                  <div className="flex flex-col md:flex-row justify-between mb-4 gap-4">
+                    <Button
+                      onClick={handleSwitchToChat}
+                      variant="outline"
+                      className="flex items-center gap-2 text-white bg-indigo-500 hover:bg-indigo-100 hover:text-black w-full md:w-full"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      Switch to Chat
+                    </Button>
+                    <Button
+                      onClick={handleNewQuote}
+                      variant="outline"
+                      className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-full"
+                    >
+                      <PlusCircle className="w-4 h-4" />
+                      New Quote
+                    </Button>
+                    <SavedQuotes onClose={false} />
+                  </div>
+                  <QuoteForm
+                    onSubmit={handleQuoteSubmit}
+                    isLoading={isProcessing}
+                    defaultValues={quoteData || undefined}
+                  />
+                </div>
+              ) : (
+                <div className="max-w-5xl mx-auto w-full">
+                  <ChatSection
+                    messages={messages}
+                    isProcessing={isProcessing}
+                    onShowForm={toggleForm}
+                  />
+                </div>
+              )}
             </div>
-            <QuoteForm 
-              onSubmit={handleQuoteSubmit} 
-              isLoading={isProcessing}
-              defaultValues={quoteData || undefined}
-            />
+            <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Failed To Open Chat</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Please fill the form and resubmit.
+                  </AlertDialogDescription>
+                  <AlertDialogFooter>
+                    <AlertDialogAction className="bg-slate-600 hover:bg-slate-700" onClick={() => setIsAlertDialogOpen(false)}>OK</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogHeader>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
-        ) : (
-          <div className="max-w-5xl mx-auto w-full">
-            <ChatSection
-              messages={messages}
-              isProcessing={isProcessing}
-              onShowForm={toggleForm}
-            />
-          </div>
-        )}
+        </main>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

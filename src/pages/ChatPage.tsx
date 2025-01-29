@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ChatSection from "@/components/ChatSection";
 import { useParams, useNavigate } from "react-router-dom";
-import { getQuoteById } from "@/services/quoteService";
+import { getQuoteById, getQuoteHistoryById } from "@/services/quoteService";
 import { fetchQuoteResponse } from "@/services/quoteResponseService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteRequest, formatQuoteResponse } from "@/utils/formatQuoteSummary";
@@ -9,9 +9,7 @@ import type { QuoteFormData } from "@/components/quote-form/types";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useQuery } from "@tanstack/react-query";
-import { fetchQuoteHistory } from "@/services/quoteHistoryService";
-import type { QuoteHistoryItem } from "@/types/quoteHistory";
-
+import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
 const ChatPage = () => {
     const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -20,10 +18,9 @@ const ChatPage = () => {
     const navigate = useNavigate();
     const { toast } = useToast();
 
-    // Fetch quote history using React Query
     const { data: historyData } = useQuery({
         queryKey: ["quoteHistory", id],
-        queryFn: () => (id ? fetchQuoteHistory(parseInt(id)) : null),
+        queryFn: async () => (id ? await getQuoteHistoryById(parseInt(id)) : null),
         enabled: !!id,
         meta: {
             onError: () => {
@@ -35,63 +32,50 @@ const ChatPage = () => {
             },
         },
     });
-
-    // Fetch quote data only once and handle history initialization
     useEffect(() => {
         const fetchQuote = async () => {
-            if (!id || quoteData) return; // Prevent duplicate fetches if we already have data
+            if (!
+                id
+                || quoteData) {
+                try {
+                    const data = await getQuoteById(parseInt(id));
+                    setQuoteData(data);
 
-            try {
-                const data = await getQuoteById(parseInt(id));
-                setQuoteData(data);
-                
-                // Initialize messages with history if available
-                if (historyData?.data && historyData.data.length > 0) {
-                    const historyMessages = historyData.data.map((item: QuoteHistoryItem) => ({
-                        content: item.type === 0 ? formatQuoteRequest(data) : formatQuoteResponse({
-                            managerQuoteApproval: true,
-                            managerQuoteSummary: item.summary || "", // Using summary instead of managerQuoteSummary
-                            quoteDetails: {
-                                customerName: item.careHomeName,
-                                apetitoCostResidentPerDay: item.costPerDayPerResident || 0,
-                                menuOrderTotal: item.menuOrderTotal || 0,
-                                annualLaborSavings: item.annualLaborSavings || 0,
-                                annualFoodSavings: item.annualFoodSavings || 0,
-                                annualTotalSavings: item.annualTotalSavings || 0
-                            }
-                        }),
-                        isAi: item.type === 1
-                    }));
-                    setMessages(historyMessages);
-                }
-                
-                // Only add new request if there's no history
-                if (!historyData?.data?.length) {
+                    if (historyData != null && historyData.length > 0) {
+                        console.log("got the history")
+                        const historyMessages = historyData.map(item => ({
+                            content: item.type === 0 ? formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : formatQuoteResponse(mapQuoteHistoryToResponse(item)),
+                            isAi: item.type === 1
+                        }));
+                        setMessages(historyMessages);
+                    }
+
+                    // Add new request message and generate response
                     const summary = formatQuoteRequest(data);
                     setMessages(prev => [...prev, { content: summary, isAi: false }]);
                     handleInitialResponse(data);
+                } catch (error) {
+                    console.error("Error fetching quote:", error);
+                    toast({
+                        title: "Error",
+                        description: "Failed to fetch quote details",
+                        variant: "destructive",
+                    });
                 }
-            } catch (error) {
-                console.error("Error fetching quote:", error);
-                toast({
-                    title: "Error",
-                    description: "Failed to fetch quote details",
-                    variant: "destructive",
-                });
             }
         };
         fetchQuote();
-    }, [id, historyData, quoteData, toast]); // Added dependencies to useEffect
+    }, [id, historyData, quoteData, toast]);
 
     const handleInitialResponse = async (data: QuoteFormData) => {
         setIsProcessing(true);
         try {
             const response = await fetchQuoteResponse(data);
             if (response) {
-                if (!response.managerQuoteApproval) {
+                if (response === null) {
                     toast({
                         title: "Quote Generation Failed",
-                        description: response.managerQuoteSummary,
+                        description: response.summary,
                         variant: "destructive",
                     });
                 }
@@ -110,11 +94,9 @@ const ChatPage = () => {
             setIsProcessing(false);
         }
     };
-
     const handleShowForm = () => {
         navigate(`/quote/${id}`);
     };
-
     return (
         <SidebarProvider defaultOpen={true}>
             <div className="min-h-screen flex w-full bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
@@ -139,5 +121,4 @@ const ChatPage = () => {
         </SidebarProvider>
     );
 };
-
 export default ChatPage;
