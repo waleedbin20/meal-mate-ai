@@ -10,6 +10,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useQuery } from "@tanstack/react-query";
 import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
+
 const ChatPage = () => {
     const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean; versionNumber?: number }>>([]);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -34,16 +35,23 @@ const ChatPage = () => {
             },
         },
     });
+
     useEffect(() => {
         const fetchQuote = async () => {
             if (id && !isFetching) {
                 setIsFetching(true);
                 try {
                     const data = await getQuoteById(parseInt(id));
-                    setQuoteData(data);
+                    // Ensure required fields are present
+                    const completeData: QuoteFormData = {
+                        ...data,
+                        numberOfDiningRooms: data.numberOfDiningRooms || 1,
+                        diningRooms: data.diningRooms || [],
+                        totalResidents: data.totalResidents || 0
+                    };
+                    setQuoteData(completeData);
 
                     if (historyData != null && historyData.length > 0) {
-                        console.log("got the history")
                         const historyMessages = historyData.map(item => ({
                             content: item.type === 0 ? formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : formatQuoteResponse(mapQuoteHistoryToResponse(item)),
                             isAi: item.type === 1,
@@ -52,11 +60,10 @@ const ChatPage = () => {
                         setMessages(historyMessages);
                     }
 
-                    // Add new request message and generate response
                     if (isFirstLoad.current) {
-                        const summary = formatQuoteRequest(data);
+                        const summary = formatQuoteRequest(completeData);
                         setMessages(prev => [...prev, { content: summary, isAi: false }]);
-                        handleInitialResponse(data);
+                        handleInitialResponse(completeData);
                         isFirstLoad.current = false;
                     }
                 } catch (error) {
@@ -72,22 +79,17 @@ const ChatPage = () => {
             }
         };
         fetchQuote();
-    }, [id, toast]);
+    }, [id, toast, historyData]);
+
     const handleInitialResponse = async (data: QuoteFormData) => {
         setIsProcessing(true);
         try {
             const response = await fetchQuoteResponse(data);
             if (response) {
-                if (response === null) {
-                    toast({
-                        title: "Quote Generation Failed",
-                        description: response.summary,
-                        variant: "destructive",
-                    });
-                }
                 setMessages(prev => [...prev, {
                     content: formatQuoteResponse(response),
-                    isAi: true
+                    isAi: true,
+                    versionNumber: response.quoteDetails.versionNumber
                 }]);
             }
         } catch (error) {
@@ -100,9 +102,11 @@ const ChatPage = () => {
             setIsProcessing(false);
         }
     };
+
     const handleShowForm = () => {
         navigate(`/quote/${id}`);
     };
+
     return (
         <SidebarProvider defaultOpen={true}>
             <div className="min-h-screen flex w-full bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
@@ -127,4 +131,5 @@ const ChatPage = () => {
         </SidebarProvider>
     );
 };
+
 export default ChatPage;

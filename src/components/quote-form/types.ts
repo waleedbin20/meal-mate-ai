@@ -64,9 +64,9 @@ export interface QuoteFormData {
 	id?: number;
 	creatorName?: string;
 	careHomeName?: string;
-	numberOfDiningRooms?: number;
-	totalResidents?: number;
-	diningRooms?: DiningRoom[];
+	numberOfDiningRooms: number;
+	totalResidents: number;
+	diningRooms: DiningRoom[];
 	selectedMenu?: MenuOption;
 	extras?: ExtraOptions;
 	priceListName?: PriceListOption;
