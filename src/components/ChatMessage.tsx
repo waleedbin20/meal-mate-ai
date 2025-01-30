@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Bot, Save, Send } from "lucide-react";
+import { Bot, Save, Send, Check } from "lucide-react";
 import { Button } from "./ui/button";
 import { getAllQuotes, saveQuote } from "@/services/quoteService";
 import { submitQuoteToHubspot } from "@/services/hubspotService";
@@ -56,8 +56,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
       setIsSaved(true);
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
       toast({
-        title: "Success",
-        description: "Quote saved successfully",
+        title: "Quote Saved",
+        description: "Your quote has been saved successfully",
+        variant: "default",
       });
     } catch (error) {
       console.error('Error saving quote:', error);
@@ -83,12 +84,24 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
 
     setIsSubmitting(true);
     try {
-      const response = await submitQuoteToHubspot(quoteId, recordId);
-      toast({
-        title: "Success",
-        description: "Quote submitted to HubSpot successfully",
-      });
+      await submitQuoteToHubspot(quoteId, recordId);
       setIsDialogOpen(false);
+      toast({
+        variant: "default",
+        title: (
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4 text-green-500" />
+            <span>Success</span>
+          </div>
+        ),
+        description: (
+          <div className="mt-1 text-sm">
+            <p className="font-medium text-gray-900">Quote submitted to HubSpot successfully!</p>
+            <p className="text-gray-500 mt-1">Record ID: {recordId}</p>
+          </div>
+        ),
+        className: "bg-white border-green-100 text-gray-900",
+      });
     } catch (error) {
       console.error('Error submitting quote to HubSpot:', error);
       toast({
