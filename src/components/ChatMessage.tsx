@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Bot, Save, Send, Check } from "lucide-react";
+import { Bot, Save, Send, CheckCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { getAllQuotes, saveQuote } from "@/services/quoteService";
 import { submitQuoteToHubspot } from "@/services/hubspotService";
@@ -165,30 +165,28 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Submit Quote to HubSpot</DialogTitle>
-            <DialogDescription>
+        <DialogContent className="w-[90vw] max-w-[425px] rounded-lg p-4 md:p-6">
+          <DialogHeader className="space-y-3">
+            <DialogTitle className="text-xl">Submit Quote to HubSpot</DialogTitle>
+            <DialogDescription className="text-base">
               Please enter the Record ID to submit this quote to HubSpot.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Input
-                id="recordId"
-                placeholder="Enter Record ID"
-                value={recordId}
-                onChange={(e) => setRecordId(e.target.value)}
-                className="border-purple-200 focus:border-purple-300 focus:ring-purple-200"
-              />
-            </div>
+          <div className="py-3 md:py-4">
+            <Input
+              id="recordId"
+              placeholder="Enter Record ID"
+              value={recordId}
+              onChange={(e) => setRecordId(e.target.value)}
+              className="w-full border-purple-200 focus:border-purple-300 focus:ring-purple-200"
+            />
           </div>
-          <DialogFooter>
+          <DialogFooter className="mt-2">
             <Button
               type="submit"
               onClick={handleSubmitQuote}
               disabled={isSubmitting}
-              className="bg-purple-600 hover:bg-purple-700"
+              className="w-full md:w-auto bg-purple-600 hover:bg-purple-700"
             >
               {isSubmitting ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
@@ -202,21 +200,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
       </Dialog>
 
       <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-green-500" />
-              Success
+        <DialogContent className="w-[90vw] max-w-[425px] rounded-lg p-4 md:p-6">
+          <DialogHeader className="space-y-3">
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <CheckCircle className="h-7 w-7 text-green-500" />
+              <span>Success!</span>
             </DialogTitle>
-            <DialogDescription className="pt-2">
-              <p className="font-medium text-gray-900">Quote submitted to HubSpot successfully!</p>
-              <p className="text-gray-500 mt-1">Record ID: {recordId}</p>
+            <DialogDescription className="space-y-2">
+              <p className="text-base font-medium text-gray-900">
+                Quote submitted to HubSpot successfully!
+              </p>
+              <p className="text-sm text-gray-500">
+                Record ID: {recordId}
+              </p>
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <Button
               onClick={() => setIsSuccessDialogOpen(false)}
-              className="bg-green-600 hover:bg-green-700"
+              className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white"
             >
               Close
             </Button>
