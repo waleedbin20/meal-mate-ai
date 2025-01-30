@@ -29,6 +29,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
   const [isSaved, setIsSaved] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const [recordId, setRecordId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -86,22 +87,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
     try {
       await submitQuoteToHubspot(quoteId, recordId);
       setIsDialogOpen(false);
-      toast({
-        variant: "default",
-        title: (
-          <div className="flex items-center gap-2">
-            <Check className="h-4 w-4 text-green-500" />
-            <span>Success</span>
-          </div>
-        ),
-        description: (
-          <div className="mt-1 text-sm">
-            <p className="font-medium text-gray-900">Quote submitted to HubSpot successfully!</p>
-            <p className="text-gray-500 mt-1">Record ID: {recordId}</p>
-          </div>
-        ),
-        className: "bg-white border-green-100 text-gray-900",
-      });
+      setIsSuccessDialogOpen(true);
     } catch (error) {
       console.error('Error submitting quote to HubSpot:', error);
       toast({
@@ -210,6 +196,29 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
                 <Send className="h-4 w-4 mr-2" />
               )}
               Submit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              Success
+            </DialogTitle>
+            <DialogDescription className="pt-2">
+              <p className="font-medium text-gray-900">Quote submitted to HubSpot successfully!</p>
+              <p className="text-gray-500 mt-1">Record ID: {recordId}</p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={() => setIsSuccessDialogOpen(false)}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
