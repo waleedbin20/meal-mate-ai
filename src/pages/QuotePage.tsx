@@ -29,7 +29,7 @@ import { useQuery } from "@tanstack/react-query";
 import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
 
 const QuotePage = () => {
-  const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
+  const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean; version?: number }>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
@@ -77,9 +77,21 @@ const QuotePage = () => {
       console.log("Setting history messages:", historyData);
       const historyMessages = historyData.map(item => ({
         content: item.type === 0 ? 
-          formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : 
+          formatQuoteRequest({
+            ...mapQuoteHistoryToFormRequestData(item),
+            creatorName: "System", // Add required field
+            careHomeName: item.careHomeName || "",
+            roles: [],
+            apetitoLabor: {
+                name: "",
+                hourlyRate: 0,
+                hoursPerWeek: 0,
+                numberOfSimilarRoles: 1
+            }
+          }) : 
           item.summary || formatQuoteResponse(mapQuoteHistoryToResponse(item)),
-        isAi: item.type === 1
+        isAi: item.type === 1,
+        version: item.versionNumber
       }));
       setMessages(historyMessages);
     }

@@ -5,9 +5,9 @@ interface HubspotSubmitResponse {
   message: string;
 }
 
-export const submitQuoteToHubspot = async (quoteId: number, recordId: string): Promise<HubspotSubmitResponse> => {
+export const submitQuoteToHubspot = async (quoteId: number, recordId: string, version: number): Promise<HubspotSubmitResponse> => {
   try {
-    const response = await fetch(`https://wa-quote-api-dev-gwewavh3ddace9g7.uksouth-01.azurewebsites.net/api/quote/${quoteId}/hubspot?recordId=${recordId}`, {
+    const response = await fetch(`https://wa-quote-api-dev-gwewavh3ddace9g7.uksouth-01.azurewebsites.net/api/quote/${quoteId}/hubspot?recordId=${recordId}&version=${version}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

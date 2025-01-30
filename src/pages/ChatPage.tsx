@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
 
 const ChatPage = () => {
-    const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean }>>([]);
+    const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean; version?: number }>>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -42,9 +42,21 @@ const ChatPage = () => {
                     console.log("Setting up history messages");
                     const historyMessages = historyData.map(item => ({
                         content: item.type === 0 ? 
-                            formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : 
+                            formatQuoteRequest({
+                                ...mapQuoteHistoryToFormRequestData(item),
+                                creatorName: "System", // Add required field
+                                careHomeName: item.careHomeName || "",
+                                roles: [],
+                                apetitoLabor: {
+                                    name: "",
+                                    hourlyRate: 0,
+                                    hoursPerWeek: 0,
+                                    numberOfSimilarRoles: 1
+                                }
+                            }) : 
                             item.summary || formatQuoteResponse(mapQuoteHistoryToResponse(item)),
-                        isAi: item.type === 1
+                        isAi: item.type === 1,
+                        version: item.versionNumber
                     }));
                     setMessages(historyMessages);
                 }

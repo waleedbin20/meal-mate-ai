@@ -21,9 +21,10 @@ interface ChatMessageProps {
   content: string;
   animate?: boolean;
   quoteId: number;
+  version?: number;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true, quoteId }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true, quoteId, version = 1 }) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [isSaved, setIsSaved] = useState(false);
@@ -85,7 +86,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
 
     setIsSubmitting(true);
     try {
-      await submitQuoteToHubspot(quoteId, recordId);
+      await submitQuoteToHubspot(quoteId, recordId, version);
       setIsDialogOpen(false);
       setIsSuccessDialogOpen(true);
     } catch (error) {
