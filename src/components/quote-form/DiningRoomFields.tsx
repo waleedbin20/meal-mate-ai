@@ -15,14 +15,16 @@ interface DiningRoomFieldsProps {
 
 const mealCategories: MealCategory[] = [
   "Multi Twin",
-  "Level 3 IDDSI",
-  "Level 4 IDDSI",
-  "Level 5 IDDSI",
-  "Level 6 IDDSI",
+  "Level 3",
+  "Level 4",
+  "Level 5",
+  "Level 6",
   "Allergy-Free",
   "Finger Foods",
-  "Mini Meals",
-  "Religious Diets"
+  "Mini Meals Extra",
+  "Caribbean",
+  "Halal",
+  "Kosher"
 ];
 
 const multiTwinSizes: MultiTwinSize[] = ["Standard", "Large"];
@@ -30,14 +32,17 @@ const multiTwinSizes: MultiTwinSize[] = ["Standard", "Large"];
 const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['diningRooms'][0] => {
   const mapping: Record<MealCategory, keyof QuoteFormData['diningRooms'][0]> = {
     "Multi Twin": "multiTwinResidents",
-    "Level 3 IDDSI": "level3Residents",
-    "Level 4 IDDSI": "level4Residents",
-    "Level 5 IDDSI": "level5Residents",
-    "Level 6 IDDSI": "level6Residents",
+    "Level 3": "level3Residents",
+    "Level 4": "level4Residents",
+    "Level 5": "level5Residents",
+    "Level 6": "level6Residents",
     "Allergy-Free": "allergyFreeResidents",
     "Finger Foods": "fingerFoodResidents",
-    "Mini Meals": "miniMealResidents",
-    "Religious Diets": "religiousDietsResidents"
+    "Mini Meals Extra": "miniMealResidents",
+    "Caribbean": "caribbeanDietsResidents",
+    "Halal": "halalDietsResidents",
+    "Kosher": "kosherDietsResidents"
+
   };
   return mapping[category];
 };
@@ -48,6 +53,7 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
   const diningRoom = form.watch(`diningRooms.${index}`);
   const allDiningRooms = form.watch('diningRooms');
 
+  // Calculate total residents for this dining room
   React.useEffect(() => {
     const total =
       (diningRoom.multiTwinResidents || 0) +
@@ -58,7 +64,9 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
       (diningRoom.allergyFreeResidents || 0) +
       (diningRoom.fingerFoodResidents || 0) +
       (diningRoom.miniMealResidents || 0) +
-      (diningRoom.religiousDietsResidents || 0);
+      (diningRoom.caribbeanDietsResidents || 0) +
+      (diningRoom.halalDietsResidents || 0) +
+      (diningRoom.kosherDietsResidents || 0);
 
     form.setValue(`diningRooms.${index}.totalResidentsInDiningRoom`, total);
   }, [
@@ -70,7 +78,9 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
     diningRoom.allergyFreeResidents,
     diningRoom.fingerFoodResidents,
     diningRoom.miniMealResidents,
-    diningRoom.religiousDietsResidents,
+    diningRoom.caribbeanDietsResidents,
+    diningRoom.halalDietsResidents,
+    diningRoom.kosherDietsResidents,
     form,
     index
   ]);
@@ -132,9 +142,10 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                 control={form.control}
                 name={`diningRooms.${index}.mealCategories` as const}
                 render={({ field }) => (
-                  <FormItem className="flex items-center space-x-3">
+                  <FormItem className="flex items-center space-x-2">
                     <FormControl>
                       <Checkbox
+                        className="border-purple-200 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                         checked={field.value?.includes(category)}
                         onCheckedChange={(checked) => {
                           const currentValue = field.value || [];
@@ -152,17 +163,14 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                             }
                           }
                         }}
-                        className="border-purple-200 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
                       />
                     </FormControl>
-                    <FormLabel className="font-normal text-base leading-none m-0 cursor-pointer">
-                      {category}
-                    </FormLabel>
+                    <FormLabel className=" font-normal text-base leading-none m-0 cursor-pointer">{category}</FormLabel>
                   </FormItem>
                 )}
               />
 
-              {category === "Multi Twin" && diningRoom.mealCategories?.includes(category) && (
+              {category === "Multi Twin" && form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <div className="ml-6 space-y-4">
                   <FormField
                     control={form.control}
@@ -195,10 +203,32 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name={`diningRooms.${index}.multiTwinResidents` as const}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="0"
+                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            value={String(field.value || '')}
+                            onBlur={field.onBlur}
+                            name={field.name}
+                            ref={field.ref}
+                            placeholder="Number of Multi Twin residents"
+                            className="w-full max-w-xs"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               )}
 
-              {diningRoom.mealCategories?.includes(category) && (
+              {category !== "Multi Twin" && form.getValues(`diningRooms.${index}.mealCategories`)?.includes(category) && (
                 <FormField
                   control={form.control}
                   name={`diningRooms.${index}.${getResidentFieldName(category)}` as const}

@@ -8,10 +8,10 @@ import { useToast } from "@/hooks/use-toast";
 import { formatQuoteRequest, formatQuoteResponse } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, PlusCircle } from "lucide-react";
+import { MessageCircle, PlusCircle, Save } from "lucide-react";
 import SavedQuotes from "@/components/SavedQuote";
 import { useLocation, useParams } from "react-router-dom";
-import { getQuoteById, getQuoteHistoryById } from "@/services/quoteService";
+import { getQuoteById } from "@/services/quoteService";
 import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
@@ -25,11 +25,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { useQuery } from "@tanstack/react-query";
-import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
 
 const QuotePage = () => {
-  const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean; version?: number }>>([]);
+
+
+  const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean, versionNumber?: number }>>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showForm, setShowForm] = useState(true);
   const [quoteResponse, setQuoteResponse] = useState<QuoteResponse | null>(null);
@@ -39,14 +39,6 @@ const QuotePage = () => {
   const { toast } = useToast();
   const location = useLocation();
   const { id } = useParams();
-  const navigate = useNavigate();
-
-  // Fetch quote history
-  const { data: historyData } = useQuery({
-    queryKey: ["quoteHistory", id],
-    queryFn: async () => (id ? await getQuoteHistoryById(parseInt(id)) : null),
-    enabled: !!id,
-  });
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -64,7 +56,6 @@ const QuotePage = () => {
         }
       }
     };
-
     if (id) {
       fetchQuote();
     } else if (location.state?.defaultValues) {
@@ -72,52 +63,18 @@ const QuotePage = () => {
     }
   }, [id, location.state, toast]);
 
-  useEffect(() => {
-    if (historyData && historyData.length > 0) {
-      console.log("Setting history messages:", historyData);
-      const historyMessages = historyData.map(item => ({
-        content: item.type === 0 ? 
-          formatQuoteRequest({
-            ...mapQuoteHistoryToFormRequestData(item),
-            creatorName: "System", // Add required field
-            careHomeName: item.careHomeName || "",
-            roles: [],
-            apetitoLabor: {
-                name: "",
-                hourlyRate: 0,
-                hoursPerWeek: 0,
-                numberOfSimilarRoles: 1
-            }
-          }) : 
-          item.summary || formatQuoteResponse(mapQuoteHistoryToResponse(item)),
-        isAi: item.type === 1,
-        version: item.versionNumber
-      }));
-      setMessages(historyMessages);
-    }
-  }, [historyData]);
 
   const handleQuoteSubmit = async (data: QuoteFormData) => {
     setIsProcessing(true);
     setLastFormData(data);
-    
-    // Add the request message to chat
-    const requestSummary = formatQuoteRequest(data);
-    console.log("Adding request message:", requestSummary);
-    setMessages(prevMessages => [...prevMessages, { content: requestSummary, isAi: false }]);
-    
+    const summary = formatQuoteRequest(data);
+    setMessages([{ content: summary, isAi: false }]);
     setShowForm(false);
 
     try {
       const response = await fetchQuoteResponse(data);
       if (response) {
         setQuoteResponse(response);
-        console.log("Adding response message:", response);
-        // Add the response message to chat
-        setMessages(prevMessages => [...prevMessages, {
-          content: formatQuoteResponse(response),
-          isAi: true
-        }]);
 
         if (response === null) {
           toast({
@@ -125,8 +82,13 @@ const QuotePage = () => {
             description: response.summary,
             variant: "destructive",
           });
-          return;
         }
+
+        setMessages(prev => [...prev, {
+          content: formatQuoteResponse(response),
+          isAi: true,
+          versionNumber: response.quoteDetails.versionNumber
+        }]);
       }
     } catch (error) {
       toast({
@@ -139,12 +101,14 @@ const QuotePage = () => {
       setIsProcessing(false);
     }
   };
+  const navigate = useNavigate();
 
   const handleSwitchToChat = () => {
     if (id) {
       console.log(`Switch to chat for quote id`, id);
       navigate(`/quote/${id}/chat`);
-    } else {
+    }
+    else {
       setIsAlertDialogOpen(true);
     }
   };

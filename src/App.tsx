@@ -4,7 +4,7 @@ import Landing from "./pages/Landing";
 import SavedQuotesPage from "./components/SavedQuotePage";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import ChatPage from "./pages/ChatPage"; // Fixed capitalization
+import ChatPage from "./pages/chatPage";
 
 const queryClient = new QueryClient();
 

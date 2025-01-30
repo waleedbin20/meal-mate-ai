@@ -31,17 +31,15 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   const handleSheetClose = () => {
     setIsSheetOpen(false);
   };
-  
+
   const handleEditQuote = () => {
     if (id) {
-      console.log(`Editing quote id`, id);
       navigate(`/quote/${id}`);
     }
   };
-  
+
   const handleNewQuote = () => {
     if (id) {
-      console.log(`Creating new quote`, id);
       navigate(`/quote`);
     }
   };
@@ -85,13 +83,12 @@ const ChatSection: React.FC<ChatSectionProps> = ({
           {historyMessages.length > 0 && (
             <Accordion type="single" collapsible className="w-full mb-8">
               <AccordionItem value="history" className="border-none">
-                <AccordionTrigger 
+                <AccordionTrigger
                   onClick={() => setIsHistoryOpen(!isHistoryOpen)}
-                  className={`py-2 px-4 rounded-lg transition-all duration-300 ${
-                    isHistoryOpen 
-                      ? "bg-purple-100 text-purple-900" 
-                      : "bg-purple-50 text-purple-700 hover:bg-purple-100"
-                  }`}
+                  className={`py-2 px-4 rounded-lg transition-all duration-300 ${isHistoryOpen
+                    ? "bg-purple-100 text-purple-900"
+                    : "bg-purple-50 text-purple-700 hover:bg-purple-100"
+                    }`}
                 >
                   <span className="flex items-center gap-2">
                     {isHistoryOpen ? (

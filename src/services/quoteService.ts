@@ -1,6 +1,6 @@
+import { TransformedQuoteData } from "@/components/quote-form/types";
 import { QuoteFormData } from "@/components/quote-form/types";
 import { ApiResponse, QuoteHistory, SavedQuote } from "@/types/quoteResponse";
-
 import { useQueryClient } from "@tanstack/react-query";
 
 const API_BASE_URL =
@@ -178,3 +178,28 @@ export const getQuoteHistoryById = async (
 	}
 };
 
+export const submitQuoteToHubSpot = async (
+	quoteId: number,
+	versionNumber: number,
+	recordId: string
+): Promise<void> => {
+	try {
+		const response = await fetch(
+			`${API_BASE_URL}/quote/${quoteId}/hubspot?recordId=${recordId}&versionNumber=${versionNumber}`,
+
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		if (!response.ok) {
+			throw new Error("Failed to submit quote to HubSpot");
+		}
+		return response.json();
+	} catch (error) {
+		console.error("Error submitting quote to HubSpot:", error);
+		throw error;
+	}
+};

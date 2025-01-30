@@ -1,30 +1,23 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Bot, Save, Send, CheckCircle } from "lucide-react";
+import { Bot, Check, CheckCircle, Save, Send } from "lucide-react";
 import { Button } from "./ui/button";
-import { getAllQuotes, saveQuote } from "@/services/quoteService";
-import { submitQuoteToHubspot } from "@/services/hubspotService";
+import { getAllQuotes, saveQuote, submitQuoteToHubSpot } from "@/services/quoteService";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Input } from "./ui/input";
 
 interface ChatMessageProps {
   isAi: boolean;
   content: string;
   animate?: boolean;
   quoteId: number;
-  version?: number;
+  versionNumber: number;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true, quoteId, version = 1 }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true, quoteId,
+  versionNumber }) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [isSaved, setIsSaved] = useState(false);
@@ -33,7 +26,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const [recordId, setRecordId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const formatContent = (text: string) => {
     const containsHtml = /<[a-z][\s\S]*>/i.test(text);
 
@@ -50,25 +43,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
       ));
     }
   };
-
   const handleSaveQuote = async () => {
     setIsLoading(true);
     try {
       await saveQuote(quoteId, 'Approved')
       setIsSaved(true);
       queryClient.invalidateQueries({ queryKey: ['quotes'] });
-      toast({
-        title: "Quote Saved",
-        description: "Your quote has been saved successfully",
-        variant: "default",
-      });
+      console.log('Quote saved successfully');
     } catch (error) {
       console.error('Error saving quote:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save quote",
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }
@@ -86,9 +69,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
 
     setIsSubmitting(true);
     try {
-      await submitQuoteToHubspot(quoteId, recordId, version);
+      await submitQuoteToHubSpot(quoteId, versionNumber, recordId,);
       setIsDialogOpen(false);
       setIsSuccessDialogOpen(true);
+      setIsSubmitted(true);
     } catch (error) {
       console.error('Error submitting quote to HubSpot:', error);
       toast({
@@ -134,36 +118,38 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, content, animate = true
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground mb-1.5">Save this quote for later reference</p>
                 <Button
-                  className={`w-full ${isSaved ? 'bg-green-100 text-green-700' : 'bg-white text-black'}`}
+                  className={`w-full ${isSaved ? 'bg-green-100 text-green-700 hover:bg-green-100 hover:text-green-900' : 'bg-white text-black'}`}
                   variant="outline"
                   size="sm"
                   onClick={handleSaveQuote}
-                  disabled={isLoading}
+                  disabled={isLoading || isSaved ? true : false}
                 >
                   {isLoading ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2"></div>
                   ) : (
                     <Save className="h-4 w-4 mr-2" />
                   )}
-                  Save Quote
+                  {`${isSaved ? 'Saved' : 'Saved Quote'}`}
                 </Button>
               </div>
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground mb-1.5">Submit this quote to HubSpot for processing</p>
-                <Button 
-                  className="w-full bg-slate-700 hover:bg-purple-100 hover:text-purple-900" 
-                  variant="default" 
+                <Button
+                  className={`
+                  w-full ${isSubmitted ? 'bg-green-100 text-green-700 hover:bg-green-100 hover:text-green-900' : 'bg-slate-700 hover:bg-purple-100 hover:text-purple-900'}   `}
+                  variant="default"
                   size="sm"
+                  disabled={isSubmitted ? true : false}
                   onClick={() => setIsDialogOpen(true)}
                 >
                   <Send className="h-4 w-4 mr-2" />
-                  Submit Quote
+                  {`${isSubmitted ? 'Submitted' : 'Submit Quote'}`}
                 </Button>
               </div>
             </div>
           )}
         </div>
-      </div>
+      </div >
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="w-[90vw] max-w-[425px] rounded-lg p-4 md:p-6">

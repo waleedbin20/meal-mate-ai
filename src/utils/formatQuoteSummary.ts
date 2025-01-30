@@ -34,7 +34,7 @@ export const formatQuoteRequest = (data: QuoteFormData): string => {
 
       ${
 				extraMealOptions.length > 0
-					? `<p><strong>Extra Meal Options:</strong></p><ul>${extraMealOptions.join(
+					? `<p><strong>Multi Twin Extra Options:</strong></p><ul>${extraMealOptions.join(
 							""
 					  )}</ul>`
 					: ""

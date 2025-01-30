@@ -50,7 +50,9 @@ export const QuoteForm = ({
           allergyFreeResidents: 0,
           fingerFoodResidents: 0,
           miniMealResidents: 0,
-          religiousDietsResidents: 0,
+          caribbeanDietsResidents: 0,
+          halalDietsResidents: 0,
+          kosherDietsResidents: 0,
           totalResidentsInDiningRoom: 0
         }
       ],
@@ -179,7 +181,9 @@ export const QuoteForm = ({
           allergyFreeResidents: 0,
           fingerFoodResidents: 0,
           miniMealResidents: 0,
-          religiousDietsResidents: 0,
+          caribbeanDietsResidents: 0,
+          kosherDietsResidents: 0,
+          halalDietsResidents: 0,
           totalResidentsInDiningRoom: 0
         }
       ],
@@ -243,11 +247,7 @@ export const QuoteForm = ({
         <>
           <CareHomeDetails form={form} />
 
-          <MenuSelection form={form} />
 
-          <div className="space-y-4">
-            <PricingInformation form={form} />
-          </div>
 
           <NumberOfDiningRooms form={form} />
 
@@ -272,10 +272,11 @@ export const QuoteForm = ({
               )}
             />
           </div>
+          <MenuSelection form={form} />
 
-
-
-
+          <div className="space-y-4">
+            <PricingInformation form={form} />
+          </div>
 
           <LaborCostFields form={form} />
 

@@ -59,7 +59,6 @@ const SavedQuotes = ({ onClose }) => {
             await queryClient.invalidateQueries({ queryKey: ['quotes'] });
             toast.success("Quote deleted successfully");
             setQuoteToDelete(null);
-            handleSheetClose();
         } catch (error) {
             console.error("Error deleting quote:", error);
             toast.error("Failed to delete quote");
