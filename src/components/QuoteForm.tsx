@@ -13,11 +13,14 @@ import { FormWrapper } from "./quote-form/FormWrapper";
 import { NumberOfDiningRooms } from "./quote-form/NumberOfDiningRooms";
 import { FormInitializer } from "./quote-form/FormInitializer";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createQuote, updateQuoteById } from "@/services/quoteService";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { sampleQuoteData } from "@/types/sampleQuoteData";
+import { useQuery } from "@tanstack/react-query";
+import { getAllUsers } from "@/services/userService";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -89,6 +92,11 @@ export const QuoteForm = ({
   const creatorName = form.watch('creatorName') || '';
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const { data: users = [], isLoading: isLoadingUsers } = useQuery({
+    queryKey: ['users'],
+    queryFn: getAllUsers
+  });
 
   React.useEffect(() => {
     if (defaultValues) {
@@ -227,17 +235,31 @@ export const QuoteForm = ({
           control={form.control}
           name="creatorName"
           rules={{
-            required: "Creator Name is required",
-            minLength: {
-              value: 2,
-              message: "Creator Name must be at least 2 characters"
-            }
+            required: "Creator Name is required"
           }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Creator Name</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Enter your name" className="bg-white" />
+                {isLoadingUsers ? (
+                  <Skeleton className="h-10 w-full" />
+                ) : (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="bg-white">
+                      <SelectValue placeholder="Select a user" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {users.map((user) => (
+                        <SelectItem key={user.id} value={user.name}>
+                          {user.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </FormControl>
               <p className="text-sm text-muted-foreground">Name of the apetito user</p>
               <FormMessage />
@@ -249,13 +271,8 @@ export const QuoteForm = ({
       {creatorName.trim() && (
         <>
           <CareHomeDetails form={form} />
-
-
-
           <NumberOfDiningRooms form={form} />
-
           <DiningRoomsSection form={form} diningRooms={diningRooms} />
-
           <div className="space-y-4">
             <FormField
               control={form.control}
