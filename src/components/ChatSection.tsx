@@ -3,10 +3,13 @@ import { ChatMessage } from "./ChatMessage";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { Skeleton } from "./ui/skeleton";
-import { cn } from "@/lib/utils";
 
-const ChatSection = () => {
-  const [messages, setMessages] = useState([]);
+interface ChatSectionProps {
+  chatHistory?: any[];
+}
+
+const ChatSection: React.FC<ChatSectionProps> = ({ chatHistory = [] }) => {
+  const [messages, setMessages] = useState(chatHistory);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
 
@@ -14,9 +17,8 @@ const ChatSection = () => {
     if (input.trim() === "") return;
 
     setLoading(true);
-    // Simulate sending a message
     setTimeout(() => {
-      setMessages((prev) => [...prev, { text: input, sender: "user" }]);
+      setMessages((prev) => [...prev, { content: input, isAi: false, versionNumber: 1 }]);
       setInput("");
       setLoading(false);
     }, 1000);
@@ -27,7 +29,13 @@ const ChatSection = () => {
       <ScrollArea className="flex-1">
         {loading && <Skeleton className="h-10 w-full" />}
         {messages.map((msg, index) => (
-          <ChatMessage key={index} message={msg} />
+          <ChatMessage 
+            key={index} 
+            content={msg.content} 
+            isAi={msg.isAi} 
+            versionNumber={msg.versionNumber}
+            quoteId={1}
+          />
         ))}
       </ScrollArea>
       <div className="flex items-center mt-4">
