@@ -21,6 +21,7 @@ import { sampleQuoteData } from "@/types/sampleQuoteData";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUsers } from "@/services/userService";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
@@ -54,20 +55,12 @@ export const QuoteForm = ({
           fingerFoodResidents: 0,
           miniMealResidents: 0,
           caribbeanDietsResidents: 0,
-          halalDietsResidents: 0,
           kosherDietsResidents: 0,
+          halalDietsResidents: 0,
           totalResidentsInDiningRoom: 0
         }
       ],
       selectedMenu: { menuName: "Menu A - Jan 2025", menuId: "97481" },
-      extras: {
-        includeBreakfast: false,
-        lighterMealOption: null,
-        includeLighterMealDessert: false,
-        level4Options: [],
-        level5Options: [],
-        level6Options: []
-      },
       priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406", customerName: "National" },
       currentLabourHours: 0,
       currentLabourCost: 0,
@@ -246,7 +239,8 @@ export const QuoteForm = ({
                 ) : (
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
+                    defaultValue={defaultValues?.creatorName || field.value}
                   >
                     <SelectTrigger className="bg-white">
                       <SelectValue placeholder="Select a user" />
