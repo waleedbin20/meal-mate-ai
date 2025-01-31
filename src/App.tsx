@@ -5,6 +5,7 @@ import SavedQuotesPage from "./components/SavedQuotePage";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ChatPage from "./pages/ChatPage";
+import UsersPage from "./pages/UsersPage";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/quote/:id" element={<QuotePage />} />
           <Route path="/saved-quotes" element={<SavedQuotesPage />} />
           <Route path="/quote/:id/chat" element={<ChatPage />} />
+          <Route path="/users" element={<UsersPage />} />
         </Routes>
       </Router>
       <Toaster />

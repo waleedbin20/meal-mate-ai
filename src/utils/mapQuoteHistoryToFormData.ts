@@ -1,42 +1,22 @@
-import {
-	LighterMealOption,
-	QuoteFormData,
-} from "@/components/quote-form/types";
-import { QuoteHistory, QuoteResponse } from "@/types/quoteResponse";
+import { QuoteFormData } from "@/components/quote-form/types";
 
-export const mapQuoteHistoryToFormRequestData = (item: QuoteHistory): QuoteFormData => {
-	const lighterMealOption: LighterMealOption =
-		item.lighterMealOption as LighterMealOption;
-
-	return {
-		careHomeName: item.careHomeName,
-		extras: {
-			includeBreakfast: item.includeBreakfast,
-			includeLighterMealDessert: item.includeLighterMealDessert,
-			lighterMealOption: lighterMealOption,
-			level4Options: ["Breakfast", "Snacks", "Dessert"],
-			level5Options: ["Dessert"],
-			level6Options: ["Dessert"]
-		},
-		totalResidents: item.numberOfResidents || 0,
-		numberOfDiningRooms: item.numberOfDiningRooms || 0,
-		diningRooms: [],
-		selectedMenu: { menuName: item.selectedMenu },
-		estimatedNonApetitoSpend: item.estimatedNonApetitoSpend || 0,
-		currentFoodSpend: item.currentAnnualFoodSpend || 0,
-		numberOfRoles: item.numberOfRoles || 0,
-	};
+export const mapQuoteHistoryToFormData = (quoteHistory: any): QuoteFormData => {
+  return {
+    creatorName: "System",  // Add default creator name
+    careHomeName: quoteHistory.careHomeName,
+    extras: {
+      includeBreakfast: quoteHistory.extras.includeBreakfast,
+      includeLighterMealDessert: quoteHistory.extras.includeLighterMealDessert,
+      lighterMealOption: quoteHistory.extras.lighterMealOption,
+      level4Options: quoteHistory.extras.level4Options || [],
+      level5Options: quoteHistory.extras.level5Options || [],
+      level6Options: quoteHistory.extras.level6Options || [],
+    },
+    numberOfDiningRooms: quoteHistory.numberOfDiningRooms,
+    totalResidents: quoteHistory.totalResidents,
+    diningRooms: quoteHistory.diningRooms,
+    roles: quoteHistory.roles,
+    apetitoLabor: quoteHistory.apetitoLabor,
+    numberOfRoles: quoteHistory.numberOfRoles,
+  };
 };
-
-export const mapQuoteHistoryToResponse = (
-	item: QuoteHistory
-): QuoteResponse => ({
-	quoteDetails: {
-		customerName: item.careHomeName,
-		apetitoCostResidentPerDay: item.costPerDayPerResident || 0,
-		menuOrderTotal: item.menuOrderTotal || 0,
-		annualLaborSavings: item.annualLaborSavings || 0,
-		annualFoodSavings: item.annualFoodSavings || 0,
-		annualTotalSavings: item.annualTotalSavings || 0,
-	},
-});

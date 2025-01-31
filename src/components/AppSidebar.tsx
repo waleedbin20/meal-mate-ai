@@ -37,7 +37,7 @@ const items = [
     },
     {
         title: "Users",
-        url: "#",
+        url: "/users",
         icon: Users,
     },
 ];
@@ -53,7 +53,6 @@ export function AppSidebar() {
     return (
         <Sidebar>
             <SidebarContent className="py-6">
-
                 <SidebarGroup>
                     <SidebarGroupLabel className="px-6 py-4 mb-4 text-xl font-semibold text-purple-600">
                         Quote Management
@@ -72,7 +71,7 @@ export function AppSidebar() {
                             flex items-center justify-center md:justify-start gap-4"
                                     >
                                         <item.icon className="w-6 h-6" />
-                                        <span >{item.title}</span>
+                                        <span>{item.title}</span>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
