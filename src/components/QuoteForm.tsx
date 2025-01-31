@@ -251,7 +251,7 @@ export const QuoteForm = ({
                     <SelectTrigger className="bg-white">
                       <SelectValue placeholder="Select a user" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       {users.map((user) => (
                         <SelectItem key={user.id} value={user.name}>
                           {user.name}
