@@ -73,6 +73,14 @@ export const QuoteForm = ({
         hourlyRate: 0,
         hoursPerWeek: 0,
         numberOfSimilarRoles: 0
+      },
+      extras: {
+        includeBreakfast: false,
+        lighterMealOption: "standard",
+        includeLighterMealDessert: false,
+        level4Options: [],
+        level5Options: [],
+        level6Options: []
       }
     },
     mode: "onChange",

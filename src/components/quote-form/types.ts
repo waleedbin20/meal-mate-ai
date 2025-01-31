@@ -18,39 +18,77 @@ export interface QuoteFormData {
   };
   numberOfDiningRooms: number;
   totalResidents: number;
-  diningRooms: any[];
-  roles: any[];
-  apetitoLabor: {
-    name: string;
-    hourlyRate: number;
-    hoursPerWeek: number;
-    numberOfSimilarRoles: number;
-  };
+  diningRooms: DiningRoom[];
+  roles: Role[];
+  apetitoLabor: ApetitoLabor;
   numberOfRoles: number;
-  selectedMenu: {
-    menuName: string;
-    menuId: string;
-  };
-  priceListName: {
-    customerNo: string;
-    priceHierarchy: string;
-    customerId: string;
-    customerName: string;
-  };
+  selectedMenu: MenuSelection;
+  priceListName: PriceList;
   currentLabourHours: number;
   currentLabourCost: number;
   currentFoodSpend: number;
   estimatedNonApetitoSpend: number;
 }
 
+export interface DiningRoom {
+  name: string;
+  mealCategories: MealCategory[];
+  multiTwinResidents: number;
+  level3Residents: number;
+  level4Residents: number;
+  level5Residents: number;
+  level6Residents: number;
+  allergyFreeResidents: number;
+  fingerFoodResidents: number;
+  miniMealResidents: number;
+  caribbeanDietsResidents: number;
+  kosherDietsResidents: number;
+  halalDietsResidents: number;
+  totalResidentsInDiningRoom: number;
+  multiTwinSize?: MultiTwinSize;
+}
+
+export interface Role {
+  name: string;
+  hourlyRate: number;
+  hoursPerWeek: number;
+  numberOfSimilarRoles: number;
+}
+
+export interface ApetitoLabor {
+  name: string;
+  hourlyRate: number;
+  hoursPerWeek: number;
+  numberOfSimilarRoles: number;
+}
+
+export interface MenuSelection {
+  menuName: string;
+  menuId: string;
+}
+
+export interface PriceList {
+  customerNo: string;
+  priceHierarchy: string;
+  customerId: string;
+  customerName: string;
+}
+
+export type MealCategory = 
+  | "Multi Twin"
+  | "Level 3"
+  | "Level 4"
+  | "Level 5"
+  | "Level 6"
+  | "Allergy-Free"
+  | "Finger Foods"
+  | "Mini Meals Extra"
+  | "Caribbean"
+  | "Halal"
+  | "Kosher";
+
+export type MultiTwinSize = "Standard" | "Large";
+
 export interface TransformedQuoteData extends QuoteFormData {
   // Add any additional fields needed for transformed data
 }
-
-export type MealCategory = string;
-export type MultiTwinSize = string;
-export type MenuOption = string;
-export type Level4Options = string;
-export type Level5Options = string;
-export type Level6Options = string;
-export type LaborRole = string;
