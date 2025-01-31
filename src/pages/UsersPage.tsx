@@ -13,24 +13,43 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-}
-
-// Mock data - replace with actual API calls when backend is ready
-const mockUsers: User[] = [
-  { id: 1, name: "John Doe", email: "john@example.com", role: "Admin" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", role: "Manager" },
-];
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getAllUsers, createUser, deleteUser } from "@/services/userService";
+import { User } from "@/components/quote-form/types";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>(mockUsers);
   const [newUser, setNewUser] = useState({ name: "", email: "", role: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data: users = [], isLoading, error } = useQuery({
+    queryKey: ['users'],
+    queryFn: getAllUsers,
+  });
+
+  const createUserMutation = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setNewUser({ name: "", email: "", role: "" });
+      setIsDialogOpen(false);
+      toast.success("User added successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to add user: " + error.message);
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success("User deleted successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to delete user: " + error.message);
+    },
+  });
 
   const handleAddUser = () => {
     if (!newUser.name || !newUser.email || !newUser.role) {
@@ -38,21 +57,11 @@ export default function UsersPage() {
       return;
     }
 
-    const user: User = {
-      id: users.length + 1,
-      ...newUser
-    };
-
-    setUsers([...users, user]);
-    setNewUser({ name: "", email: "", role: "" });
-    setIsDialogOpen(false);
-    toast.success("User added successfully");
+    createUserMutation.mutate(newUser as User);
   };
 
-  const handleDeleteUser = (id: number) => {
-    setUsers(users.filter(user => user.id !== id));
-    toast.success("User deleted successfully");
-  };
+  if (isLoading) return <div className="container mx-auto py-8 px-4">Loading...</div>;
+  if (error) return <div className="container mx-auto py-8 px-4">Error: {error.message}</div>;
 
   return (
     <div className="container mx-auto py-8 px-4 animate-fade-in">
@@ -95,8 +104,12 @@ export default function UsersPage() {
                   onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                 />
               </div>
-              <Button className="w-full" onClick={handleAddUser}>
-                Add User
+              <Button 
+                className="w-full" 
+                onClick={handleAddUser}
+                disabled={createUserMutation.isPending}
+              >
+                {createUserMutation.isPending ? "Adding..." : "Add User"}
               </Button>
             </div>
           </DialogContent>
@@ -123,7 +136,8 @@ export default function UsersPage() {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDeleteUser(user.id)}
+                    onClick={() => deleteUserMutation.mutate(user.id)}
+                    disabled={deleteUserMutation.isPending}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>

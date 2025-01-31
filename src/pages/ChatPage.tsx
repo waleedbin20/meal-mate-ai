@@ -1,135 +1,37 @@
-import React, { useState, useEffect, useRef } from "react";
-import ChatSection from "@/components/ChatSection";
-import { useParams, useNavigate } from "react-router-dom";
-import { getQuoteById, getQuoteHistoryById } from "@/services/quoteService";
-import { fetchQuoteResponse } from "@/services/quoteResponseService";
-import { useToast } from "@/hooks/use-toast";
-import { formatQuoteRequest, formatQuoteResponse } from "@/utils/formatQuoteSummary";
-import type { QuoteFormData } from "@/components/quote-form/types";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { AppSidebar } from "@/components/AppSidebar";
+import ChatSection from "@/components/ChatSection";
 import { useQuery } from "@tanstack/react-query";
-import { mapQuoteHistoryToFormRequestData, mapQuoteHistoryToResponse } from "@/utils/mapQuoteHistoryToFormData";
+import { getQuoteHistory } from "@/services/quoteService";
+import { QuoteHistory } from "@/types/quoteResponse";
+import { mapQuoteHistoryToFormData } from "@/utils/mapQuoteHistoryToFormData";
 
-const ChatPage = () => {
-    const [messages, setMessages] = useState<Array<{ content: string; isAi: boolean; versionNumber?: number }>>([]);
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [quoteData, setQuoteData] = useState<QuoteFormData | null>(null);
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const { toast } = useToast();
-    const [isFetching, setIsFetching] = useState(false);
-    const isFirstLoad = useRef(true);
+export default function ChatPage() {
+  const { id } = useParams<{ id: string }>();
+  const [chatHistory, setChatHistory] = useState<QuoteHistory[]>([]);
 
-    const { data: historyData } = useQuery({
-        queryKey: ["quoteHistory", id],
-        queryFn: async () => (id ? await getQuoteHistoryById(parseInt(id)) : null),
-        enabled: !!id,
-        meta: {
-            onError: () => {
-                toast({
-                    title: "Error",
-                    description: "Failed to fetch quote history",
-                    variant: "destructive",
-                });
-            },
-        },
-    });
+  const { data, isLoading, error } = useQuery<QuoteHistory[], Error>(
+    ["quoteHistory", id],
+    () => getQuoteHistory(Number(id))
+  );
 
-    useEffect(() => {
-        const fetchQuote = async () => {
-            if (id && !isFetching) {
-                setIsFetching(true);
-                try {
-                    const data = await getQuoteById(parseInt(id));
-                    // Ensure required fields are present
-                    const completeData: QuoteFormData = {
-                        ...data,
-                        numberOfDiningRooms: data.numberOfDiningRooms || 1,
-                        diningRooms: data.diningRooms || [],
-                        totalResidents: data.totalResidents || 0
-                    };
-                    setQuoteData(completeData);
+  useEffect(() => {
+    if (data) {
+      setChatHistory(data);
+    }
+  }, [data]);
 
-                    if (historyData != null && historyData.length > 0) {
-                        const historyMessages = historyData.map(item => ({
-                            content: item.type === 0 ? formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : formatQuoteResponse(mapQuoteHistoryToResponse(item)),
-                            isAi: item.type === 1,
-                            versionNumber: item.versionNumber
-                        }));
-                        setMessages(historyMessages);
-                    }
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
-                    if (isFirstLoad.current) {
-                        const summary = formatQuoteRequest(completeData);
-                        setMessages(prev => [...prev, { content: summary, isAi: false }]);
-                        handleInitialResponse(completeData);
-                        isFirstLoad.current = false;
-                    }
-                } catch (error) {
-                    console.error("Error fetching quote:", error);
-                    toast({
-                        title: "Error",
-                        description: "Failed to fetch quote details",
-                        variant: "destructive",
-                    });
-                } finally {
-                    setIsFetching(false);
-                }
-            }
-        };
-        fetchQuote();
-    }, [id, toast, historyData]);
-
-    const handleInitialResponse = async (data: QuoteFormData) => {
-        setIsProcessing(true);
-        try {
-            const response = await fetchQuoteResponse(data);
-            if (response) {
-                setMessages(prev => [...prev, {
-                    content: formatQuoteResponse(response),
-                    isAi: true,
-                    versionNumber: response.quoteDetails.versionNumber
-                }]);
-            }
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to generate quote response",
-                variant: "destructive",
-            });
-        } finally {
-            setIsProcessing(false);
-        }
-    };
-
-    const handleShowForm = () => {
-        navigate(`/quote/${id}`);
-    };
-
-    return (
-        <SidebarProvider defaultOpen={true}>
-            <div className="min-h-screen flex w-full bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
-                <AppSidebar />
-                <main className="flex-1 p-8">
-                    <div className="flex justify-between items-center mb-8">
-                        <SidebarTrigger />
-                    </div>
-                    <div className="min-h-screen bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
-                        <div className="container mx-auto py-4 px-4 md:py-8 md:px-8">
-                            <div className="max-w-5xl mx-auto w-full">
-                                <ChatSection
-                                    messages={messages}
-                                    isProcessing={isProcessing}
-                                    onShowForm={handleShowForm}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </div>
-        </SidebarProvider>
-    );
-};
-
-export default ChatPage;
+  return (
+    <div className="flex">
+      <AppSidebar />
+      <div className="flex-1 p-4">
+        <h1 className="text-2xl font-bold">Chat for Quote ID: {id}</h1>
+        <ChatSection chatHistory={mapQuoteHistoryToFormData(chatHistory)} />
+      </div>
+    </div>
+  );
+}
