@@ -61,6 +61,9 @@ export const QuoteForm = ({
         includeBreakfast: false,
         lighterMealOption: null,
         includeLighterMealDessert: false,
+        level4Options: [],
+        level5Options: [],
+        level6Options: []
       },
       priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406", customerName: "National" },
       currentLabourHours: 0,
@@ -291,4 +294,3 @@ export const QuoteForm = ({
 };
 
 export default QuoteForm;
-

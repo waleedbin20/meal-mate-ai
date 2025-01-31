@@ -60,15 +60,24 @@ export interface DiningRoom {
 	quoteId?: number;
 }
 
+export interface ExtraOptions {
+	includeBreakfast: boolean;
+	lighterMealOption: LighterMealOption | null;
+	includeLighterMealDessert: boolean;
+	level4Options?: Level4Options[];
+	level5Options?: Level5Options[];
+	level6Options?: Level6Options[];
+}
+
 export interface QuoteFormData {
 	id?: number;
-	creatorName?: string;
-	careHomeName?: string;
+	creatorName: string;
+	careHomeName: string;
 	numberOfDiningRooms: number;
 	totalResidents: number;
 	diningRooms: DiningRoom[];
 	selectedMenu?: MenuOption;
-	extras?: ExtraOptions;
+	extras: ExtraOptions;
 	priceListName?: PriceListOption;
 	currentLabourHours?: number;
 	currentLabourCost?: number;
@@ -79,11 +88,47 @@ export interface QuoteFormData {
 	apetitoLabor?: LaborRole;
 }
 
-export interface ExtraOptions {
-	includeBreakfast: boolean;
-	lighterMealOption: LighterMealOption;
-	includeLighterMealDessert: boolean;
-	level4Options?: Level4Options[];
-	level5Options?: Level5Options[];
-	level6Options?: Level6Options[];
+export interface TransformedQuoteData {
+  careHomeDetails: {
+    name: string;
+  };
+  diningInformation: {
+    numberOfDiningRooms: number;
+    diningRooms: Array<{
+      diningRoomName: string;
+      residents: {
+        total: number;
+        categories: {
+          multiTwinResidents: {
+            size: MultiTwinSize;
+            count: number;
+          };
+          level3Residents: number;
+          level4Residents: number;
+          level5Residents: number;
+          level6Residents: number;
+          allergyFreeResidents: number;
+          fingerFoodResidents: number;
+          miniMealResidents: number;
+          caribbeanDietsResidents: number;
+          halalDietsResidents: number;
+          kosherDietsResidents: number;
+        };
+      };
+      menuInformation?: MenuOption;
+    }>;
+  };
+  pricingInformation: {
+    priceListName?: PriceListOption;
+    currentFoodSpend: number;
+    estimatedNonApetitoSpend: number;
+  };
+  labourAndCost: {
+    currentLabour: {
+      roles: LaborRole[];
+      totalHours: number;
+      totalCost: number;
+    };
+    apetitoLabour: LaborRole;
+  };
 }
