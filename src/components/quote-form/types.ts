@@ -11,7 +11,7 @@ export type MealCategory =
 	| "Halal"
 	| "Kosher";
 
-export type MultiTwinSize = "Standard" | "Small" | "Large";
+export type MultiTwinSize = "Standard" | "Large";
 
 export type LighterMealOption = "standard" | "two-course" | "premium" | "";
 
@@ -77,49 +77,6 @@ export interface QuoteFormData {
 	numberOfRoles?: number;
 	roles?: LaborRole[];
 	apetitoLabor?: LaborRole;
-}
-
-export interface TransformedQuoteData {
-	careHomeDetails: {
-		name: string;
-	};
-	diningInformation: {
-		numberOfDiningRooms: number;
-		diningRooms: Array<{
-			diningRoomName: string;
-			residents: {
-				total: number;
-				categories: {
-					multiTwinResidents: {
-						size: MultiTwinSize;
-						count: number;
-					};
-					level3Residents: number;
-					level4Residents: number;
-					level5Residents: number;
-					level6Residents: number;
-					allergyFreeResidents: number;
-					fingerFoodResidents: number;
-					miniMealResidents: number;
-					religiousDietsResidents: number;
-				};
-			};
-			menuInformation: MenuOption;
-		}>;
-	};
-	pricingInformation: {
-		priceListName: PriceListOption;
-		currentFoodSpend: number;
-		estimatedNonApetitoSpend: number;
-	};
-	labourAndCost: {
-		currentLabour: {
-			roles: LaborRole[];
-			totalHours: number;
-			totalCost: number;
-		};
-		apetitoLabour: LaborRole;
-	};
 }
 
 export interface ExtraOptions {

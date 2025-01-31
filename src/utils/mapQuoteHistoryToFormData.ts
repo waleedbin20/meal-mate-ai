@@ -14,9 +14,13 @@ export const mapQuoteHistoryToFormRequestData = (item: QuoteHistory): QuoteFormD
 			includeBreakfast: item.includeBreakfast,
 			includeLighterMealDessert: item.includeLighterMealDessert,
 			lighterMealOption: lighterMealOption,
+			level4Options: ["Breakfast", "Snacks", "Dessert"],
+			level5Options: ["Dessert"],
+			level6Options: ["Dessert"]
 		},
 		totalResidents: item.numberOfResidents || 0,
 		numberOfDiningRooms: item.numberOfDiningRooms || 0,
+		diningRooms: [],
 		selectedMenu: { menuName: item.selectedMenu },
 		estimatedNonApetitoSpend: item.estimatedNonApetitoSpend || 0,
 		currentFoodSpend: item.currentAnnualFoodSpend || 0,

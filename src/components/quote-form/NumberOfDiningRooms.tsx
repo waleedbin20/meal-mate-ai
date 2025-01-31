@@ -39,7 +39,9 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
           allergyFreeResidents: 0,
           fingerFoodResidents: 0,
           miniMealResidents: 0,
-          religiousDietsResidents: 0,
+          caribbeanDietsResidents: 0,
+          halalDietsResidents: 0,
+          kosherDietsResidents: 0,
           totalResidentsInDiningRoom: 0
         });
       }

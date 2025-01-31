@@ -1,14 +1,13 @@
 import { QuoteFormData, TransformedQuoteData } from "@/components/quote-form/types";
 
 export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData => {
-  // Calculate total labor hours and cost from all roles
-  const totalLabourHours = data.roles.reduce((total, role) => {
-    return total + (role.hoursPerWeek * role.numberOfSimilarRoles);
-  }, 0);
+  const totalLabourHours = data.roles?.reduce((total, role) => {
+    return total + ((role?.hoursPerWeek || 0) * (role?.numberOfSimilarRoles || 0));
+  }, 0) || 0;
 
-  const totalLabourCost = data.roles.reduce((total, role) => {
-    return total + (role.hourlyRate * role.hoursPerWeek * 52 * role.numberOfSimilarRoles);
-  }, 0);
+  const totalLabourCost = data.roles?.reduce((total, role) => {
+    return total + ((role?.hourlyRate || 0) * (role?.hoursPerWeek || 0) * 52 * (role?.numberOfSimilarRoles || 0));
+  }, 0) || 0;
 
   const transformedDiningRooms = data.diningRooms.map(room => ({
     diningRoomName: room.name,
@@ -26,7 +25,9 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
         allergyFreeResidents: room.allergyFreeResidents,
         fingerFoodResidents: room.fingerFoodResidents,
         miniMealResidents: room.miniMealResidents,
-        religiousDietsResidents: room.religiousDietsResidents,
+        caribbeanDietsResidents: room.caribbeanDietsResidents,
+        halalDietsResidents: room.halalDietsResidents,
+        kosherDietsResidents: room.kosherDietsResidents
       },
     },
     menuInformation: data.selectedMenu,
@@ -34,7 +35,7 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
 
   return {
     careHomeDetails: {
-      name: data.careHomeName,
+      name: data.careHomeName || "",
     },
     diningInformation: {
       numberOfDiningRooms: data.numberOfDiningRooms,
@@ -42,16 +43,21 @@ export const transformQuoteData = (data: QuoteFormData): TransformedQuoteData =>
     },
     pricingInformation: {
       priceListName: data.priceListName,
-      currentFoodSpend: data.currentFoodSpend,
-      estimatedNonApetitoSpend: data.estimatedNonApetitoSpend,
+      currentFoodSpend: data.currentFoodSpend || 0,
+      estimatedNonApetitoSpend: data.estimatedNonApetitoSpend || 0,
     },
     labourAndCost: {
       currentLabour: {
-        roles: data.roles,
+        roles: data.roles || [],
         totalHours: totalLabourHours,
         totalCost: totalLabourCost,
       },
-      apetitoLabour: data.apetitoLabor,
+      apetitoLabour: data.apetitoLabor || {
+        name: "",
+        hourlyRate: 0,
+        hoursPerWeek: 0,
+        numberOfSimilarRoles: 0
+      },
     },
   };
 };

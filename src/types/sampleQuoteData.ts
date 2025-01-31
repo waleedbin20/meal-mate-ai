@@ -8,7 +8,7 @@ export const sampleQuoteData: QuoteFormData = {
 	diningRooms: [
 		{
 			name: "Main Dining Room",
-			mealCategories: ["Multi Twin", "Level 4 IDDSI", "Allergy-Free"],
+			mealCategories: ["Multi Twin", "Level 4", "Allergy-Free"],
 			multiTwinSize: "Large",
 			multiTwinResidents: 40,
 			level3Residents: 0,
@@ -18,12 +18,14 @@ export const sampleQuoteData: QuoteFormData = {
 			allergyFreeResidents: 5,
 			fingerFoodResidents: 0,
 			miniMealResidents: 0,
-			religiousDietsResidents: 0,
+			caribbeanDietsResidents: 0,
+			halalDietsResidents: 0,
+			kosherDietsResidents: 0,
 			totalResidentsInDiningRoom: 50,
 		},
 		{
 			name: "Special Care Dining",
-			mealCategories: ["Level 3 IDDSI", "Finger Foods"],
+			mealCategories: ["Level 3", "Finger Foods"],
 			multiTwinResidents: 0,
 			level3Residents: 12,
 			level4Residents: 0,
@@ -32,7 +34,9 @@ export const sampleQuoteData: QuoteFormData = {
 			allergyFreeResidents: 0,
 			fingerFoodResidents: 8,
 			miniMealResidents: 0,
-			religiousDietsResidents: 0,
+			caribbeanDietsResidents: 0,
+			halalDietsResidents: 0,
+			kosherDietsResidents: 0,
 			totalResidentsInDiningRoom: 20,
 		},
 	],
@@ -41,6 +45,9 @@ export const sampleQuoteData: QuoteFormData = {
 		includeBreakfast: false,
 		lighterMealOption: "standard",
 		includeLighterMealDessert: false,
+		level4Options: ["Breakfast", "Dessert"],
+		level5Options: ["Dessert"],
+		level6Options: ["Dessert"]
 	},
 	priceListName: {
 		customerNo: "1103998",
