@@ -15,10 +15,16 @@ interface ProductFormProps {
   onSubmit: (data: Omit<Product, "id">) => void;
 }
 
-const defaultPortionSizes: ProductSize[] = Array(2).fill({
-  size: "",
-  smallEquivalent: "",
-});
+const defaultPortionSizes: ProductSize[] = [
+  {
+    size: "Multi Twin Large",
+    smallEquivalent: "",
+  },
+  {
+    size: "Multi Twin Small",
+    smallEquivalent: "",
+  },
+];
 
 const defaultCategories: ProductCategory[] = [
   { type: "large", portionSizes: [...defaultPortionSizes] },
@@ -37,7 +43,7 @@ export const ProductForm = ({ initialData, onSubmit }: ProductFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 sm:px-6">
         <FormField
           control={form.control}
           name="name"
@@ -92,7 +98,7 @@ export const ProductForm = ({ initialData, onSubmit }: ProductFormProps) => {
                       <FormItem>
                         <FormLabel>Portion Size {sizeIndex + 1}</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} readOnly />
                         </FormControl>
                       </FormItem>
                     )}
