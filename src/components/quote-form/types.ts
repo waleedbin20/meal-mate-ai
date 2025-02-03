@@ -11,7 +11,7 @@ export type MealCategory =
   | "Halal"
   | "Kosher";
 
-export type MultiTwinSize = "Standard" | "Small" | "Large";
+export type MultiTwinSize = "Standard" | "Large";
 export type LighterMealOption = "standard" | "two-course" | "premium" | "";
 export type Level4Options = "Breakfast" | "Snacks" | "Dessert";
 export type Level5Options = "Dessert";
@@ -42,6 +42,7 @@ export interface DiningRoom {
   id?: number;
   name: string;
   mealCategories: MealCategory[];
+  multiTwinSize?: MultiTwinSize;
   multiTwinResidents: number;
   level3Residents: number;
   level4Residents: number;
@@ -85,9 +86,7 @@ export interface QuoteFormData {
   apetitoLabor: LaborRole;
 }
 
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
+export interface TransformedQuoteData extends QuoteFormData {
+  apetitoEstimatedAnnualLabourCost?: number;
+  currentAnnualFoodSpend?: number;
 }
