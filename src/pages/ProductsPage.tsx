@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -52,7 +52,7 @@ const ProductsPage = () => {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-pink-50 to-pink-100">
         <AppSidebar />
         <main className="flex-1 p-8">
           <div className="flex justify-between items-center mb-8">
@@ -62,8 +62,8 @@ const ProductsPage = () => {
           <div className="flex-1 overflow-auto">
             <div className="container mx-auto max-w-3xl p-4 space-y-6">
               <div className="text-left mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Product Management</h1>
-                <p className="text-gray-600">View and manage multi twin products portion size</p>
+                <h1 className="text-3xl font-bold text-pink-900 mb-2">Product Management</h1>
+                <p className="text-pink-600">View and manage multi twin products portion size</p>
               </div>
 
               <div className="bg-white rounded-lg shadow-sm p-4">
@@ -77,11 +77,11 @@ const ProductsPage = () => {
 
                 <div className="border-t pt-4">
                   <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-sm font-medium text-gray-700">Create new</h2>
+                    <h2 className="text-sm font-medium text-pink-700">Create new</h2>
                   </div>
                   <Button 
                     onClick={() => setIsAddDialogOpen(true)} 
-                    className="w-full flex items-center justify-start text-left bg-white hover:bg-gray-50 text-gray-700 border border-gray-200"
+                    className="w-full flex items-center justify-start text-left bg-white hover:bg-pink-50 text-pink-700 border border-pink-200"
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Add New Product
@@ -90,7 +90,7 @@ const ProductsPage = () => {
 
                 {searchQuery && (
                   <div className="mt-6">
-                    <h2 className="text-sm font-medium text-gray-700 mb-3">Results</h2>
+                    <h2 className="text-sm font-medium text-pink-700 mb-3">Results</h2>
                     {filteredProducts.length > 0 ? (
                       <div className="space-y-2">
                         {filteredProducts.map((product) => (
@@ -103,11 +103,11 @@ const ProductsPage = () => {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <div className="mx-auto w-24 h-24 mb-4">
-                          <img src="/placeholder.svg" alt="No results" className="w-full h-full" />
+                        <div className="mx-auto w-24 h-24 mb-4 flex items-center justify-center">
+                          <Search className="w-16 h-16 text-pink-300" />
                         </div>
-                        <p className="text-gray-500 mb-2">No products found</p>
-                        <p className="text-sm text-gray-400">
+                        <p className="text-pink-500 mb-2">No products found</p>
+                        <p className="text-sm text-pink-400">
                           "{searchQuery}" did not match any products.
                         </p>
                       </div>
