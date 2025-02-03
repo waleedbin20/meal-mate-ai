@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import ChatMessage from "./ChatMessage";
+import React from "react";
+import { Message } from "@/components/ui/message";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import ChatSkeleton from "./ChatSkeleton";
@@ -7,12 +7,14 @@ import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import SavedQuotes from "./SavedQuote";
 import { useParams, useNavigate } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@radix-ui/react-accordion";
+import { QuoteHistory } from "@/types/quoteResponse";
 
 interface ChatSectionProps {
-  messages: Array<{ content: string; isAi: boolean }>;
+  messages: Array<{ content: string; isAi: boolean; versionNumber?: number }>;
   isProcessing: boolean;
   onShowForm: () => void;
   onGenerateQuote?: () => void;
+  chatHistory?: QuoteHistory[];
 }
 
 const ChatSection: React.FC<ChatSectionProps> = ({
@@ -20,29 +22,13 @@ const ChatSection: React.FC<ChatSectionProps> = ({
   isProcessing,
   onShowForm,
   onGenerateQuote,
+  chatHistory,
 }) => {
   const currentMessages = messages.slice(-2);
   const historyMessages = messages.slice(0, -2);
   const navigate = useNavigate();
   const { id } = useParams();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-
-  const handleSheetClose = () => {
-    setIsSheetOpen(false);
-  };
-
-  const handleEditQuote = () => {
-    if (id) {
-      navigate(`/quote/${id}`);
-    }
-  };
-
-  const handleNewQuote = () => {
-    if (id) {
-      navigate(`/quote`);
-    }
-  };
+  const [isHistoryOpen, setIsHistoryOpen] = React.useState(false);
 
   const totalMessages = isHistoryOpen ? messages.length : currentMessages.length;
 
@@ -60,21 +46,21 @@ const ChatSection: React.FC<ChatSectionProps> = ({
           </div>
           <div className="flex flex-col md:flex-row gap-2 mt-4 md:mt-0">
             <Button
-              onClick={handleNewQuote}
+              onClick={onGenerateQuote}
               variant="outline"
               className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
             >
               New Quote
             </Button>
             <Button
-              onClick={handleEditQuote}
+              onClick={() => navigate(`/quote/${id}`)}
               variant="outline"
               className="flex items-center justify-center gap-2 bg-white hover:bg-purple-100 hover:text-purple-900 w-full md:w-auto"
             >
               <ArrowLeft className="h-4 w-4" />
               Edit Quote
             </Button>
-            <SavedQuotes onClose={handleSheetClose} />
+            <SavedQuotes onClose={() => {}} />
           </div>
         </div>
       </div>
@@ -102,13 +88,13 @@ const ChatSection: React.FC<ChatSectionProps> = ({
                 <AccordionContent className="pt-4 animate-slide-in">
                   <div className="space-y-4">
                     {historyMessages.map((message, index) => (
-                      <ChatMessage
+                      <Message
                         key={index}
                         isAi={message.isAi}
-                        content={message.content}
-                        animate={false}
-                        quoteId={parseInt(id)}
-                      />
+                        className="animate-fade-in"
+                      >
+                        {message.content}
+                      </Message>
                     ))}
                   </div>
                 </AccordionContent>
@@ -116,13 +102,13 @@ const ChatSection: React.FC<ChatSectionProps> = ({
             </Accordion>
           )}
           {currentMessages.map((message, index) => (
-            <ChatMessage
+            <Message
               key={`current-${index}`}
               isAi={message.isAi}
-              content={message.content}
-              animate={index === currentMessages.length - 1}
-              quoteId={parseInt(id)}
-            />
+              className={index === currentMessages.length - 1 ? "animate-fade-in" : ""}
+            >
+              {message.content}
+            </Message>
           ))}
           {isProcessing && <ChatSkeleton />}
         </div>
