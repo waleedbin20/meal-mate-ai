@@ -89,29 +89,25 @@ export const ProductForm = ({ initialData, onSubmit }: ProductFormProps) => {
           <div key={categoryIndex} className="space-y-4">
             <h3 className="font-semibold capitalize text-purple-600">{category.type} Portions</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {category.portionSizes.map((_, sizeIndex) => (
+              {category.portionSizes.map((size, sizeIndex) => (
                 <div key={sizeIndex} className="space-y-4 p-4 bg-purple-50 rounded-lg">
                   <FormField
                     control={form.control}
                     name={`categories.${categoryIndex}.portionSizes.${sizeIndex}.size`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Portion Size {sizeIndex + 1}</FormLabel>
+                        <FormLabel>{size.size}</FormLabel>
                         <FormControl>
-                          <Input {...field} readOnly />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name={`categories.${categoryIndex}.portionSizes.${sizeIndex}.smallEquivalent`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Small Equivalent</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
+                          <Input 
+                            {...field} 
+                            type="number" 
+                            min="0"
+                            step="1"
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(value ? parseInt(value, 10) : '');
+                            }}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
