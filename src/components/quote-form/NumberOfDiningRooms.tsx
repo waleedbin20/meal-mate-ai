@@ -82,8 +82,8 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
           <FormItem>
             <FormLabel>Number of Dining Rooms</FormLabel>
             <FormControl>
-              <Input 
-                type="number" 
+              <Input
+                type="number"
                 min="1"
                 max="10"
                 onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}

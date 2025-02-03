@@ -19,9 +19,9 @@ const mealCategories: MealCategory[] = [
   "Level 4",
   "Level 5",
   "Level 6",
-  "Allergy-Free",
+  "Allergen Free",
   "Finger Foods",
-  "Mini Meals Extra",
+  "Mini Meal Extra",
   "Caribbean",
   "Halal",
   "Kosher"
@@ -36,9 +36,9 @@ const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['dini
     "Level 4": "level4Residents",
     "Level 5": "level5Residents",
     "Level 6": "level6Residents",
-    "Allergy-Free": "allergyFreeResidents",
+    "Allergen Free": "allergyFreeResidents",
     "Finger Foods": "fingerFoodResidents",
-    "Mini Meals Extra": "miniMealResidents",
+    "Mini Meal Extra": "miniMealResidents",
     "Caribbean": "caribbeanDietsResidents",
     "Halal": "halalDietsResidents",
     "Kosher": "kosherDietsResidents"

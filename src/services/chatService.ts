@@ -1,21 +1,17 @@
 import { QuoteFormData } from "@/components/quote-form/types";
 import { QuoteResponse } from "@/types/quoteResponse";
 
-const API_BASE_URL =
-	"https://wa-quote-api-dev-gwewavh3ddace9g7.uksouth-01.azurewebsites.net/api";
-
-const API_HEADERS = {
-	"Content-Type": "application/json",
-	"x-api-token": "uZKzunVlYhK6HQbSXaIyFSNMv9mzX7ns"
-};
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 export const fetchQuoteResponse = async (
 	data: QuoteFormData
 ): Promise<QuoteResponse> => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote/request`, {
 			method: "POST",
-			headers: API_HEADERS,
+			headers: {
+				"Content-Type": "application/json",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 			body: JSON.stringify(data),
 		});
 
@@ -52,7 +48,10 @@ export const sendChatMessage = async (
 
 		const response = await fetch(url.toString(), {
 			method: "POST",
-			headers: API_HEADERS,
+			headers: {
+				accept: "*/*",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 		});
 
 		if (!response.ok) {
@@ -72,7 +71,9 @@ export const clearChat = async () => {
 	try {
 		await fetch(`${API_BASE_URL}/quote/clear`, {
 			method: "POST",
-			headers: API_HEADERS,
+			headers: {
+				accept: "*/*",
+			},
 		});
 	} catch (error) {
 		console.error("Error clearing chat:", error);

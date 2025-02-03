@@ -30,7 +30,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
   const isMenuA = selectedMenu?.menuId === "97481";
 
   const handleRemoveLighterMeal = () => {
-    form.setValue("extras.lighterMealOption", null);
+    form.setValue("extras.lighterMealOption", "standard");
   };
 
   const hasLevel4Selected = diningRooms.some(room =>
@@ -47,7 +47,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
     if (!isMenuA) {
       // Reset extra options when Menu B is selected
       form.setValue("extras.includeBreakfast", false);
-      form.setValue("extras.lighterMealOption", null);
+      form.setValue("extras.lighterMealOption", "standard");
       form.setValue("extras.includeLighterMealDessert", false);
       form.setValue("extras.level4Options", []);
       form.setValue("extras.level5Options", []);
@@ -151,7 +151,7 @@ export const MenuSelection = ({ form }: MenuSelectionProps) => {
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
-                          value={field.value || ""}
+                          value={field.value || "standard"}
                           className="space-y-3"
                         >
                           <div className="flex items-center space-x-3">

@@ -1,19 +1,16 @@
 import { User } from "@/components/quote-form/types";
 import { ApiResponse } from "@/types/quoteResponse";
 
-const API_BASE_URL = "https://wa-quote-api-dev-gwewavh3ddace9g7.uksouth-01.azurewebsites.net/api";
-
-const API_HEADERS = {
-	"Content-Type": "application/json",
-	"accept": "*/*",
-	"x-api-token": "uZKzunVlYhK6HQbSXaIyFSNMv9mzX7ns"
-};
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 export const createUser = async (userData: User): Promise<User> => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/user`, {
 			method: "POST",
-			headers: API_HEADERS,
+			headers: {
+				"Content-Type": "application/json",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+				accept: "*/*",
+			},
 			body: JSON.stringify(userData, null, 2),
 		});
 
@@ -30,7 +27,7 @@ export const createUser = async (userData: User): Promise<User> => {
 		const result: ApiResponse<User> = await response.json();
 		return result.data;
 	} catch (error) {
-		console.error("Error creating user:", error);
+		console.error("Error creating quote:", error);
 		throw error;
 	}
 };
@@ -38,7 +35,10 @@ export const createUser = async (userData: User): Promise<User> => {
 export const getAllUsers = async (): Promise<User[]> => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/user`, {
-			headers: API_HEADERS,
+			headers: {
+				Accept: "application/json",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 		});
 
 		if (!response.ok) {
@@ -53,15 +53,18 @@ export const getAllUsers = async (): Promise<User[]> => {
 	}
 };
 
-export const deleteUser = async (id: number): Promise<void> => {
+export const deleteUser = async (userId: number): Promise<void> => {
 	try {
-		const response = await fetch(`${API_BASE_URL}/user/${id}`, {
+		const response = await fetch(`${API_BASE_URL}/user/${userId}`, {
 			method: "DELETE",
-			headers: API_HEADERS,
+			headers: {
+				Accept: "application/json",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 		});
 
 		if (!response.ok) {
-			throw new Error(`Failed to delete user ${id}`);
+			throw new Error(`Failed to delete user ${userId}`);
 		}
 
 		const data: ApiResponse<boolean> = await response.json();
@@ -69,7 +72,7 @@ export const deleteUser = async (id: number): Promise<void> => {
 			throw new Error(data.message);
 		}
 	} catch (error) {
-		console.error(`Error deleting user ${id}:`, error);
+		console.error(`Error deleting user ${userId}:`, error);
 		throw error;
 	}
 };

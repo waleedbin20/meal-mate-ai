@@ -13,16 +13,14 @@ import { FormWrapper } from "./quote-form/FormWrapper";
 import { NumberOfDiningRooms } from "./quote-form/NumberOfDiningRooms";
 import { FormInitializer } from "./quote-form/FormInitializer";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { createQuote, updateQuoteById } from "@/services/quoteService";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { sampleQuoteData } from "@/types/sampleQuoteData";
-import { useQuery } from "@tanstack/react-query";
 import { getAllUsers } from "@/services/userService";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
-
+import { Skeleton } from "./ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
   isLoading?: boolean;
@@ -55,12 +53,20 @@ export const QuoteForm = ({
           fingerFoodResidents: 0,
           miniMealResidents: 0,
           caribbeanDietsResidents: 0,
-          kosherDietsResidents: 0,
           halalDietsResidents: 0,
+          kosherDietsResidents: 0,
           totalResidentsInDiningRoom: 0
         }
       ],
       selectedMenu: { menuName: "Menu A - Jan 2025", menuId: "97481" },
+      extras: {
+        includeBreakfast: false,
+        lighterMealOption: "standard",
+        includeLighterMealDessert: false,
+        level4Options: [],
+        level5Options: [],
+        level6Options: []
+      },
       priceListName: { customerNo: "1103998", priceHierarchy: "0008801129", customerId: "2406", customerName: "National" },
       currentLabourHours: 0,
       currentLabourCost: 0,
@@ -73,14 +79,6 @@ export const QuoteForm = ({
         hourlyRate: 0,
         hoursPerWeek: 0,
         numberOfSimilarRoles: 0
-      },
-      extras: {
-        includeBreakfast: false,
-        lighterMealOption: "standard",
-        includeLighterMealDessert: false,
-        level4Options: [],
-        level5Options: [],
-        level6Options: []
       }
     },
     mode: "onChange",
@@ -94,16 +92,16 @@ export const QuoteForm = ({
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { data: users = [], isLoading: isLoadingUsers } = useQuery({
-    queryKey: ['users'],
-    queryFn: getAllUsers
-  });
-
   React.useEffect(() => {
     if (defaultValues) {
       form.reset(defaultValues);
     }
   }, [defaultValues, form]);
+
+  const { data: users = [], isLoading: isLoadingUsers } = useQuery({
+    queryKey: ['users'],
+    queryFn: getAllUsers
+  });
 
   const handleSubmit = async (data: QuoteFormData) => {
     if (!data.creatorName.trim()) {
@@ -236,7 +234,11 @@ export const QuoteForm = ({
           control={form.control}
           name="creatorName"
           rules={{
-            required: "Creator Name is required"
+            required: "Creator Name is required",
+            minLength: {
+              value: 2,
+              message: "Creator Name must be at least 2 characters"
+            }
           }}
           render={({ field }) => (
             <FormItem>
@@ -273,8 +275,13 @@ export const QuoteForm = ({
       {creatorName.trim() && (
         <>
           <CareHomeDetails form={form} />
+
+
+
           <NumberOfDiningRooms form={form} />
+
           <DiningRoomsSection form={form} diningRooms={diningRooms} />
+
           <div className="space-y-4">
             <FormField
               control={form.control}
@@ -313,3 +320,4 @@ export const QuoteForm = ({
 };
 
 export default QuoteForm;
+

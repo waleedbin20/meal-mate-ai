@@ -1,15 +1,9 @@
 import { TransformedQuoteData } from "@/components/quote-form/types";
 import { QuoteFormData } from "@/components/quote-form/types";
 import { ApiResponse, QuoteHistory, SavedQuote } from "@/types/quoteResponse";
+import { useQueryClient } from "@tanstack/react-query";
 
-const API_BASE_URL =
-	"https://wa-quote-api-dev-gwewavh3ddace9g7.uksouth-01.azurewebsites.net/api";
-
-const API_HEADERS = {
-	"Content-Type": "application/json",
-	"accept": "*/*",
-	"x-api-token": "uZKzunVlYhK6HQbSXaIyFSNMv9mzX7ns"
-};
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 
 export const createQuote = async (
 	quoteData: QuoteFormData
@@ -17,7 +11,11 @@ export const createQuote = async (
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote`, {
 			method: "POST",
-			headers: API_HEADERS,
+			headers: {
+				"Content-Type": "application/json",
+				accept: "*/*",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 			body: JSON.stringify(quoteData, null, 2),
 		});
 
@@ -42,7 +40,10 @@ export const createQuote = async (
 export const getAllQuotes = async (): Promise<SavedQuote[]> => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote`, {
-			headers: API_HEADERS,
+			headers: {
+				Accept: "application/json",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 		});
 
 		if (!response.ok) {
@@ -60,7 +61,10 @@ export const getAllQuotes = async (): Promise<SavedQuote[]> => {
 export const getQuoteById = async (id: number): Promise<QuoteFormData> => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote/${id}`, {
-			headers: API_HEADERS,
+			headers: {
+				Accept: "application/json",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 		});
 
 		if (!response.ok) {
@@ -79,7 +83,10 @@ export const deleteQuote = async (id: number): Promise<void> => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote/${id}`, {
 			method: "DELETE",
-			headers: API_HEADERS,
+			headers: {
+				Accept: "application/json",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 		});
 
 		if (!response.ok) {
@@ -105,7 +112,10 @@ export const saveQuote = async (
 			`${API_BASE_URL}/quote/${id}/updatestatus?quoteStatus=${quoteStatus}`,
 			{
 				method: "PUT",
-				headers: API_HEADERS,
+				headers: {
+					Accept: "application/json",
+					"x-api-key": import.meta.env.VITE_API_KEY as string,
+				},
 			}
 		);
 
@@ -130,7 +140,11 @@ export const updateQuoteById = async (
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote/${id}`, {
 			method: "PUT",
-			headers: API_HEADERS,
+			headers: {
+				"Content-Type": "application/json",
+				accept: "*/*",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 			body: JSON.stringify(quoteData, null, 2),
 		});
 
@@ -152,7 +166,10 @@ export const getQuoteHistoryById = async (
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote/${id}/history`, {
 			method: "GET",
-			headers: API_HEADERS,
+			headers: {
+				accept: "*/*",
+				"x-api-key": import.meta.env.VITE_API_KEY as string,
+			},
 		});
 
 		if (!response.ok) {
@@ -174,10 +191,14 @@ export const submitQuoteToHubSpot = async (
 ): Promise<void> => {
 	try {
 		const response = await fetch(
-			`${API_BASE_URL}/quote/${quoteId}/hubspot?recordId=${recordId}&versionNumber=${versionNumber}`,
+			`${API_BASE_URL}/quote/${quoteId}/hubspot?versionNumber=${versionNumber}&recordId=${recordId}`,
+
 			{
-				method: "PUT",
-				headers: API_HEADERS,
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"x-api-key": import.meta.env.VITE_API_KEY as string,
+				},
 			}
 		);
 		if (!response.ok) {

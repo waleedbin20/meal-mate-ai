@@ -19,8 +19,9 @@ import { useNavigate } from "react-router-dom";
 import { getAllQuotes, deleteQuote, getQuoteById } from "@/services/quoteService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SavedQuote } from "@/types/quoteResponse";
-import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
-import { AppSidebar } from "./AppSidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
+
 
 
 const SavedQuotesPage = () => {

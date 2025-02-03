@@ -1,33 +1,38 @@
-import { QuoteFormData } from "@/components/quote-form/types";
+import {
+	LighterMealOption,
+	QuoteFormData,
+} from "@/components/quote-form/types";
+import { QuoteHistory, QuoteResponse } from "@/types/quoteResponse";
 
-export const mapQuoteHistoryToFormData = (quoteHistory: any): QuoteFormData => {
-  return {
-    creatorName: "System",
-    careHomeName: quoteHistory.careHomeName,
-    extras: {
-      includeBreakfast: quoteHistory.extras.includeBreakfast,
-      includeLighterMealDessert: quoteHistory.extras.includeLighterMealDessert,
-      lighterMealOption: quoteHistory.extras.lighterMealOption,
-      level4Options: quoteHistory.extras.level4Options || [],
-      level5Options: quoteHistory.extras.level5Options || [],
-      level6Options: quoteHistory.extras.level6Options || [],
-    },
-    numberOfDiningRooms: quoteHistory.numberOfDiningRooms,
-    totalResidents: quoteHistory.totalResidents,
-    diningRooms: quoteHistory.diningRooms,
-    roles: quoteHistory.roles,
-    apetitoLabor: quoteHistory.apetitoLabor,
-    numberOfRoles: quoteHistory.numberOfRoles,
-    selectedMenu: quoteHistory.selectedMenu || { menuName: "Menu A - Jan 2025", menuId: "97481" },
-    priceListName: quoteHistory.priceListName || {
-      customerNo: "1103998",
-      priceHierarchy: "0008801129",
-      customerId: "2406",
-      customerName: "National"
-    },
-    currentLabourHours: quoteHistory.currentLabourHours || 0,
-    currentLabourCost: quoteHistory.currentLabourCost || 0,
-    currentFoodSpend: quoteHistory.currentFoodSpend || 0,
-    estimatedNonApetitoSpend: quoteHistory.estimatedNonApetitoSpend || 0
-  };
+export const mapQuoteHistoryToFormRequestData = (item: QuoteHistory): QuoteFormData => {
+	const lighterMealOption: LighterMealOption =
+		item.lighterMealOption as LighterMealOption;
+
+	return {
+		careHomeName: item.careHomeName,
+		extras: {
+			includeBreakfast: item.includeBreakfast,
+			includeLighterMealDessert: item.includeLighterMealDessert,
+			lighterMealOption: lighterMealOption,
+		},
+		totalResidents: item.numberOfResidents || 0,
+		numberOfDiningRooms: item.numberOfDiningRooms || 0,
+		selectedMenu: { menuName: item.selectedMenu },
+		estimatedNonApetitoSpend: item.estimatedNonApetitoSpend || 0,
+		currentFoodSpend: item.currentAnnualFoodSpend || 0,
+		numberOfRoles: item.numberOfRoles || 0,
+	};
 };
+
+export const mapQuoteHistoryToResponse = (
+	item: QuoteHistory
+): QuoteResponse => ({
+	quoteDetails: {
+		customerName: item.careHomeName,
+		apetitoCostResidentPerDay: item.costPerDayPerResident || 0,
+		menuOrderTotal: item.menuOrderTotal || 0,
+		annualLaborSavings: item.annualLaborSavings || 0,
+		annualFoodSavings: item.annualFoodSavings || 0,
+		annualTotalSavings: item.annualTotalSavings || 0,
+	},
+});

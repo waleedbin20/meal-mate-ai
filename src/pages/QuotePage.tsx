@@ -3,7 +3,7 @@ import { QuoteForm } from "@/components/QuoteForm";
 import ChatSection from "@/components/ChatSection";
 import { QuoteFormData } from "@/components/quote-form/types";
 import { transformQuoteData } from "@/utils/transformQuoteData";
-import { fetchQuoteResponse } from "@/services/quoteResponseService";
+import { fetchQuoteResponse } from "@/services/chatService";
 import { useToast } from "@/hooks/use-toast";
 import { formatQuoteRequest, formatQuoteResponse } from "@/utils/formatQuoteSummary";
 import type { QuoteResponse } from "@/types/quoteResponse";
@@ -83,7 +83,6 @@ const QuotePage = () => {
             variant: "destructive",
           });
         }
-
         setMessages(prev => [...prev, {
           content: formatQuoteResponse(response),
           isAi: true,
@@ -105,52 +104,10 @@ const QuotePage = () => {
 
   const handleSwitchToChat = () => {
     if (id) {
-      console.log(`Switch to chat for quote id`, id);
       navigate(`/quote/${id}/chat`);
     }
     else {
       setIsAlertDialogOpen(true);
-    }
-  };
-
-  const handleRetry = async () => {
-    if (!lastFormData) {
-      toast({
-        title: "Error",
-        description: "No previous quote data found. Please start a new quote.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsProcessing(true);
-    try {
-      const response = await fetchQuoteResponse(lastFormData);
-      if (response) {
-        setQuoteResponse(response);
-
-        if (response === null) {
-          toast({
-            title: "Quote Generation Failed",
-            description: response.summary,
-            variant: "destructive",
-          });
-        }
-
-        setMessages(prev => [...prev, {
-          content: formatQuoteResponse(response),
-          isAi: true
-        }]);
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to retry quote generation. Please try again.",
-        variant: "destructive",
-      });
-      setQuoteResponse(null);
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -160,7 +117,6 @@ const QuotePage = () => {
 
   const handleNewQuote = () => {
     if (id) {
-      console.log(`Creating new quote`, id);
       navigate(`/quote`);
       window.location.reload();
     }

@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import QuotePage from "./pages/QuotePage";
 import Landing from "./pages/Landing";
-import SavedQuotesPage from "./components/SavedQuotePage";
+import SavedQuotesPage from "./pages/SavedQuotePage";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import ChatPage from "./pages/ChatPage";
+import ChatPage from "./pages/chatPage";
 import UsersPage from "./pages/UsersPage";
 
 const queryClient = new QueryClient();
