@@ -3,7 +3,6 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProductCard } from "@/components/products/ProductCard";
-import { AddProductDialog } from "@/components/products/AddProductDialog";
 import { AppSidebar } from "@/components/AppSidebar";
 import { toast } from "sonner";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -60,33 +59,55 @@ const ProductsPage = () => {
           </div>
              
           <div className="flex-1 overflow-auto">
-            <div className="container mx-auto p-4 space-y-6 animate-fade-in">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <h1 className="text-2xl font-bold text-purple-600">Products</h1>
-                <Button onClick={() => setIsAddDialogOpen(true)} className="bg-purple-600 hover:bg-purple-700">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Product
-                </Button>
-              </div>
-
-              <div className="w-full max-w-md">
+            <div className="container mx-auto max-w-3xl p-4 space-y-6">
+              <div className="bg-white rounded-lg shadow-sm p-4">
                 <Input
                   type="search"
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full"
+                  className="w-full mb-4"
                 />
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onUpdate={handleUpdateProduct}
-                  />
-                ))}
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-sm font-medium text-gray-700">Create new</h2>
+                  </div>
+                  <Button 
+                    onClick={() => setIsAddDialogOpen(true)} 
+                    className="w-full flex items-center justify-start text-left bg-white hover:bg-gray-50 text-gray-700 border border-gray-200"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add New Product
+                  </Button>
+                </div>
+
+                {searchQuery && (
+                  <div className="mt-6">
+                    <h2 className="text-sm font-medium text-gray-700 mb-3">Results</h2>
+                    {filteredProducts.length > 0 ? (
+                      <div className="space-y-2">
+                        {filteredProducts.map((product) => (
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            onUpdate={handleUpdateProduct}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <div className="mx-auto w-24 h-24 mb-4">
+                          <img src="/placeholder.svg" alt="No results" className="w-full h-full" />
+                        </div>
+                        <p className="text-gray-500 mb-2">No products found</p>
+                        <p className="text-sm text-gray-400">
+                          "{searchQuery}" did not match any products.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <AddProductDialog
