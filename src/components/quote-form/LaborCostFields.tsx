@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface LaborCostFieldsProps {
   form: UseFormReturn<QuoteFormData>;
@@ -43,57 +44,63 @@ export const LaborCostFields = ({ form }: LaborCostFieldsProps) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold text-purple-700 mb-4">Current Labour Costs</h3>
+    <Card className="bg-white">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold text-purple-700">Labour Costs</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Current Labour Costs</h3>
 
-        <div className="mb-6">
-          <FormField
-            control={form.control}
-            name="numberOfRoles"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Number of Roles</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    {...field}
-                    value={roles.length}
-                    disabled
-                    className="bg-gray-100"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          <Button
-            type="button"
-            onClick={handleAddRole}
-            className="mt-4 bg-purple-600 hover:bg-purple-700"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add New Role
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {roles.map((role, index) => (
-            <RoleCard
-              key={index}
-              form={form}
-              roleIndex={index}
-              onDelete={() => handleDeleteRole(index)}
-              bgColor={`bg-gradient-to-br from-${index % 2 ? 'blue' : 'green'}-50 to-${index % 2 ? 'blue' : 'green'}-100`}
-              textColor={`text-${index % 2 ? 'blue' : 'green'}-900`}
+          <div className="mb-6">
+            <FormField
+              control={form.control}
+              name="numberOfRoles"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Number of Roles</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      value={roles.length}
+                      disabled
+                      className="bg-gray-100"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          ))}
-        </div>
-      </div>
 
-      <div className="mt-8">
-        <ApetitoLaborCard form={form} />
-      </div>
-    </div>
+            <Button
+              type="button"
+              onClick={handleAddRole}
+              className="mt-4 bg-purple-600 hover:bg-purple-700"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add New Role
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {roles.map((role, index) => (
+              <RoleCard
+                key={index}
+                form={form}
+                roleIndex={index}
+                onDelete={() => handleDeleteRole(index)}
+                bgColor={`bg-gradient-to-br from-${index % 2 ? 'blue' : 'green'}-50 to-${index % 2 ? 'blue' : 'green'}-100`}
+                textColor={`text-${index % 2 ? 'blue' : 'green'}-900`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold mb-4">Proposed apetito Labour Costs</h3>
+          <ApetitoLaborCard form={form} />
+        </div>
+      </CardContent>
+    </Card>
   );
 };

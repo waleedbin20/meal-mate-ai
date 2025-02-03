@@ -16,7 +16,6 @@ export const ApetitoLaborCard = ({ form }: ApetitoLaborCardProps) => {
 
   return (
     <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 transition-all duration-300 hover:shadow-lg">
-      <h4 className="text-lg font-semibold text-purple-700 mb-4">Proposed apetito Labour Costs</h4>
       <div className="space-y-4">
         <FormField
           control={form.control}
