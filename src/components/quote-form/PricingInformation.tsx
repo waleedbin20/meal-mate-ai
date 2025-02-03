@@ -18,49 +18,56 @@ interface PricingInformationProps {
 
 export const PricingInformation = ({ form }: PricingInformationProps) => {
   return (
-    <Card className="bg-white">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold text-purple-700">Pricing Information</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <FormField
-          control={form.control}
-          name="priceListName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price List</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  const [customerNo, priceHierarchy, customerId, customerName] = value.split(',');
-                  field.onChange({ customerNo, priceHierarchy, customerId, customerName });
-                }}
-                value={`${field.value.customerNo},${field.value.priceHierarchy},${field.value.customerId},${field.value.customerName}`}
-              >
-                <FormControl>
-                  <SelectTrigger className="bg-white border-gray-200">
-                    <SelectValue placeholder="Select a price list">
-                      {field.value.customerName || "Select a price list"}
-                    </SelectValue>
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="bg-white">
-                  {priceListOptions.map((option) => (
-                    <SelectItem
-                      key={`${option.customerNo}-${option.priceHierarchy}`}
-                      value={`${option.customerNo},${option.priceHierarchy},${option.customerId}, ${option.customerName}`}
-                      className="hover:bg-gray-100"
-                    >
-                      {`${option.customerName}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div className="space-y-6">
+      <Card className="bg-white">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold text-purple-700">Price List</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FormField
+            control={form.control}
+            name="priceListName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price List</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    const [customerNo, priceHierarchy, customerId, customerName] = value.split(',');
+                    field.onChange({ customerNo, priceHierarchy, customerId, customerName });
+                  }}
+                  value={`${field.value.customerNo},${field.value.priceHierarchy},${field.value.customerId},${field.value.customerName}`}
+                >
+                  <FormControl>
+                    <SelectTrigger className="bg-white border-gray-200">
+                      <SelectValue placeholder="Select a price list">
+                        {field.value.customerName || "Select a price list"}
+                      </SelectValue>
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="bg-white">
+                    {priceListOptions.map((option) => (
+                      <SelectItem
+                        key={`${option.customerNo}-${option.priceHierarchy}`}
+                        value={`${option.customerNo},${option.priceHierarchy},${option.customerId}, ${option.customerName}`}
+                        className="hover:bg-gray-100"
+                      >
+                        {`${option.customerName}`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </CardContent>
+      </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Card className="bg-white">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold text-purple-700">Food Spend</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
           <FormField
             control={form.control}
             name="currentFoodSpend"
@@ -104,8 +111,8 @@ export const PricingInformation = ({ form }: PricingInformationProps) => {
               </FormItem>
             )}
           />
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
