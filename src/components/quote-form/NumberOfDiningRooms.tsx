@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { UseFormReturn, useWatch } from "react-hook-form";
 import { QuoteFormData } from "./types";
 import { useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DiningRoomsSection } from "./DiningRoomsSection";
 
 interface NumberOfDiningRoomsProps {
   form: UseFormReturn<QuoteFormData>;
@@ -63,37 +65,55 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
   }, [diningRooms, form]);
 
   return (
-    <div className="space-y-4">
-      <FormField
-        control={form.control}
-        name="numberOfDiningRooms"
-        rules={{
-          required: "Number of Dining Rooms is required",
-          min: {
-            value: 1,
-            message: "Must have at least 1 dining room"
-          },
-          max: {
-            value: 10,
-            message: "Cannot have more than 10 dining rooms"
-          }
-        }}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Number of Dining Rooms</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                min="1"
-                max="10"
-                onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
-                value={field.value}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
+    <Card className="bg-white">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold text-purple-700">Dining Rooms</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="space-y-4 flex-1">
+            <FormField
+              control={form.control}
+              name="numberOfDiningRooms"
+              rules={{
+                required: "Number of Dining Rooms is required",
+                min: {
+                  value: 1,
+                  message: "Must have at least 1 dining room"
+                },
+                max: {
+                  value: 10,
+                  message: "Cannot have more than 10 dining rooms"
+                }
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Number of Dining Rooms</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="10"
+                      onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
+                      value={field.value}
+                      className="max-w-[200px]"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-gray-500">Total Residents</p>
+            <p className="text-lg font-semibold text-purple-700">
+              {form.watch('totalResidents') || 0}
+            </p>
+          </div>
+        </div>
+
+        <DiningRoomsSection form={form} diningRooms={diningRooms} />
+      </CardContent>
+    </Card>
   );
 };

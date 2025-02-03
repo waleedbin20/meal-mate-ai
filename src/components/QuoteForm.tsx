@@ -21,6 +21,7 @@ import { sampleQuoteData } from "@/types/sampleQuoteData";
 import { getAllUsers } from "@/services/userService";
 import { Skeleton } from "./ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 interface QuoteFormProps {
   onSubmit: (data: QuoteFormData) => void;
   isLoading?: boolean;
@@ -276,31 +277,8 @@ export const QuoteForm = ({
         <>
           <CareHomeDetails form={form} />
 
-
-
           <NumberOfDiningRooms form={form} />
 
-          <DiningRoomsSection form={form} diningRooms={diningRooms} />
-
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="totalResidents"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Total Residents (All Dining Rooms)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      disabled
-                      value={field.value}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
           <MenuSelection form={form} />
 
           <div className="space-y-4">
@@ -320,4 +298,3 @@ export const QuoteForm = ({
 };
 
 export default QuoteForm;
-
