@@ -1,10 +1,15 @@
 import { TransformedQuoteData } from "@/components/quote-form/types";
 import { QuoteFormData } from "@/components/quote-form/types";
 import { ApiResponse, QuoteHistory, SavedQuote } from "@/types/quoteResponse";
-import { useQueryClient } from "@tanstack/react-query";
 
 const API_BASE_URL =
 	"https://wa-quote-api-dev-gwewavh3ddace9g7.uksouth-01.azurewebsites.net/api";
+
+const API_HEADERS = {
+	"Content-Type": "application/json",
+	"accept": "*/*",
+	"x-api-token": "uZKzunVlYhK6HQbSXaIyFSNMv9mzX7ns"
+};
 
 export const createQuote = async (
 	quoteData: QuoteFormData
@@ -12,10 +17,7 @@ export const createQuote = async (
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote`, {
 			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				accept: "*/*",
-			},
+			headers: API_HEADERS,
 			body: JSON.stringify(quoteData, null, 2),
 		});
 
@@ -40,9 +42,7 @@ export const createQuote = async (
 export const getAllQuotes = async (): Promise<SavedQuote[]> => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote`, {
-			headers: {
-				Accept: "application/json",
-			},
+			headers: API_HEADERS,
 		});
 
 		if (!response.ok) {
@@ -60,9 +60,7 @@ export const getAllQuotes = async (): Promise<SavedQuote[]> => {
 export const getQuoteById = async (id: number): Promise<QuoteFormData> => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote/${id}`, {
-			headers: {
-				Accept: "application/json",
-			},
+			headers: API_HEADERS,
 		});
 
 		if (!response.ok) {
@@ -81,9 +79,7 @@ export const deleteQuote = async (id: number): Promise<void> => {
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote/${id}`, {
 			method: "DELETE",
-			headers: {
-				Accept: "application/json",
-			},
+			headers: API_HEADERS,
 		});
 
 		if (!response.ok) {
@@ -109,9 +105,7 @@ export const saveQuote = async (
 			`${API_BASE_URL}/quote/${id}/updatestatus?quoteStatus=${quoteStatus}`,
 			{
 				method: "PUT",
-				headers: {
-					Accept: "application/json",
-				},
+				headers: API_HEADERS,
 			}
 		);
 
@@ -136,10 +130,7 @@ export const updateQuoteById = async (
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote/${id}`, {
 			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-				accept: "*/*",
-			},
+			headers: API_HEADERS,
 			body: JSON.stringify(quoteData, null, 2),
 		});
 
@@ -161,9 +152,7 @@ export const getQuoteHistoryById = async (
 	try {
 		const response = await fetch(`${API_BASE_URL}/quote/${id}/history`, {
 			method: "GET",
-			headers: {
-				accept: "*/*",
-			},
+			headers: API_HEADERS,
 		});
 
 		if (!response.ok) {
@@ -186,12 +175,9 @@ export const submitQuoteToHubSpot = async (
 	try {
 		const response = await fetch(
 			`${API_BASE_URL}/quote/${quoteId}/hubspot?recordId=${recordId}&versionNumber=${versionNumber}`,
-
 			{
 				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
+				headers: API_HEADERS,
 			}
 		);
 		if (!response.ok) {
