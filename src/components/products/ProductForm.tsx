@@ -96,7 +96,7 @@ export const ProductForm = ({ initialData, onSubmit }: ProductFormProps) => {
                     name={`categories.${categoryIndex}.portionSizes.${sizeIndex}.size`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{size.size}</FormLabel>
+                        <FormLabel>{defaultPortionSizes[sizeIndex].size}</FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
