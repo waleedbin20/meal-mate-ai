@@ -94,12 +94,12 @@ export const PricingTable = () => {
 
   return (
     <Card className="p-6">
-      <div className="mb-6 flex justify-between items-center">
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">Select Customer</label>
-          <div className="flex items-center gap-4">
+      <div className="mb-6 space-y-4 md:space-y-0 md:flex md:justify-between md:items-start">
+        <div className="space-y-4 md:space-y-2 md:flex-1 md:mr-4">
+          <label className="block text-sm font-medium text-gray-700">Customer Selection</label>
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
             <select
-              className="w-64 rounded-md border border-gray-300 p-2"
+              className="w-full md:w-64 rounded-md border border-gray-300 p-2"
               value={selectedCustomer.id}
               onChange={(e) => {
                 const customer = mockCustomers.find((c) => c.id === e.target.value);
@@ -139,108 +139,114 @@ export const PricingTable = () => {
         {hasChanges && (
           <Button 
             onClick={() => setShowConfirmDialog(true)} 
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-purple-600 hover:bg-purple-700 w-full md:w-auto"
           >
             Save Changes
           </Button>
         )}
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="px-4 py-2 text-left">Category</th>
-              <th className="px-4 py-2 text-left">Unit Price</th>
-              <th className="px-4 py-2 text-left">Standard</th>
-              <th className="px-4 py-2 text-left">Breakfast</th>
-              <th className="px-4 py-2 text-left">Dessert</th>
-              <th className="px-4 py-2 text-left">Snack</th>
-            </tr>
-          </thead>
-          <tbody>
-            {prices.map((price, index) => (
-              <tr 
-                key={price.category} 
-                className="border-t hover:bg-gray-50 transition-colors duration-150"
-              >
-                <td className="px-4 py-2 font-medium">{price.category}</td>
-                <td className="px-4 py-2">
-                  <Input
-                    type="number"
-                    value={price.unitPrice}
-                    onChange={(e) => handlePriceChange(index, "unitPrice", e.target.value)}
-                    className="w-24"
-                    step="0.01"
-                  />
-                  <div className="text-sm text-gray-500 mt-1">
-                    {calculateAdjustedPrice(price.unitPrice)}
-                  </div>
-                </td>
-                <td className="px-4 py-2">
-                  <Input
-                    type="number"
-                    value={price.standardPrice}
-                    onChange={(e) => handlePriceChange(index, "standardPrice", e.target.value)}
-                    className="w-24"
-                    step="0.01"
-                  />
-                  <div className="text-sm text-gray-500 mt-1">
-                    {calculateAdjustedPrice(price.standardPrice)}
-                  </div>
-                </td>
-                <td className="px-4 py-2">
-                  {price.breakfastPrice !== undefined && (
-                    <>
-                      <Input
-                        type="number"
-                        value={price.breakfastPrice || ""}
-                        onChange={(e) => handlePriceChange(index, "breakfastPrice", e.target.value)}
-                        className="w-24"
-                        step="0.01"
-                      />
-                      <div className="text-sm text-gray-500 mt-1">
-                        {calculateAdjustedPrice(price.breakfastPrice)}
-                      </div>
-                    </>
-                  )}
-                </td>
-                <td className="px-4 py-2">
-                  {price.dessertPrice !== undefined && (
-                    <>
-                      <Input
-                        type="number"
-                        value={price.dessertPrice || ""}
-                        onChange={(e) => handlePriceChange(index, "dessertPrice", e.target.value)}
-                        className="w-24"
-                        step="0.01"
-                      />
-                      <div className="text-sm text-gray-500 mt-1">
-                        {calculateAdjustedPrice(price.dessertPrice)}
-                      </div>
-                    </>
-                  )}
-                </td>
-                <td className="px-4 py-2">
-                  {price.snackPrice !== undefined && (
-                    <>
-                      <Input
-                        type="number"
-                        value={price.snackPrice || ""}
-                        onChange={(e) => handlePriceChange(index, "snackPrice", e.target.value)}
-                        className="w-24"
-                        step="0.01"
-                      />
-                      <div className="text-sm text-gray-500 mt-1">
-                        {calculateAdjustedPrice(price.snackPrice)}
-                      </div>
-                    </>
-                  )}
-                </td>
+      <div className="overflow-x-auto -mx-6">
+        <div className="inline-block min-w-full align-middle px-6">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Standard</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Breakfast</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dessert</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Snack</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {prices.map((price, index) => (
+                <tr 
+                  key={price.category} 
+                  className="hover:bg-gray-50 transition-colors duration-150"
+                >
+                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{price.category}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="space-y-1">
+                      <Input
+                        type="number"
+                        value={price.unitPrice}
+                        onChange={(e) => handlePriceChange(index, "unitPrice", e.target.value)}
+                        className="w-24"
+                        step="0.01"
+                      />
+                      <div className="text-xs text-gray-500">
+                        {calculateAdjustedPrice(price.unitPrice)}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="space-y-1">
+                      <Input
+                        type="number"
+                        value={price.standardPrice}
+                        onChange={(e) => handlePriceChange(index, "standardPrice", e.target.value)}
+                        className="w-24"
+                        step="0.01"
+                      />
+                      <div className="text-xs text-gray-500">
+                        {calculateAdjustedPrice(price.standardPrice)}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {price.breakfastPrice !== undefined && (
+                      <div className="space-y-1">
+                        <Input
+                          type="number"
+                          value={price.breakfastPrice || ""}
+                          onChange={(e) => handlePriceChange(index, "breakfastPrice", e.target.value)}
+                          className="w-24"
+                          step="0.01"
+                        />
+                        <div className="text-xs text-gray-500">
+                          {calculateAdjustedPrice(price.breakfastPrice)}
+                        </div>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {price.dessertPrice !== undefined && (
+                      <div className="space-y-1">
+                        <Input
+                          type="number"
+                          value={price.dessertPrice || ""}
+                          onChange={(e) => handlePriceChange(index, "dessertPrice", e.target.value)}
+                          className="w-24"
+                          step="0.01"
+                        />
+                        <div className="text-xs text-gray-500">
+                          {calculateAdjustedPrice(price.dessertPrice)}
+                        </div>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {price.snackPrice !== undefined && (
+                      <div className="space-y-1">
+                        <Input
+                          type="number"
+                          value={price.snackPrice || ""}
+                          onChange={(e) => handlePriceChange(index, "snackPrice", e.target.value)}
+                          className="w-24"
+                          step="0.01"
+                        />
+                        <div className="text-xs text-gray-500">
+                          {calculateAdjustedPrice(price.snackPrice)}
+                        </div>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
