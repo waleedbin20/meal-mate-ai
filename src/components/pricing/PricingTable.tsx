@@ -95,9 +95,9 @@ export const PricingTable = () => {
   return (
     <Card className="p-6">
       <div className="mb-6 space-y-4 md:space-y-0 md:flex md:justify-between md:items-start">
-        <div className="space-y-4 md:space-y-2 md:flex-1 md:mr-4">
-          <label className="block text-sm font-medium text-gray-700">Customer Selection</label>
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
+        <div className="space-y-4 md:space-y-0 md:flex md:items-center gap-6">
+          <div className="flex flex-col">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Customer Selection</label>
             <select
               className="w-full md:w-64 rounded-md border border-gray-300 p-2"
               value={selectedCustomer.id}
@@ -112,27 +112,27 @@ export const PricingTable = () => {
                 </option>
               ))}
             </select>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-600 mb-1">Base Percentage</span>
-              <div className="flex items-center gap-2">
-                {editingPercentage ? (
-                  <Input
-                    type="number"
-                    value={selectedCustomer.basePercentage}
-                    onChange={(e) => handlePercentageChange(e.target.value)}
-                    className="w-20"
-                    onBlur={() => setEditingPercentage(false)}
-                    autoFocus
-                  />
-                ) : (
-                  <div
-                    className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
-                    onClick={() => setEditingPercentage(true)}
-                  >
-                    {selectedCustomer.basePercentage}%
-                  </div>
-                )}
-              </div>
+          </div>
+          <div className="flex flex-col">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Base Percentage</label>
+            <div className="flex items-center gap-2">
+              {editingPercentage ? (
+                <Input
+                  type="number"
+                  value={selectedCustomer.basePercentage}
+                  onChange={(e) => handlePercentageChange(e.target.value)}
+                  className="w-20"
+                  onBlur={() => setEditingPercentage(false)}
+                  autoFocus
+                />
+              ) : (
+                <div
+                  className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
+                  onClick={() => setEditingPercentage(true)}
+                >
+                  {selectedCustomer.basePercentage}%
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -159,7 +159,7 @@ export const PricingTable = () => {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Snack</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200">
               {prices.map((price, index) => (
                 <tr 
                   key={price.category} 
@@ -170,13 +170,13 @@ export const PricingTable = () => {
                     <div className="space-y-1">
                       <Input
                         type="number"
-                        value={price.unitPrice}
+                        value={price.unitPrice || 0}
                         onChange={(e) => handlePriceChange(index, "unitPrice", e.target.value)}
                         className="w-24"
                         step="0.01"
                       />
                       <div className="text-xs text-gray-500">
-                        {calculateAdjustedPrice(price.unitPrice)}
+                        {calculateAdjustedPrice(price.unitPrice || 0)}
                       </div>
                     </div>
                   </td>
@@ -184,13 +184,13 @@ export const PricingTable = () => {
                     <div className="space-y-1">
                       <Input
                         type="number"
-                        value={price.standardPrice}
+                        value={price.standardPrice || 0}
                         onChange={(e) => handlePriceChange(index, "standardPrice", e.target.value)}
                         className="w-24"
                         step="0.01"
                       />
                       <div className="text-xs text-gray-500">
-                        {calculateAdjustedPrice(price.standardPrice)}
+                        {calculateAdjustedPrice(price.standardPrice || 0)}
                       </div>
                     </div>
                   </td>
@@ -199,13 +199,13 @@ export const PricingTable = () => {
                       <div className="space-y-1">
                         <Input
                           type="number"
-                          value={price.breakfastPrice || ""}
+                          value={price.breakfastPrice || 0}
                           onChange={(e) => handlePriceChange(index, "breakfastPrice", e.target.value)}
                           className="w-24"
                           step="0.01"
                         />
                         <div className="text-xs text-gray-500">
-                          {calculateAdjustedPrice(price.breakfastPrice)}
+                          {calculateAdjustedPrice(price.breakfastPrice || 0)}
                         </div>
                       </div>
                     )}
@@ -215,13 +215,13 @@ export const PricingTable = () => {
                       <div className="space-y-1">
                         <Input
                           type="number"
-                          value={price.dessertPrice || ""}
+                          value={price.dessertPrice || 0}
                           onChange={(e) => handlePriceChange(index, "dessertPrice", e.target.value)}
                           className="w-24"
                           step="0.01"
                         />
                         <div className="text-xs text-gray-500">
-                          {calculateAdjustedPrice(price.dessertPrice)}
+                          {calculateAdjustedPrice(price.dessertPrice || 0)}
                         </div>
                       </div>
                     )}
@@ -231,13 +231,13 @@ export const PricingTable = () => {
                       <div className="space-y-1">
                         <Input
                           type="number"
-                          value={price.snackPrice || ""}
+                          value={price.snackPrice || 0}
                           onChange={(e) => handlePriceChange(index, "snackPrice", e.target.value)}
                           className="w-24"
                           step="0.01"
                         />
                         <div className="text-xs text-gray-500">
-                          {calculateAdjustedPrice(price.snackPrice)}
+                          {calculateAdjustedPrice(price.snackPrice || 0)}
                         </div>
                       </div>
                     )}
