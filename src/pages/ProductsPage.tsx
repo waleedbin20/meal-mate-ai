@@ -12,7 +12,7 @@ export interface ProductSize {
 }
 
 export interface ProductCategory {
-  type: "large" | "standard" | "small";
+  type: "large" | "standard";
   portionSizes: ProductSize[];
 }
 
@@ -49,11 +49,11 @@ const ProductsPage = () => {
   );
 
   return (
-    <div className="container mx-auto p-4 space-y-6 animate-fade-in">
+    <div className="container mx-auto p-4 space-y-6 animate-fade-in bg-background min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-2xl font-bold">Products</h1>
-        <Button onClick={() => setIsAddDialogOpen(true)}>
-          <Plus className="mr-2" />
+        <h1 className="text-2xl font-bold text-purple-600">Products</h1>
+        <Button onClick={() => setIsAddDialogOpen(true)} className="bg-purple-600 hover:bg-purple-700">
+          <Plus className="mr-2 h-4 w-4" />
           Add Product
         </Button>
       </div>

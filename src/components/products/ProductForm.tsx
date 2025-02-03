@@ -15,7 +15,7 @@ interface ProductFormProps {
   onSubmit: (data: Omit<Product, "id">) => void;
 }
 
-const defaultPortionSizes: ProductSize[] = Array(4).fill({
+const defaultPortionSizes: ProductSize[] = Array(2).fill({
   size: "",
   smallEquivalent: "",
 });
@@ -23,7 +23,6 @@ const defaultPortionSizes: ProductSize[] = Array(4).fill({
 const defaultCategories: ProductCategory[] = [
   { type: "large", portionSizes: [...defaultPortionSizes] },
   { type: "standard", portionSizes: [...defaultPortionSizes] },
-  { type: "small", portionSizes: [...defaultPortionSizes] },
 ];
 
 export const ProductForm = ({ initialData, onSubmit }: ProductFormProps) => {
@@ -82,10 +81,10 @@ export const ProductForm = ({ initialData, onSubmit }: ProductFormProps) => {
 
         {form.watch("categories").map((category, categoryIndex) => (
           <div key={categoryIndex} className="space-y-4">
-            <h3 className="font-semibold capitalize">{category.type}</h3>
+            <h3 className="font-semibold capitalize text-purple-600">{category.type} Portions</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {category.portionSizes.map((_, sizeIndex) => (
-                <div key={sizeIndex} className="space-y-4">
+                <div key={sizeIndex} className="space-y-4 p-4 bg-purple-50 rounded-lg">
                   <FormField
                     control={form.control}
                     name={`categories.${categoryIndex}.portionSizes.${sizeIndex}.size`}
@@ -117,7 +116,7 @@ export const ProductForm = ({ initialData, onSubmit }: ProductFormProps) => {
           </div>
         ))}
 
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700">
           {initialData ? "Update Product" : "Add Product"}
         </Button>
       </form>
