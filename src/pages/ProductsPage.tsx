@@ -62,7 +62,7 @@ const ProductsPage = () => {
           <div className="flex-1 overflow-auto">
             <div className="container mx-auto max-w-3xl p-4 space-y-6">
               <div className="text-left mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Product Management</h1>
+                <h1 className="text-3xl font-bold text-purple-600 mb-2">Product Management</h1>
                 <p className="text-gray-600">View and manage multi twin products portion size</p>
               </div>
 
