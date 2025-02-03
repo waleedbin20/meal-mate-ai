@@ -5,55 +5,52 @@ import { QuoteFormData } from "./types";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DiningRoomsSection } from "./DiningRoomsSection";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface NumberOfDiningRoomsProps {
   form: UseFormReturn<QuoteFormData>;
 }
 
 export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
-  const numberOfDiningRooms = useWatch({
-    control: form.control,
-    name: "numberOfDiningRooms",
-    defaultValue: 1
-  });
-
+  const { toast } = useToast();
   const diningRooms = useWatch({
     control: form.control,
     name: "diningRooms",
     defaultValue: []
   });
 
-  // Update dining rooms array when number changes
-  useEffect(() => {
-    const currentLength = form.getValues("diningRooms")?.length || 0;
-    if (numberOfDiningRooms > currentLength) {
-      // Add new dining rooms
-      const newDiningRooms = [...form.getValues("diningRooms") || []];
-      for (let i = currentLength; i < numberOfDiningRooms; i++) {
-        newDiningRooms.push({
-          name: "",
-          mealCategories: [],
-          multiTwinResidents: 0,
-          level3Residents: 0,
-          level4Residents: 0,
-          level5Residents: 0,
-          level6Residents: 0,
-          allergyFreeResidents: 0,
-          fingerFoodResidents: 0,
-          miniMealResidents: 0,
-          caribbeanDietsResidents: 0,
-          halalDietsResidents: 0,
-          kosherDietsResidents: 0,
-          totalResidentsInDiningRoom: 0
-        });
-      }
-      form.setValue("diningRooms", newDiningRooms);
-    } else if (numberOfDiningRooms < currentLength) {
-      // Remove excess dining rooms
-      const newDiningRooms = form.getValues("diningRooms").slice(0, numberOfDiningRooms);
-      form.setValue("diningRooms", newDiningRooms);
+  const handleAddDiningRoom = () => {
+    if (diningRooms.length >= 10) {
+      toast({
+        title: "Maximum Limit Reached",
+        description: "Cannot add more than 10 dining rooms",
+        variant: "destructive",
+      });
+      return;
     }
-  }, [numberOfDiningRooms, form]);
+
+    const newDiningRooms = [...diningRooms, {
+      name: "",
+      mealCategories: [],
+      multiTwinResidents: 0,
+      level3Residents: 0,
+      level4Residents: 0,
+      level5Residents: 0,
+      level6Residents: 0,
+      allergyFreeResidents: 0,
+      fingerFoodResidents: 0,
+      miniMealResidents: 0,
+      caribbeanDietsResidents: 0,
+      halalDietsResidents: 0,
+      kosherDietsResidents: 0,
+      totalResidentsInDiningRoom: 0
+    }];
+
+    form.setValue("diningRooms", newDiningRooms);
+    form.setValue("numberOfDiningRooms", newDiningRooms.length);
+  };
 
   // Calculate total residents across all dining rooms
   useEffect(() => {
@@ -75,34 +72,30 @@ export const NumberOfDiningRooms = ({ form }: NumberOfDiningRoomsProps) => {
             <FormField
               control={form.control}
               name="numberOfDiningRooms"
-              rules={{
-                required: "Number of Dining Rooms is required",
-                min: {
-                  value: 1,
-                  message: "Must have at least 1 dining room"
-                },
-                max: {
-                  value: 10,
-                  message: "Cannot have more than 10 dining rooms"
-                }
-              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Number of Dining Rooms</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      min="1"
-                      max="10"
-                      onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 1)}
-                      value={field.value}
-                      className="max-w-[200px]"
+                      value={diningRooms.length}
+                      disabled
+                      className="max-w-[200px] bg-gray-100"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <Button
+              type="button"
+              onClick={handleAddDiningRoom}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Dining Room
+            </Button>
           </div>
           <div className="text-right">
             <p className="text-sm text-gray-500">Total Residents</p>
