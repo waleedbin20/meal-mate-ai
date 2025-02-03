@@ -183,7 +183,7 @@ export const DiningRoomFields = ({ form, index, onRemove }: DiningRoomFieldsProp
                         }}
                       />
                     </FormControl>
-                    <FormLabel className=" font-normal text-base leading-none m-0 cursor-pointer">{category}</FormLabel>
+                    <FormLabel className="font-normal text-base leading-none m-0 cursor-pointer">{category}</FormLabel>
                   </FormItem>
                 )}
               />
