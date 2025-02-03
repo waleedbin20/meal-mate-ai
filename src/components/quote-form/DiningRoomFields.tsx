@@ -7,10 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
 import { QuoteFormData, MealCategory, MultiTwinSize } from "./types";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface DiningRoomFieldsProps {
   form: UseFormReturn<QuoteFormData>;
   index: number;
+  onRemove: (index: number) => void;
 }
 
 const mealCategories: MealCategory[] = [
@@ -42,12 +45,11 @@ const getResidentFieldName = (category: MealCategory): keyof QuoteFormData['dini
     "Caribbean": "caribbeanDietsResidents",
     "Halal": "halalDietsResidents",
     "Kosher": "kosherDietsResidents"
-
   };
   return mapping[category];
 };
 
-export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
+export const DiningRoomFields = ({ form, index, onRemove }: DiningRoomFieldsProps) => {
   const { toast } = useToast();
   const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
   const diningRoom = form.watch(`diningRooms.${index}`);
@@ -103,8 +105,24 @@ export const DiningRoomFields = ({ form, index }: DiningRoomFieldsProps) => {
     return true;
   };
 
+  const handleRemove = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onRemove(index);
+  };
+
   return (
-    <div className={`${bgColor} space-y-4 p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-md`}>
+    <div className={`${bgColor} space-y-4 p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-md relative`}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-2 right-2 hover:bg-red-100"
+        onClick={handleRemove}
+        type="button"
+      >
+        <X className="h-4 w-4 text-red-500" />
+      </Button>
+
       <div className="flex justify-between items-center">
         <FormField
           control={form.control}
