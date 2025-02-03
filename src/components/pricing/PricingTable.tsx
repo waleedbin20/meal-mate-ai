@@ -3,6 +3,16 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface PriceData {
   category: string;
@@ -42,6 +52,8 @@ export const PricingTable = () => {
   const [prices, setPrices] = useState<PriceData[]>(initialPrices);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerData>(mockCustomers[0]);
   const [hasChanges, setHasChanges] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [editingPercentage, setEditingPercentage] = useState(false);
   const { toast } = useToast();
 
   const handlePriceChange = (index: number, field: keyof PriceData, value: string) => {
@@ -52,6 +64,17 @@ export const PricingTable = () => {
     };
     setPrices(newPrices);
     setHasChanges(true);
+  };
+
+  const handlePercentageChange = (value: string) => {
+    const newPercentage = parseFloat(value);
+    if (!isNaN(newPercentage)) {
+      setSelectedCustomer({
+        ...selectedCustomer,
+        basePercentage: newPercentage,
+      });
+      setHasChanges(true);
+    }
   };
 
   const calculateAdjustedPrice = (price: number | null) => {
@@ -66,6 +89,7 @@ export const PricingTable = () => {
       description: "Prices have been updated successfully",
     });
     setHasChanges(false);
+    setShowConfirmDialog(false);
   };
 
   return (
@@ -73,23 +97,47 @@ export const PricingTable = () => {
       <div className="mb-6 flex justify-between items-center">
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">Select Customer</label>
-          <select
-            className="w-64 rounded-md border border-gray-300 p-2"
-            value={selectedCustomer.id}
-            onChange={(e) => {
-              const customer = mockCustomers.find((c) => c.id === e.target.value);
-              if (customer) setSelectedCustomer(customer);
-            }}
-          >
-            {mockCustomers.map((customer) => (
-              <option key={customer.id} value={customer.id}>
-                {customer.name} ({customer.basePercentage}%)
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center gap-4">
+            <select
+              className="w-64 rounded-md border border-gray-300 p-2"
+              value={selectedCustomer.id}
+              onChange={(e) => {
+                const customer = mockCustomers.find((c) => c.id === e.target.value);
+                if (customer) setSelectedCustomer(customer);
+              }}
+            >
+              {mockCustomers.map((customer) => (
+                <option key={customer.id} value={customer.id}>
+                  {customer.name}
+                </option>
+              ))}
+            </select>
+            <div className="flex items-center gap-2">
+              {editingPercentage ? (
+                <Input
+                  type="number"
+                  value={selectedCustomer.basePercentage}
+                  onChange={(e) => handlePercentageChange(e.target.value)}
+                  className="w-20"
+                  onBlur={() => setEditingPercentage(false)}
+                  autoFocus
+                />
+              ) : (
+                <div
+                  className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
+                  onClick={() => setEditingPercentage(true)}
+                >
+                  {selectedCustomer.basePercentage}%
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         {hasChanges && (
-          <Button onClick={handleSave} className="bg-purple-600 hover:bg-purple-700">
+          <Button 
+            onClick={() => setShowConfirmDialog(true)} 
+            className="bg-purple-600 hover:bg-purple-700"
+          >
             Save Changes
           </Button>
         )}
@@ -109,7 +157,10 @@ export const PricingTable = () => {
           </thead>
           <tbody>
             {prices.map((price, index) => (
-              <tr key={price.category} className="border-t">
+              <tr 
+                key={price.category} 
+                className="border-t hover:bg-gray-50 transition-colors duration-150"
+              >
                 <td className="px-4 py-2 font-medium">{price.category}</td>
                 <td className="px-4 py-2">
                   <Input
@@ -188,6 +239,21 @@ export const PricingTable = () => {
           </tbody>
         </table>
       </div>
+
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to save these changes? This will update the prices for {selectedCustomer.name}.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSave}>Save Changes</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };
