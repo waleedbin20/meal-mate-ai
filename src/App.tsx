@@ -7,23 +7,28 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ChatPage from "./pages/ChatPage";
 import UsersPage from "./pages/UsersPage";
 import ProductsPage from "./pages/ProductsPage";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/quote" element={<QuotePage />} />
-          <Route path="/quote/:id" element={<QuotePage />} />
-          <Route path="/saved-quotes" element={<SavedQuotesPage />} />
-          <Route path="/quote/:id/chat" element={<ChatPage />} />
-          <Route path="/users" element={<UsersPage />} />
-          <Route path="/products" element={<ProductsPage />} />
-        </Routes>
-      </Router>
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full">
+          <Router>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/quote" element={<QuotePage />} />
+              <Route path="/quote/:id" element={<QuotePage />} />
+              <Route path="/saved-quotes" element={<SavedQuotesPage />} />
+              <Route path="/quote/:id/chat" element={<ChatPage />} />
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/products" element={<ProductsPage />} />
+            </Routes>
+          </Router>
+        </div>
+      </SidebarProvider>
       <Toaster />
     </QueryClientProvider>
   );
