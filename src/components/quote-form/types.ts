@@ -19,7 +19,7 @@ export interface QuoteFormData {
   numberOfDiningRooms: number;
   totalResidents: number;
   diningRooms: DiningRoom[];
-  roles: Role[];
+  roles: LaborRole[];
   apetitoLabor: ApetitoLabor;
   numberOfRoles: number;
   selectedMenu: MenuSelection;
@@ -48,12 +48,14 @@ export interface DiningRoom {
   multiTwinSize?: MultiTwinSize;
 }
 
-export interface Role {
+export interface LaborRole {
   name: string;
   hourlyRate: number;
   hoursPerWeek: number;
   numberOfSimilarRoles: number;
 }
+
+export type Role = LaborRole;
 
 export interface ApetitoLabor {
   name: string;
@@ -89,6 +91,34 @@ export type MealCategory =
 
 export type MultiTwinSize = "Standard" | "Large";
 
+export interface MenuOption {
+  menuName: string;
+  menuId: string;
+}
+
+export type Level4Options = "Breakfast" | "Snacks" | "Dessert";
+export type Level5Options = "Dessert";
+export type Level6Options = "Dessert";
+
 export interface TransformedQuoteData extends QuoteFormData {
-  // Add any additional fields needed for transformed data
+  careHomeDetails?: {
+    name: string;
+  };
+  diningInformation?: {
+    numberOfDiningRooms: number;
+    diningRooms: any[];
+  };
+  pricingInformation?: {
+    priceListName: PriceList;
+    currentFoodSpend: number;
+    estimatedNonApetitoSpend: number;
+  };
+  labourAndCost?: {
+    currentLabour: {
+      roles: LaborRole[];
+      totalHours: number;
+      totalCost: number;
+    };
+    apetitoLabour: ApetitoLabor;
+  };
 }
