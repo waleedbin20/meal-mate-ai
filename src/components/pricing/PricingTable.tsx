@@ -112,24 +112,27 @@ export const PricingTable = () => {
                 </option>
               ))}
             </select>
-            <div className="flex items-center gap-2">
-              {editingPercentage ? (
-                <Input
-                  type="number"
-                  value={selectedCustomer.basePercentage}
-                  onChange={(e) => handlePercentageChange(e.target.value)}
-                  className="w-20"
-                  onBlur={() => setEditingPercentage(false)}
-                  autoFocus
-                />
-              ) : (
-                <div
-                  className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
-                  onClick={() => setEditingPercentage(true)}
-                >
-                  {selectedCustomer.basePercentage}%
-                </div>
-              )}
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-gray-600 mb-1">Base Percentage</span>
+              <div className="flex items-center gap-2">
+                {editingPercentage ? (
+                  <Input
+                    type="number"
+                    value={selectedCustomer.basePercentage}
+                    onChange={(e) => handlePercentageChange(e.target.value)}
+                    className="w-20"
+                    onBlur={() => setEditingPercentage(false)}
+                    autoFocus
+                  />
+                ) : (
+                  <div
+                    className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
+                    onClick={() => setEditingPercentage(true)}
+                  >
+                    {selectedCustomer.basePercentage}%
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
