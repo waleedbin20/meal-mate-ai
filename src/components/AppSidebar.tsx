@@ -5,6 +5,7 @@ import {
     MessageSquare,
     Users,
     Package,
+    PoundSterling,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -43,6 +44,11 @@ const items = [
         title: "Products",
         url: "/products",
         icon: Package,
+    },
+    {
+        title: "Pricing",
+        url: "/pricing",
+        icon: PoundSterling,
     },
 ];
 
