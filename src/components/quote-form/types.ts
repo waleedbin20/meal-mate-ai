@@ -17,6 +17,13 @@ export type Level4Options = "Breakfast" | "Snacks" | "Dessert";
 export type Level5Options = "Dessert";
 export type Level6Options = "Dessert";
 
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export interface MenuOption {
   menuName: string;
   menuId: string;
