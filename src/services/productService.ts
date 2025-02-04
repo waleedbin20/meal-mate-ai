@@ -49,6 +49,7 @@ export const uploadProducts = async (formData: FormData): Promise<ApiResponse<bo
       method: 'POST',
       headers: {
         'x-api-key': API_KEY,
+        'Content-Type': 'multipart/form-data',
       },
       body: formData
     });
