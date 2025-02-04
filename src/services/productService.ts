@@ -42,3 +42,27 @@ export const fetchProducts = async (): Promise<ApiResponse> => {
     throw error;
   }
 };
+
+export const uploadProducts = async (formData: FormData): Promise<ApiResponse> => {
+  try {
+    const response = await fetch(`${API_URL}/products`, {
+      method: 'POST',
+      headers: {
+        'x-api-key': API_KEY,
+        // Note: Don't set Content-Type header when using FormData,
+        // browser will set it automatically with the correct boundary
+      },
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload products');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error uploading products:', error);
+    throw error;
+  }
+};

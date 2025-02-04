@@ -8,7 +8,7 @@ import * as XLSX from 'xlsx';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductTable } from "@/components/products/ProductTable";
-import { fetchProducts } from "@/services/productService";
+import { fetchProducts, uploadProducts } from "@/services/productService";
 
 export interface ProductSize {
   size: string;
@@ -31,12 +31,12 @@ export interface Product {
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: 'array' });
@@ -58,46 +58,55 @@ const ProductsPage = () => {
           return;
         }
 
-        // Transform the data to match our Product interface
-        const transformedProducts: Product[] = jsonData.map((item: any) => ({
-          id: crypto.randomUUID(),
-          name: `${String(item.MultiProductCode)} - ${String(item.TwinProductCode)}`,
-          largeCode: String(item.MultiProductCode),
-          smallCode: String(item.TwinProductCode),
-          categories: [
-            {
-              type: "large" as const,
-              portionSizes: [
-                {
-                  size: "Multi Twin Large",
-                  smallEquivalent: item.MultiLargePortion?.toString() || "0"
-                },
-                {
-                  size: "Multi Twin Small",
-                  smallEquivalent: item.TwinLargePortion?.toString() || "0"
-                }
-              ]
-            },
-            {
-              type: "standard" as const,
-              portionSizes: [
-                {
-                  size: "Multi Twin Large",
-                  smallEquivalent: item.MultiStandardPortion?.toString() || "0"
-                },
-                {
-                  size: "Multi Twin Small",
-                  smallEquivalent: item.TwinStandardPortion?.toString() || "0"
-                }
-              ]
-            }
-          ]
-        }));
+        // Create FormData and append the file
+        const formData = new FormData();
+        formData.append('file', file);
 
-        setProducts(transformedProducts);
-        toast.success('Products imported successfully');
+        // Send POST request to upload the products
+        const response = await uploadProducts(formData);
+        
+        if (response.success) {
+          toast.success('Products imported successfully');
+          // Transform the response data to match our interface
+          const transformedProducts = response.data.map(item => ({
+            id: item.id.toString(),
+            name: `${item.multiProductCode} - ${item.twinProductCode}`,
+            largeCode: item.multiProductCode,
+            smallCode: item.twinProductCode,
+            categories: [
+              {
+                type: "large" as const,
+                portionSizes: [
+                  {
+                    size: "Multi Twin Large",
+                    smallEquivalent: item.multiLargePortion.toString()
+                  },
+                  {
+                    size: "Multi Twin Small",
+                    smallEquivalent: item.twinLargePortion.toString()
+                  }
+                ]
+              },
+              {
+                type: "standard" as const,
+                portionSizes: [
+                  {
+                    size: "Multi Twin Large",
+                    smallEquivalent: item.multiStandardPortion.toString()
+                  },
+                  {
+                    size: "Multi Twin Small",
+                    smallEquivalent: item.twinStandardPortion.toString()
+                  }
+                ]
+              }
+            ]
+          }));
+          setProducts(transformedProducts);
+        }
       } catch (error) {
-        toast.error('Error processing file. Please check the format.');
+        console.error('Error processing file:', error);
+        toast.error('Error uploading products. Please try again.');
       }
     };
     reader.readAsArrayBuffer(file);
