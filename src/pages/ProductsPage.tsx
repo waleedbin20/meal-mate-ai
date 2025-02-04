@@ -105,9 +105,7 @@ const ProductsPage = () => {
 
   const handleExport = async () => {
     try {
-      // For now, we'll use a hardcoded token. In a real application, you would get this from your auth system
-      const token = 'your-auth-token';
-      const fetchedProducts = await fetchProducts(token);
+      const fetchedProducts = await fetchProducts();
       
       // Transform the data for Excel export
       const exportData = fetchedProducts.map(product => ({

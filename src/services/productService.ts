@@ -1,12 +1,13 @@
 import { Product } from "@/pages/ProductsPage";
 
-const API_URL = 'https://wa-quote-api-dev-gwewavh3ddace9g7.uksouth-01.azurewebsites.net/api';
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+const API_KEY = import.meta.env.VITE_API_KEY;
 
-export const fetchProducts = async (token: string): Promise<Product[]> => {
+export const fetchProducts = async (): Promise<Product[]> => {
   try {
     const response = await fetch(`${API_URL}/products`, {
       headers: {
-        'x-api-key': token,
+        'x-api-key': API_KEY,
         'Content-Type': 'application/json',
       },
     });
