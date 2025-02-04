@@ -8,7 +8,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { Product, ProductCategory, ProductSize } from "@/pages/ProductsPage";
+import type { Product, ProductCategory, ProductSize } from "@/types/product";
 
 interface ProductFormProps {
   initialData?: Product;

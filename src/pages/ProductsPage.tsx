@@ -9,7 +9,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { uploadProducts } from "@/services/productService";
 
-// Interface for Excel row data
 interface ExcelProductData {
   MultiProductCode: string;
   TwinProductCode: string;
@@ -59,7 +58,7 @@ const ProductsPage = () => {
           return;
         }
 
-        // Transform Excel data to API payload format, ensuring correct types
+        // Transform Excel data to API payload format
         const productsPayload = jsonData.map((item: ExcelProductData) => ({
           multiProductCode: String(item.MultiProductCode),
           twinProductCode: String(item.TwinProductCode),
