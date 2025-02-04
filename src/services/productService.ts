@@ -13,6 +13,15 @@ export interface ApiProduct {
   modifiedDate: string;
 }
 
+export interface ProductPayload {
+  multiProductCode: string;
+  twinProductCode: string;
+  multiStandardPortion: number;
+  twinStandardPortion: number;
+  multiLargePortion: number;
+  twinLargePortion: number;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   statusCode: number;
@@ -41,19 +50,15 @@ export const fetchProducts = async (): Promise<ApiResponse<ApiProduct[]>> => {
   }
 };
 
-export const uploadProducts = async (file: File): Promise<ApiResponse<boolean>> => {
+export const uploadProducts = async (products: ProductPayload[]): Promise<ApiResponse<boolean>> => {
   try {
-    const formData = new FormData();
-    formData.append('file', file);
-
     const response = await fetch(`${API_URL}/products`, {
       method: 'POST',
       headers: {
         'x-api-key': API_KEY,
-        // Note: Don't set Content-Type header when using FormData
-        // The browser will set it automatically with the correct boundary
+        'Content-Type': 'application/json',
       },
-      body: formData
+      body: JSON.stringify(products)
     });
 
     if (!response.ok) {

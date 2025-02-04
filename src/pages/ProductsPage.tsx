@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductTable } from "@/components/products/ProductTable";
 import { fetchProducts, uploadProducts } from "@/services/productService";
-import type { ApiProduct } from "@/services/productService";
+import type { ApiProduct, ProductPayload } from "@/services/productService";
 
 export interface ProductSize {
   size: string;
@@ -64,8 +64,18 @@ const ProductsPage = () => {
           return;
         }
 
-        // Send the file directly to upload the products
-        const response = await uploadProducts(file);
+        // Transform Excel data to API payload format
+        const productsPayload: ProductPayload[] = jsonData.map((item: any) => ({
+          multiProductCode: item.MultiProductCode,
+          twinProductCode: item.TwinProductCode,
+          multiStandardPortion: Number(item.MultiStandardPortion),
+          twinStandardPortion: Number(item.TwinStandardPortion),
+          multiLargePortion: Number(item.MultiLargePortion),
+          twinLargePortion: Number(item.TwinLargePortion)
+        }));
+
+        // Send the transformed data to upload the products
+        const response = await uploadProducts(productsPayload);
         
         if (response.success && response.data === true) {
           toast({
