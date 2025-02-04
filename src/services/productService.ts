@@ -6,7 +6,7 @@ export const fetchProducts = async (token: string): Promise<Product[]> => {
   try {
     const response = await fetch(`${API_URL}/products`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'x-api-key': token,
         'Content-Type': 'application/json',
       },
     });
