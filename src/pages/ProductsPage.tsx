@@ -11,6 +11,16 @@ import { ProductTable } from "@/components/products/ProductTable";
 import { fetchProducts, uploadProducts } from "@/services/productService";
 import type { ApiProduct } from "@/services/productService";
 
+// Interface for Excel row data
+interface ExcelProductData {
+  MultiProductCode: string;
+  TwinProductCode: string;
+  MultiStandardPortion: string | number;
+  TwinStandardPortion: string | number;
+  MultiLargePortion: string | number;
+  TwinLargePortion: string | number;
+}
+
 export interface ProductSize {
   size: string;
   smallEquivalent: string;
@@ -43,12 +53,12 @@ const ProductsPage = () => {
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet) as ExcelProductData[];
 
         console.log('Excel data parsed:', JSON.stringify(jsonData, null, 2));
 
         // Validate the data structure
-        const isValidData = jsonData.every((item: any) => 
+        const isValidData = jsonData.every((item: ExcelProductData) => 
           'MultiProductCode' in item &&
           'TwinProductCode' in item &&
           'MultiStandardPortion' in item &&
@@ -67,7 +77,7 @@ const ProductsPage = () => {
         }
 
         // Transform Excel data to API payload format
-        const productsPayload = jsonData.map((item: any) => ({
+        const productsPayload = jsonData.map((item: ExcelProductData) => ({
           multiProductCode: item.MultiProductCode,
           twinProductCode: item.TwinProductCode,
           multiStandardPortion: Number(item.MultiStandardPortion),
