@@ -43,13 +43,15 @@ export const fetchProducts = async (): Promise<ApiResponse<ApiProduct[]>> => {
   }
 };
 
-export const uploadProducts = async (formData: FormData): Promise<ApiResponse<boolean>> => {
+export const uploadProducts = async (file: File): Promise<ApiResponse<boolean>> => {
   try {
+    const formData = new FormData();
+    formData.append('file', file); // Using 'file' as the key to match backend expectation
+
     const response = await fetch(`${API_URL}/products`, {
       method: 'POST',
       headers: {
         'x-api-key': API_KEY,
-        'Content-Type': 'multipart/form-data',
       },
       body: formData
     });
