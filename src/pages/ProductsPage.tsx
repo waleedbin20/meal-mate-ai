@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductTable } from "@/components/products/ProductTable";
+import { fetchProducts } from "@/services/productService";
 
 export interface ProductSize {
   size: string;
@@ -102,21 +103,32 @@ const ProductsPage = () => {
     reader.readAsArrayBuffer(file);
   };
 
-  const handleExport = () => {
-    // Transform the data back to the expected format
-    const exportData = products.map(product => ({
-      MultiProductCode: product.largeCode,
-      TwinProductCode: product.smallCode,
-      MultiStandardPortion: parseInt(product.categories[1].portionSizes[0].smallEquivalent) || 0,
-      TwinStandardPortion: parseInt(product.categories[1].portionSizes[1].smallEquivalent) || 0,
-      MultiLargePortion: parseInt(product.categories[0].portionSizes[0].smallEquivalent) || 0,
-      TwinLargePortion: parseInt(product.categories[0].portionSizes[1].smallEquivalent) || 0,
-    }));
+  const handleExport = async () => {
+    try {
+      // For now, we'll use a hardcoded token. In a real application, you would get this from your auth system
+      const token = 'your-auth-token';
+      const fetchedProducts = await fetchProducts(token);
+      
+      // Transform the data for Excel export
+      const exportData = fetchedProducts.map(product => ({
+        MultiProductCode: String(product.largeCode),
+        TwinProductCode: String(product.smallCode),
+        MultiStandardPortion: parseInt(product.categories[1].portionSizes[0].smallEquivalent) || 0,
+        TwinStandardPortion: parseInt(product.categories[1].portionSizes[1].smallEquivalent) || 0,
+        MultiLargePortion: parseInt(product.categories[0].portionSizes[0].smallEquivalent) || 0,
+        TwinLargePortion: parseInt(product.categories[0].portionSizes[1].smallEquivalent) || 0,
+      }));
 
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
-    XLSX.writeFile(workbook, "products.xlsx");
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+      XLSX.writeFile(workbook, "products.xlsx");
+      
+      toast.success('Products exported successfully');
+    } catch (error) {
+      console.error('Error exporting products:', error);
+      toast.error('Failed to export products');
+    }
   };
 
   const downloadDemoFile = () => {
