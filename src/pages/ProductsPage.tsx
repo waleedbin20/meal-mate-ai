@@ -60,9 +60,9 @@ const ProductsPage = () => {
         // Transform the data to match our Product interface
         const transformedProducts: Product[] = jsonData.map((item: any) => ({
           id: crypto.randomUUID(),
-          name: `${item.MultiProductCode} - ${item.TwinProductCode}`,
-          largeCode: item.MultiProductCode,
-          smallCode: item.TwinProductCode,
+          name: `${String(item.MultiProductCode)} - ${String(item.TwinProductCode)}`,
+          largeCode: String(item.MultiProductCode),
+          smallCode: String(item.TwinProductCode),
           categories: [
             {
               type: "large" as const,
