@@ -76,10 +76,10 @@ const ProductsPage = () => {
           return;
         }
 
-        // Transform Excel data to API payload format
+        // Transform Excel data to API payload format, ensuring correct types
         const productsPayload = jsonData.map((item: ExcelProductData) => ({
-          multiProductCode: item.MultiProductCode,
-          twinProductCode: item.TwinProductCode,
+          multiProductCode: String(item.MultiProductCode),
+          twinProductCode: String(item.TwinProductCode),
           multiStandardPortion: Number(item.MultiStandardPortion),
           twinStandardPortion: Number(item.TwinStandardPortion),
           multiLargePortion: Number(item.MultiLargePortion),
