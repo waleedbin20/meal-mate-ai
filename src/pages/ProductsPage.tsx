@@ -229,7 +229,6 @@ const ProductsPage = () => {
                   <Button
                     onClick={handleExport}
                     className="bg-purple-600 hover:bg-purple-700"
-                    disabled={products.length === 0}
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Export to Excel
