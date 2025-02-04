@@ -3,12 +3,13 @@ import { Download, Upload, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import * as XLSX from 'xlsx';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductTable } from "@/components/products/ProductTable";
 import { fetchProducts, uploadProducts } from "@/services/productService";
+import type { ApiProduct } from "@/services/productService";
 
 export interface ProductSize {
   size: string;
@@ -30,6 +31,7 @@ export interface Product {
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const { toast } = useToast();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -79,7 +81,7 @@ const ProductsPage = () => {
           const productsResponse = await fetchProducts();
           if (productsResponse.success && Array.isArray(productsResponse.data)) {
             // Transform the response data to match our interface
-            const transformedProducts = productsResponse.data.map(item => ({
+            const transformedProducts = productsResponse.data.map((item: ApiProduct) => ({
               id: item.id.toString(),
               name: `${item.multiProductCode} - ${item.twinProductCode}`,
               largeCode: item.multiProductCode,
@@ -132,61 +134,34 @@ const ProductsPage = () => {
     try {
       const response = await fetchProducts();
       
-      // Transform the API response data to match our interface
-      const transformedProducts = response.data.map(item => ({
-        id: item.id.toString(),
-        name: `${item.multiProductCode} - ${item.twinProductCode}`,
-        largeCode: item.multiProductCode,
-        smallCode: item.twinProductCode,
-        categories: [
-          {
-            type: "large" as const,
-            portionSizes: [
-              {
-                size: "Multi Twin Large",
-                smallEquivalent: item.multiLargePortion.toString()
-              },
-              {
-                size: "Multi Twin Small",
-                smallEquivalent: item.twinLargePortion.toString()
-              }
-            ]
-          },
-          {
-            type: "standard" as const,
-            portionSizes: [
-              {
-                size: "Multi Twin Large",
-                smallEquivalent: item.multiStandardPortion.toString()
-              },
-              {
-                size: "Multi Twin Small",
-                smallEquivalent: item.twinStandardPortion.toString()
-              }
-            ]
-          }
-        ]
-      }));
-      
-      // Transform the data for Excel export
-      const exportData = transformedProducts.map(product => ({
-        MultiProductCode: product.largeCode,
-        TwinProductCode: product.smallCode,
-        MultiStandardPortion: parseInt(product.categories[1].portionSizes[0].smallEquivalent) || 0,
-        TwinStandardPortion: parseInt(product.categories[1].portionSizes[1].smallEquivalent) || 0,
-        MultiLargePortion: parseInt(product.categories[0].portionSizes[0].smallEquivalent) || 0,
-        TwinLargePortion: parseInt(product.categories[0].portionSizes[1].smallEquivalent) || 0,
-      }));
+      if (response.success && Array.isArray(response.data)) {
+        // Transform the API response data to match our interface
+        const transformedProducts = response.data.map((item: ApiProduct) => ({
+          MultiProductCode: item.multiProductCode,
+          TwinProductCode: item.twinProductCode,
+          MultiStandardPortion: item.multiStandardPortion,
+          TwinStandardPortion: item.twinStandardPortion,
+          MultiLargePortion: item.multiLargePortion,
+          TwinLargePortion: item.twinLargePortion,
+        }));
 
-      const worksheet = XLSX.utils.json_to_sheet(exportData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
-      XLSX.writeFile(workbook, "products.xlsx");
-      
-      toast.success('Products exported successfully');
+        const worksheet = XLSX.utils.json_to_sheet(transformedProducts);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+        XLSX.writeFile(workbook, "products.xlsx");
+        
+        toast({
+          title: "Success",
+          description: "Products exported successfully"
+        });
+      }
     } catch (error) {
       console.error('Error exporting products:', error);
-      toast.error('Failed to export products');
+      toast({
+        title: "Error",
+        description: "Failed to export products",
+        variant: "destructive"
+      });
     }
   };
 
@@ -214,7 +189,10 @@ const ProductsPage = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Demo");
     XLSX.writeFile(workbook, "product-template.xlsx");
-    toast.success("Demo template downloaded successfully");
+    toast({
+      title: "Success",
+      description: "Demo template downloaded successfully"
+    });
   };
 
   return (

@@ -3,7 +3,7 @@ import { Product } from "@/pages/ProductsPage";
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
-interface ApiProduct {
+export interface ApiProduct {
   id: number;
   multiProductCode: string;
   twinProductCode: string;
@@ -15,14 +15,14 @@ interface ApiProduct {
   modifiedDate: string;
 }
 
-interface ApiResponse {
+export interface ApiResponse<T> {
   success: boolean;
   statusCode: number;
   message: string;
-  data: ApiProduct[] | boolean;
+  data: T;
 }
 
-export const fetchProducts = async (): Promise<ApiResponse> => {
+export const fetchProducts = async (): Promise<ApiResponse<ApiProduct[]>> => {
   try {
     const response = await fetch(`${API_URL}/products`, {
       headers: {
@@ -43,14 +43,12 @@ export const fetchProducts = async (): Promise<ApiResponse> => {
   }
 };
 
-export const uploadProducts = async (formData: FormData): Promise<ApiResponse> => {
+export const uploadProducts = async (formData: FormData): Promise<ApiResponse<boolean>> => {
   try {
     const response = await fetch(`${API_URL}/products`, {
       method: 'POST',
       headers: {
         'x-api-key': API_KEY,
-        // Note: Don't set Content-Type header when using FormData,
-        // browser will set it automatically with the correct boundary
       },
       body: formData
     });
