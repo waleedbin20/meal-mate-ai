@@ -107,8 +107,11 @@ const ProductsPage = () => {
     try {
       const fetchedProducts = await fetchProducts();
       
+      // Ensure fetchedProducts is an array
+      const productsArray = Array.isArray(fetchedProducts) ? fetchedProducts : [fetchedProducts];
+      
       // Transform the data for Excel export
-      const exportData = fetchedProducts.map(product => ({
+      const exportData = productsArray.map(product => ({
         MultiProductCode: String(product.largeCode),
         TwinProductCode: String(product.smallCode),
         MultiStandardPortion: parseInt(product.categories[1].portionSizes[0].smallEquivalent) || 0,
