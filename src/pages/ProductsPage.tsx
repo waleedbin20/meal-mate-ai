@@ -64,12 +64,8 @@ const ProductsPage = () => {
           return;
         }
 
-        // Create FormData and append the file
-        const formData = new FormData();
-        formData.append('file', file);
-
-        // Send POST request to upload the products
-        const response = await uploadProducts(formData);
+        // Send the file directly to upload the products
+        const response = await uploadProducts(file);
         
         if (response.success && response.data === true) {
           toast({
