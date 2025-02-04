@@ -105,7 +105,10 @@ const ProductsPage = () => {
 
   const handleExport = async () => {
     try {
-      const fetchedProducts = await fetchProducts();
+      const response = await fetchProducts();
+      
+      // Access the data from the ApiResponse
+      const fetchedProducts = response.data;
       
       // Ensure fetchedProducts is an array
       const productsArray = Array.isArray(fetchedProducts) ? fetchedProducts : [fetchedProducts];
