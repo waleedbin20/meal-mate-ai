@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EditProductDialog } from "./EditProductDialog";
-import type { Product } from "@/types/product";
+import type { Product } from "@/pages/ProductsPage";
 
 interface ProductCardProps {
   product: Product;
