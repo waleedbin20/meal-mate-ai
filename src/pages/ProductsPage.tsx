@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, Upload, AlertCircle } from "lucide-react";
+import { Download, Upload, AlertCircle, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -7,9 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import * as XLSX from 'xlsx';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProductTable } from "@/components/products/ProductTable";
-import { fetchProducts, uploadProducts } from "@/services/productService";
-import type { ApiProduct } from "@/services/productService";
+import { uploadProducts } from "@/services/productService";
 
 // Interface for Excel row data
 interface ExcelProductData {
@@ -21,31 +19,15 @@ interface ExcelProductData {
   TwinLargePortion: string | number;
 }
 
-export interface ProductSize {
-  size: string;
-  smallEquivalent: string;
-}
-
-export interface ProductCategory {
-  type: "large" | "standard";
-  portionSizes: ProductSize[];
-}
-
-export interface Product {
-  id: string;
-  name: string;
-  largeCode: string;
-  smallCode: string;
-  categories: ProductCategory[];
-}
-
 const ProductsPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    setIsUploading(true);
 
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -68,6 +50,7 @@ const ProductsPage = () => {
         );
 
         if (!isValidData) {
+          setIsUploading(false);
           toast({
             title: "Error",
             description: 'Invalid file format. Please check the example template.',
@@ -96,47 +79,6 @@ const ProductsPage = () => {
             title: "Success",
             description: "Products have been successfully uploaded",
           });
-          
-          // Fetch the updated products list
-          const productsResponse = await fetchProducts();
-          if (productsResponse.success && Array.isArray(productsResponse.data)) {
-            // Transform the response data to match our interface
-            const transformedProducts = productsResponse.data.map((item: ApiProduct) => ({
-              id: item.id.toString(),
-              name: `${item.multiProductCode} - ${item.twinProductCode}`,
-              largeCode: item.multiProductCode,
-              smallCode: item.twinProductCode,
-              categories: [
-                {
-                  type: "large" as const,
-                  portionSizes: [
-                    {
-                      size: "Multi Twin Large",
-                      smallEquivalent: item.multiLargePortion.toString()
-                    },
-                    {
-                      size: "Multi Twin Small",
-                      smallEquivalent: item.twinLargePortion.toString()
-                    }
-                  ]
-                },
-                {
-                  type: "standard" as const,
-                  portionSizes: [
-                    {
-                      size: "Multi Twin Large",
-                      smallEquivalent: item.multiStandardPortion.toString()
-                    },
-                    {
-                      size: "Multi Twin Small",
-                      smallEquivalent: item.twinStandardPortion.toString()
-                    }
-                  ]
-                }
-              ]
-            }));
-            setProducts(transformedProducts);
-          }
         }
       } catch (error) {
         console.error('Error processing file:', error);
@@ -145,44 +87,11 @@ const ProductsPage = () => {
           description: 'Error uploading products. Please try again.',
           variant: "destructive",
         });
+      } finally {
+        setIsUploading(false);
       }
     };
     reader.readAsArrayBuffer(file);
-  };
-
-  const handleExport = async () => {
-    try {
-      const response = await fetchProducts();
-      
-      if (response.success && Array.isArray(response.data)) {
-        // Transform the API response data to match our interface
-        const transformedProducts = response.data.map((item: ApiProduct) => ({
-          MultiProductCode: item.multiProductCode,
-          TwinProductCode: item.twinProductCode,
-          MultiStandardPortion: item.multiStandardPortion,
-          TwinStandardPortion: item.twinStandardPortion,
-          MultiLargePortion: item.multiLargePortion,
-          TwinLargePortion: item.twinLargePortion,
-        }));
-
-        const worksheet = XLSX.utils.json_to_sheet(transformedProducts);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
-        XLSX.writeFile(workbook, "products.xlsx");
-        
-        toast({
-          title: "Success",
-          description: "Products exported successfully"
-        });
-      }
-    } catch (error) {
-      console.error('Error exporting products:', error);
-      toast({
-        title: "Error",
-        description: "Failed to export products",
-        variant: "destructive"
-      });
-    }
   };
 
   const downloadDemoFile = () => {
@@ -256,14 +165,25 @@ const ProductsPage = () => {
                     <Button
                       onClick={() => document.getElementById('fileInput')?.click()}
                       className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700"
+                      disabled={isUploading}
                     >
-                      <Upload className="w-4 h-4 mr-2" />
-                      Import Excel
+                      {isUploading ? (
+                        <>
+                          <Loader className="w-4 h-4 mr-2 animate-spin" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4 mr-2" />
+                          Import Excel
+                        </>
+                      )}
                     </Button>
                     <Button
                       onClick={downloadDemoFile}
                       variant="outline"
                       className="w-full sm:w-auto border-purple-600 text-purple-600 hover:bg-purple-50"
+                      disabled={isUploading}
                     >
                       <Download className="w-4 h-4 mr-2" />
                       Download Template
@@ -274,31 +194,12 @@ const ProductsPage = () => {
                       className="hidden"
                       accept=".xlsx,.xls"
                       onChange={handleFileUpload}
+                      disabled={isUploading}
                     />
                   </div>
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Export Products</CardTitle>
-                  <CardDescription>Download your product data as Excel file</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button
-                    onClick={handleExport}
-                    className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Export to Excel
-                  </Button>
-                </CardContent>
-              </Card>
             </div>
-
-            {products.length > 0 && (
-              <ProductTable products={products} />
-            )}
           </div>
         </main>
       </div>
