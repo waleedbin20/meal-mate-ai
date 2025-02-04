@@ -195,7 +195,7 @@ const ProductsPage = () => {
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
         <AppSidebar />
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-8">
           <div className="flex justify-between items-center mb-8">
             <SidebarTrigger />
           </div>
@@ -228,10 +228,10 @@ const ProductsPage = () => {
                       </ul>
                     </AlertDescription>
                   </Alert>
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-col sm:flex-row items-center gap-3">
                     <Button
                       onClick={() => document.getElementById('fileInput')?.click()}
-                      className="bg-purple-600 hover:bg-purple-700"
+                      className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700"
                     >
                       <Upload className="w-4 h-4 mr-2" />
                       Import Excel
@@ -239,7 +239,7 @@ const ProductsPage = () => {
                     <Button
                       onClick={downloadDemoFile}
                       variant="outline"
-                      className="border-purple-600 text-purple-600 hover:bg-purple-50"
+                      className="w-full sm:w-auto border-purple-600 text-purple-600 hover:bg-purple-50"
                     >
                       <Download className="w-4 h-4 mr-2" />
                       Download Template
@@ -263,7 +263,7 @@ const ProductsPage = () => {
                 <CardContent>
                   <Button
                     onClick={handleExport}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700"
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Export to Excel
