@@ -19,7 +19,7 @@ interface ApiResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  data: ApiProduct[];
+  data: ApiProduct[] | boolean;
 }
 
 export const fetchProducts = async (): Promise<ApiResponse> => {

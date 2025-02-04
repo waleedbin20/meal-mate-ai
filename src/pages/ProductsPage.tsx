@@ -3,7 +3,7 @@ import { Download, Upload, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import * as XLSX from 'xlsx';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,7 +54,11 @@ const ProductsPage = () => {
         );
 
         if (!isValidData) {
-          toast.error('Invalid file format. Please check the example template.');
+          toast({
+            title: "Error",
+            description: 'Invalid file format. Please check the example template.',
+            variant: "destructive",
+          });
           return;
         }
 
@@ -65,48 +69,60 @@ const ProductsPage = () => {
         // Send POST request to upload the products
         const response = await uploadProducts(formData);
         
-        if (response.success) {
-          toast.success('Products imported successfully');
-          // Transform the response data to match our interface
-          const transformedProducts = response.data.map(item => ({
-            id: item.id.toString(),
-            name: `${item.multiProductCode} - ${item.twinProductCode}`,
-            largeCode: item.multiProductCode,
-            smallCode: item.twinProductCode,
-            categories: [
-              {
-                type: "large" as const,
-                portionSizes: [
-                  {
-                    size: "Multi Twin Large",
-                    smallEquivalent: item.multiLargePortion.toString()
-                  },
-                  {
-                    size: "Multi Twin Small",
-                    smallEquivalent: item.twinLargePortion.toString()
-                  }
-                ]
-              },
-              {
-                type: "standard" as const,
-                portionSizes: [
-                  {
-                    size: "Multi Twin Large",
-                    smallEquivalent: item.multiStandardPortion.toString()
-                  },
-                  {
-                    size: "Multi Twin Small",
-                    smallEquivalent: item.twinStandardPortion.toString()
-                  }
-                ]
-              }
-            ]
-          }));
-          setProducts(transformedProducts);
+        if (response.success && response.data === true) {
+          toast({
+            title: "Success",
+            description: "Products have been successfully uploaded",
+          });
+          
+          // Fetch the updated products list
+          const productsResponse = await fetchProducts();
+          if (productsResponse.success && Array.isArray(productsResponse.data)) {
+            // Transform the response data to match our interface
+            const transformedProducts = productsResponse.data.map(item => ({
+              id: item.id.toString(),
+              name: `${item.multiProductCode} - ${item.twinProductCode}`,
+              largeCode: item.multiProductCode,
+              smallCode: item.twinProductCode,
+              categories: [
+                {
+                  type: "large" as const,
+                  portionSizes: [
+                    {
+                      size: "Multi Twin Large",
+                      smallEquivalent: item.multiLargePortion.toString()
+                    },
+                    {
+                      size: "Multi Twin Small",
+                      smallEquivalent: item.twinLargePortion.toString()
+                    }
+                  ]
+                },
+                {
+                  type: "standard" as const,
+                  portionSizes: [
+                    {
+                      size: "Multi Twin Large",
+                      smallEquivalent: item.multiStandardPortion.toString()
+                    },
+                    {
+                      size: "Multi Twin Small",
+                      smallEquivalent: item.twinStandardPortion.toString()
+                    }
+                  ]
+                }
+              ]
+            }));
+            setProducts(transformedProducts);
+          }
         }
       } catch (error) {
         console.error('Error processing file:', error);
-        toast.error('Error uploading products. Please try again.');
+        toast({
+          title: "Error",
+          description: 'Error uploading products. Please try again.',
+          variant: "destructive",
+        });
       }
     };
     reader.readAsArrayBuffer(file);
