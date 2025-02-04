@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Download, Upload, AlertCircle, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Download, Upload, AlertCircle, Loader2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -7,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 import * as XLSX from 'xlsx';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProductTable } from "@/components/products/ProductTable";
 import { fetchProducts, uploadProducts } from "@/services/productService";
 import type { ApiProduct } from "@/services/productService";
 import {
@@ -55,6 +54,26 @@ const ProductsPage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [lastModifiedDate, setLastModifiedDate] = useState<string | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchLastModifiedDate = async () => {
+      try {
+        const response = await fetchProducts();
+        if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+          const mostRecentDate = response.data.reduce((latest, product) => {
+            const modDate = new Date(product.modifiedDate);
+            return modDate > latest ? modDate : latest;
+          }, new Date(0));
+          
+          setLastModifiedDate(mostRecentDate.toLocaleString());
+        }
+      } catch (error) {
+        console.error('Error fetching last modified date:', error);
+      }
+    };
+
+    fetchLastModifiedDate();
+  }, []);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -207,12 +226,21 @@ const ProductsPage = () => {
             <div className="text-left">
               <h1 className="text-3xl font-bold text-purple-600 mb-2">Product Management</h1>
               <p className="text-gray-600">Import and export product data</p>
-              {lastModifiedDate && (
-                <p className="text-sm text-gray-500 mt-2">
-                  Last updated: {lastModifiedDate}
-                </p>
-              )}
             </div>
+
+            {lastModifiedDate && (
+              <div className="bg-white rounded-lg shadow-sm border border-purple-100 p-4 animate-fade-in">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-purple-50 p-2 rounded-full">
+                    <Clock className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900">Last Update</h3>
+                    <p className="text-sm text-gray-500">{lastModifiedDate}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
