@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductTable } from "@/components/products/ProductTable";
 import { fetchProducts, uploadProducts } from "@/services/productService";
-import type { ApiProduct, ProductPayload } from "@/services/productService";
+import type { ApiProduct } from "@/services/productService";
 
 export interface ProductSize {
   size: string;
@@ -45,6 +45,8 @@ const ProductsPage = () => {
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(firstSheet);
 
+        console.log('Excel data parsed:', JSON.stringify(jsonData, null, 2));
+
         // Validate the data structure
         const isValidData = jsonData.every((item: any) => 
           'MultiProductCode' in item &&
@@ -65,7 +67,7 @@ const ProductsPage = () => {
         }
 
         // Transform Excel data to API payload format
-        const productsPayload: ProductPayload[] = jsonData.map((item: any) => ({
+        const productsPayload = jsonData.map((item: any) => ({
           multiProductCode: item.MultiProductCode,
           twinProductCode: item.TwinProductCode,
           multiStandardPortion: Number(item.MultiStandardPortion),
@@ -73,6 +75,8 @@ const ProductsPage = () => {
           multiLargePortion: Number(item.MultiLargePortion),
           twinLargePortion: Number(item.TwinLargePortion)
         }));
+
+        console.log('Transformed payload:', JSON.stringify(productsPayload, null, 2));
 
         // Send the transformed data to upload the products
         const response = await uploadProducts(productsPayload);

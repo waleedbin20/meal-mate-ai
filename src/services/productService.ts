@@ -13,15 +13,6 @@ export interface ApiProduct {
   modifiedDate: string;
 }
 
-export interface ProductPayload {
-  multiProductCode: string;
-  twinProductCode: string;
-  multiStandardPortion: number;
-  twinStandardPortion: number;
-  multiLargePortion: number;
-  twinLargePortion: number;
-}
-
 export interface ApiResponse<T> {
   success: boolean;
   statusCode: number;
@@ -50,15 +41,17 @@ export const fetchProducts = async (): Promise<ApiResponse<ApiProduct[]>> => {
   }
 };
 
-export const uploadProducts = async (products: ProductPayload[]): Promise<ApiResponse<boolean>> => {
+export const uploadProducts = async (products: Omit<ApiProduct, 'id' | 'createdDate' | 'modifiedDate'>[]): Promise<ApiResponse<boolean>> => {
   try {
+    console.log('Uploading products with payload:', JSON.stringify(products, null, 2));
+    
     const response = await fetch(`${API_URL}/products`, {
       method: 'POST',
       headers: {
         'x-api-key': API_KEY,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(products)
+      body: JSON.stringify(products, null, 2)
     });
 
     if (!response.ok) {
@@ -68,6 +61,7 @@ export const uploadProducts = async (products: ProductPayload[]): Promise<ApiRes
     }
 
     const data = await response.json();
+    console.log('Upload response:', JSON.stringify(data, null, 2));
     return data;
   } catch (error) {
     console.error('Error uploading products:', error);
