@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Download, Upload, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ProductCard } from "@/components/products/ProductCard";
-import { AddProductDialog } from "@/components/products/AddProductDialog";
 import { AppSidebar } from "@/components/AppSidebar";
-import { toast } from "sonner";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { toast } from "sonner";
+import * as XLSX from 'xlsx';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProductTable } from "@/components/products/ProductTable";
 
 export interface ProductSize {
   size: string;
@@ -27,28 +28,96 @@ export interface Product {
 }
 
 const ProductsPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-  const handleAddProduct = (newProduct: Product) => {
-    setProducts([...products, newProduct]);
-    toast.success("Product added successfully");
-    setIsAddDialogOpen(false);
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+        // Validate the data structure
+        const isValidData = jsonData.every((item: any) => 
+          'MultiProductCode' in item &&
+          'TwinProductCode' in item &&
+          'MultiStandardPortion' in item &&
+          'TwinStandardPortion' in item &&
+          'MultiLargePortion' in item &&
+          'TwinLargePortion' in item
+        );
+
+        if (!isValidData) {
+          toast.error('Invalid file format. Please check the example template.');
+          return;
+        }
+
+        // Transform the data to match our Product interface
+        const transformedProducts = jsonData.map((item: any) => ({
+          id: crypto.randomUUID(),
+          name: `${item.MultiProductCode} - ${item.TwinProductCode}`,
+          largeCode: item.MultiProductCode,
+          smallCode: item.TwinProductCode,
+          categories: [
+            {
+              type: "large",
+              portionSizes: [
+                {
+                  size: "Multi Twin Large",
+                  smallEquivalent: item.MultiLargePortion?.toString() || "0"
+                },
+                {
+                  size: "Multi Twin Small",
+                  smallEquivalent: item.TwinLargePortion?.toString() || "0"
+                }
+              ]
+            },
+            {
+              type: "standard",
+              portionSizes: [
+                {
+                  size: "Multi Twin Large",
+                  smallEquivalent: item.MultiStandardPortion?.toString() || "0"
+                },
+                {
+                  size: "Multi Twin Small",
+                  smallEquivalent: item.TwinStandardPortion?.toString() || "0"
+                }
+              ]
+            }
+          ]
+        }));
+
+        setProducts(transformedProducts);
+        toast.success('Products imported successfully');
+      } catch (error) {
+        toast.error('Error processing file. Please check the format.');
+      }
+    };
+    reader.readAsArrayBuffer(file);
   };
 
-  const handleUpdateProduct = (updatedProduct: Product) => {
-    setProducts(
-      products.map((product) =>
-        product.id === updatedProduct.id ? updatedProduct : product
-      )
-    );
-    toast.success("Product updated successfully");
-  };
+  const handleExport = () => {
+    // Transform the data back to the expected format
+    const exportData = products.map(product => ({
+      MultiProductCode: product.largeCode,
+      TwinProductCode: product.smallCode,
+      MultiStandardPortion: parseInt(product.categories[1].portionSizes[0].smallEquivalent) || 0,
+      TwinStandardPortion: parseInt(product.categories[1].portionSizes[1].smallEquivalent) || 0,
+      MultiLargePortion: parseInt(product.categories[0].portionSizes[0].smallEquivalent) || 0,
+      TwinLargePortion: parseInt(product.categories[0].portionSizes[1].smallEquivalent) || 0,
+    }));
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+    XLSX.writeFile(workbook, "products.xlsx");
+  };
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -59,69 +128,74 @@ const ProductsPage = () => {
             <SidebarTrigger />
           </div>
              
-          <div className="flex-1 overflow-auto">
-            <div className="container mx-auto max-w-3xl p-4 space-y-6">
-              <div className="text-left mb-8">
-                <h1 className="text-3xl font-bold text-purple-600 mb-2">Product Management</h1>
-                <p className="text-gray-600">View and manage multi twin products portion size</p>
-              </div>
-
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <Input
-                  type="search"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full mb-4"
-                />
-
-                <div className="border-t pt-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-sm font-medium text-gray-700">Create new</h2>
-                  </div>
-                  <Button 
-                    onClick={() => setIsAddDialogOpen(true)} 
-                    className="w-full flex items-center justify-start text-left bg-white hover:bg-gray-50 text-gray-700 border border-gray-200"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add New Product
-                  </Button>
-                </div>
-
-                {searchQuery && (
-                  <div className="mt-6">
-                    <h2 className="text-sm font-medium text-gray-700 mb-3">Results</h2>
-                    {filteredProducts.length > 0 ? (
-                      <div className="space-y-2">
-                        {filteredProducts.map((product) => (
-                          <ProductCard
-                            key={product.id}
-                            product={product}
-                            onUpdate={handleUpdateProduct}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-8">
-                        <div className="mx-auto w-24 h-24 mb-4 flex items-center justify-center">
-                          <Search className="w-16 h-16 text-gray-300" />
-                        </div>
-                        <p className="text-gray-500 mb-2">No products found</p>
-                        <p className="text-sm text-gray-400">
-                          "{searchQuery}" did not match any products.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <AddProductDialog
-                open={isAddDialogOpen}
-                onOpenChange={setIsAddDialogOpen}
-                onAdd={handleAddProduct}
-              />
+          <div className="container mx-auto max-w-6xl space-y-8">
+            <div className="text-left">
+              <h1 className="text-3xl font-bold text-purple-600 mb-2">Product Management</h1>
+              <p className="text-gray-600">Import and export product data</p>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Import Products</CardTitle>
+                  <CardDescription>Upload your product data in Excel format</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Important</AlertTitle>
+                    <AlertDescription>
+                      Your Excel file should contain these columns:
+                      <ul className="list-disc list-inside mt-2 space-y-1">
+                        <li>MultiProductCode (text)</li>
+                        <li>TwinProductCode (text)</li>
+                        <li>MultiStandardPortion (number)</li>
+                        <li>TwinStandardPortion (number)</li>
+                        <li>MultiLargePortion (number)</li>
+                        <li>TwinLargePortion (number)</li>
+                      </ul>
+                    </AlertDescription>
+                  </Alert>
+                  <div className="flex items-center gap-4">
+                    <Button
+                      onClick={() => document.getElementById('fileInput')?.click()}
+                      className="bg-purple-600 hover:bg-purple-700"
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      Import Excel
+                    </Button>
+                    <input
+                      type="file"
+                      id="fileInput"
+                      className="hidden"
+                      accept=".xlsx,.xls"
+                      onChange={handleFileUpload}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Export Products</CardTitle>
+                  <CardDescription>Download your product data as Excel file</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    onClick={handleExport}
+                    className="bg-purple-600 hover:bg-purple-700"
+                    disabled={products.length === 0}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Export to Excel
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
+            {products.length > 0 && (
+              <ProductTable products={products} />
+            )}
           </div>
         </main>
       </div>
