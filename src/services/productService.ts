@@ -1,5 +1,3 @@
-import { Product } from "@/pages/ProductsPage";
-
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -46,17 +44,21 @@ export const fetchProducts = async (): Promise<ApiResponse<ApiProduct[]>> => {
 export const uploadProducts = async (file: File): Promise<ApiResponse<boolean>> => {
   try {
     const formData = new FormData();
-    formData.append('file', file); // Using 'file' as the key to match backend expectation
+    formData.append('file', file);
 
     const response = await fetch(`${API_URL}/products`, {
       method: 'POST',
       headers: {
         'x-api-key': API_KEY,
+        // Note: Don't set Content-Type header when using FormData
+        // The browser will set it automatically with the correct boundary
       },
       body: formData
     });
 
     if (!response.ok) {
+      const errorData = await response.text();
+      console.error('Upload error response:', errorData);
       throw new Error('Failed to upload products');
     }
 
