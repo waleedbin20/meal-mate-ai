@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Download, Upload, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
 import * as XLSX from 'xlsx';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -195,12 +195,12 @@ const ProductsPage = () => {
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
         <AppSidebar />
-        <SidebarInset>
-          <div className="flex justify-between items-center mb-8 p-4">
+        <main className="flex-1 p-4 md:p-8">
+          <div className="flex justify-between items-center mb-8">
             <SidebarTrigger />
           </div>
              
-          <div className="container mx-auto max-w-6xl space-y-8 px-4">
+          <div className="container mx-auto max-w-6xl space-y-8">
             <div className="text-left">
               <h1 className="text-3xl font-bold text-purple-600 mb-2">Product Management</h1>
               <p className="text-gray-600">Import and export product data</p>
@@ -276,7 +276,7 @@ const ProductsPage = () => {
               <ProductTable products={products} />
             )}
           </div>
-        </SidebarInset>
+        </main>
       </div>
     </SidebarProvider>
   );
