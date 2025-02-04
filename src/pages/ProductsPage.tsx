@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, Upload, AlertCircle } from "lucide-react";
+import { Download, Upload, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -10,6 +10,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ProductTable } from "@/components/products/ProductTable";
 import { fetchProducts, uploadProducts } from "@/services/productService";
 import type { ApiProduct } from "@/services/productService";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 // Interface for Excel row data
 interface ExcelProductData {
@@ -41,11 +50,17 @@ export interface Product {
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    setIsUploading(true);
+    setErrorMessage(null);
 
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -68,15 +83,10 @@ const ProductsPage = () => {
         );
 
         if (!isValidData) {
-          toast({
-            title: "Error",
-            description: 'Invalid file format. Please check the example template.',
-            variant: "destructive",
-          });
-          return;
+          throw new Error('Invalid file format. Please check the example template.');
         }
 
-        // Transform Excel data to API payload format, ensuring correct types
+        // Transform Excel data to API payload format
         const productsPayload = jsonData.map((item: ExcelProductData) => ({
           multiProductCode: String(item.MultiProductCode),
           twinProductCode: String(item.TwinProductCode),
@@ -92,10 +102,7 @@ const ProductsPage = () => {
         const response = await uploadProducts(productsPayload);
         
         if (response.success && response.data === true) {
-          toast({
-            title: "Success",
-            description: "Products have been successfully uploaded",
-          });
+          setShowSuccessDialog(true);
           
           // Fetch the updated products list
           const productsResponse = await fetchProducts();
@@ -137,14 +144,14 @@ const ProductsPage = () => {
             }));
             setProducts(transformedProducts);
           }
+        } else {
+          throw new Error('Failed to upload products. Please try again.');
         }
       } catch (error) {
         console.error('Error processing file:', error);
-        toast({
-          title: "Error",
-          description: 'Error uploading products. Please try again.',
-          variant: "destructive",
-        });
+        setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
+      } finally {
+        setIsUploading(false);
       }
     };
     reader.readAsArrayBuffer(file);
@@ -256,14 +263,25 @@ const ProductsPage = () => {
                     <Button
                       onClick={() => document.getElementById('fileInput')?.click()}
                       className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700"
+                      disabled={isUploading}
                     >
-                      <Upload className="w-4 h-4 mr-2" />
-                      Import Excel
+                      {isUploading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Importing...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4 mr-2" />
+                          Import Excel
+                        </>
+                      )}
                     </Button>
                     <Button
                       onClick={downloadDemoFile}
                       variant="outline"
                       className="w-full sm:w-auto border-purple-600 text-purple-600 hover:bg-purple-50"
+                      disabled={isUploading}
                     >
                       <Download className="w-4 h-4 mr-2" />
                       Download Template
@@ -274,6 +292,7 @@ const ProductsPage = () => {
                       className="hidden"
                       accept=".xlsx,.xls"
                       onChange={handleFileUpload}
+                      disabled={isUploading}
                     />
                   </div>
                 </CardContent>
@@ -288,6 +307,7 @@ const ProductsPage = () => {
                   <Button
                     onClick={handleExport}
                     className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700"
+                    disabled={isUploading}
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Export to Excel
@@ -302,6 +322,34 @@ const ProductsPage = () => {
           </div>
         </main>
       </div>
+
+      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Success!</AlertDialogTitle>
+            <AlertDialogDescription>
+              Products have been successfully uploaded.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={!!errorMessage} onOpenChange={() => setErrorMessage(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>
+              {errorMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarProvider>
   );
 };
