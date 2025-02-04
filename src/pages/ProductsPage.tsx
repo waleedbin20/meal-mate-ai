@@ -53,6 +53,7 @@ const ProductsPage = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [lastModifiedDate, setLastModifiedDate] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,43 +107,14 @@ const ProductsPage = () => {
           
           // Fetch the updated products list
           const productsResponse = await fetchProducts();
-          if (productsResponse.success && Array.isArray(productsResponse.data)) {
-            // Transform the response data to match our interface
-            const transformedProducts = productsResponse.data.map((item: ApiProduct) => ({
-              id: item.id.toString(),
-              name: `${item.multiProductCode} - ${item.twinProductCode}`,
-              largeCode: item.multiProductCode,
-              smallCode: item.twinProductCode,
-              categories: [
-                {
-                  type: "large" as const,
-                  portionSizes: [
-                    {
-                      size: "Multi Twin Large",
-                      smallEquivalent: item.multiLargePortion.toString()
-                    },
-                    {
-                      size: "Multi Twin Small",
-                      smallEquivalent: item.twinLargePortion.toString()
-                    }
-                  ]
-                },
-                {
-                  type: "standard" as const,
-                  portionSizes: [
-                    {
-                      size: "Multi Twin Large",
-                      smallEquivalent: item.multiStandardPortion.toString()
-                    },
-                    {
-                      size: "Multi Twin Small",
-                      smallEquivalent: item.twinStandardPortion.toString()
-                    }
-                  ]
-                }
-              ]
-            }));
-            setProducts(transformedProducts);
+          if (productsResponse.success && Array.isArray(productsResponse.data) && productsResponse.data.length > 0) {
+            // Get the most recent modification date from the products
+            const mostRecentDate = productsResponse.data.reduce((latest, product) => {
+              const modDate = new Date(product.modifiedDate);
+              return modDate > latest ? modDate : latest;
+            }, new Date(0));
+            
+            setLastModifiedDate(mostRecentDate.toLocaleString());
           }
         } else {
           throw new Error('Failed to upload products. Please try again.');
@@ -235,6 +207,11 @@ const ProductsPage = () => {
             <div className="text-left">
               <h1 className="text-3xl font-bold text-purple-600 mb-2">Product Management</h1>
               <p className="text-gray-600">Import and export product data</p>
+              {lastModifiedDate && (
+                <p className="text-sm text-gray-500 mt-2">
+                  Last updated: {lastModifiedDate}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
