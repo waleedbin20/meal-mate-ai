@@ -107,16 +107,46 @@ const ProductsPage = () => {
     try {
       const response = await fetchProducts();
       
-      // Access the data from the ApiResponse
-      const fetchedProducts = response.data;
-      
-      // Ensure fetchedProducts is an array
-      const productsArray = Array.isArray(fetchedProducts) ? fetchedProducts : [fetchedProducts];
+      // Transform the API response data to match our interface
+      const transformedProducts = response.data.map(item => ({
+        id: item.id.toString(),
+        name: `${item.multiProductCode} - ${item.twinProductCode}`,
+        largeCode: item.multiProductCode,
+        smallCode: item.twinProductCode,
+        categories: [
+          {
+            type: "large" as const,
+            portionSizes: [
+              {
+                size: "Multi Twin Large",
+                smallEquivalent: item.multiLargePortion.toString()
+              },
+              {
+                size: "Multi Twin Small",
+                smallEquivalent: item.twinLargePortion.toString()
+              }
+            ]
+          },
+          {
+            type: "standard" as const,
+            portionSizes: [
+              {
+                size: "Multi Twin Large",
+                smallEquivalent: item.multiStandardPortion.toString()
+              },
+              {
+                size: "Multi Twin Small",
+                smallEquivalent: item.twinStandardPortion.toString()
+              }
+            ]
+          }
+        ]
+      }));
       
       // Transform the data for Excel export
-      const exportData = productsArray.map(product => ({
-        MultiProductCode: String(product.largeCode),
-        TwinProductCode: String(product.smallCode),
+      const exportData = transformedProducts.map(product => ({
+        MultiProductCode: product.largeCode,
+        TwinProductCode: product.smallCode,
         MultiStandardPortion: parseInt(product.categories[1].portionSizes[0].smallEquivalent) || 0,
         TwinStandardPortion: parseInt(product.categories[1].portionSizes[1].smallEquivalent) || 0,
         MultiLargePortion: parseInt(product.categories[0].portionSizes[0].smallEquivalent) || 0,

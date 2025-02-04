@@ -3,8 +3,23 @@ import { Product } from "@/pages/ProductsPage";
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
+interface ApiProduct {
+  id: number;
+  multiProductCode: string;
+  twinProductCode: string;
+  multiStandardPortion: number;
+  twinStandardPortion: number;
+  multiLargePortion: number;
+  twinLargePortion: number;
+  createdDate: string;
+  modifiedDate: string;
+}
+
 interface ApiResponse {
-  data: Product[];
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: ApiProduct[];
 }
 
 export const fetchProducts = async (): Promise<ApiResponse> => {
