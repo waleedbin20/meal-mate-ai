@@ -119,6 +119,33 @@ const ProductsPage = () => {
     XLSX.writeFile(workbook, "products.xlsx");
   };
 
+  const downloadDemoFile = () => {
+    const demoData = [
+      {
+        MultiProductCode: "MULTI001",
+        TwinProductCode: "TWIN001",
+        MultiStandardPortion: 2,
+        TwinStandardPortion: 1,
+        MultiLargePortion: 4,
+        TwinLargePortion: 2
+      },
+      {
+        MultiProductCode: "MULTI002",
+        TwinProductCode: "TWIN002",
+        MultiStandardPortion: 3,
+        TwinStandardPortion: 1,
+        MultiLargePortion: 6,
+        TwinLargePortion: 2
+      }
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(demoData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Demo");
+    XLSX.writeFile(workbook, "product-template.xlsx");
+    toast.success("Demo template downloaded successfully");
+  };
+
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
@@ -163,6 +190,14 @@ const ProductsPage = () => {
                     >
                       <Upload className="w-4 h-4 mr-2" />
                       Import Excel
+                    </Button>
+                    <Button
+                      onClick={downloadDemoFile}
+                      variant="outline"
+                      className="border-purple-600 text-purple-600 hover:bg-purple-50"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Template
                     </Button>
                     <input
                       type="file"
