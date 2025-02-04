@@ -19,7 +19,6 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 
-// Interface for Excel row data
 interface ExcelProductData {
   MultiProductCode: string;
   TwinProductCode: string;
@@ -320,10 +319,6 @@ const ProductsPage = () => {
                 </CardContent>
               </Card>
             </div>
-
-            {products.length > 0 && (
-              <ProductTable products={products} />
-            )}
           </div>
         </main>
       </div>
