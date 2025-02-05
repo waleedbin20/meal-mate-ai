@@ -73,23 +73,27 @@ export const PricingTable = () => {
     const mealTypes = ["Unit", "Standard", "Breakfast", "Dessert", "Snacks"];
     
     return mealTypes.map(mealType => {
-      const getPriceValue = (value: number | null): number => {
-        return value === null ? 0 : Number(value.toFixed(2));
+      const getMealTypeValue = (price: PriceData | undefined, field: keyof PriceData): number => {
+        if (!price || price[field] === null || price[field] === undefined) {
+          return 0;
+        }
+        const value = price[field];
+        return typeof value === 'number' ? Number(value.toFixed(2)) : 0;
       };
 
       return {
         customerId,
         mealType,
-        level3: getPriceValue(prices[0]?.[getMealTypeField(mealType)]),
-        level4: getPriceValue(prices[1]?.[getMealTypeField(mealType)]),
-        level5: getPriceValue(prices[2]?.[getMealTypeField(mealType)]),
-        level6: getPriceValue(prices[3]?.[getMealTypeField(mealType)]),
-        allergenFree: getPriceValue(prices[4]?.[getMealTypeField(mealType)]),
-        fingerFoods: getPriceValue(prices[5]?.[getMealTypeField(mealType)]),
-        miniMealExtra: getPriceValue(prices[6]?.[getMealTypeField(mealType)]),
-        caribbean: getPriceValue(prices[7]?.[getMealTypeField(mealType)]),
-        halal: getPriceValue(prices[8]?.[getMealTypeField(mealType)]),
-        kosher: getPriceValue(prices[9]?.[getMealTypeField(mealType)]),
+        level3: getMealTypeValue(prices[0], getMealTypeField(mealType)),
+        level4: getMealTypeValue(prices[1], getMealTypeField(mealType)),
+        level5: getMealTypeValue(prices[2], getMealTypeField(mealType)),
+        level6: getMealTypeValue(prices[3], getMealTypeField(mealType)),
+        allergenFree: getMealTypeValue(prices[4], getMealTypeField(mealType)),
+        fingerFoods: getMealTypeValue(prices[5], getMealTypeField(mealType)),
+        miniMealExtra: getMealTypeValue(prices[6], getMealTypeField(mealType)),
+        caribbean: getMealTypeValue(prices[7], getMealTypeField(mealType)),
+        halal: getMealTypeValue(prices[8], getMealTypeField(mealType)),
+        kosher: getMealTypeValue(prices[9], getMealTypeField(mealType)),
       };
     });
   };
@@ -253,4 +257,3 @@ export const PricingTable = () => {
     </div>
   );
 };
-
