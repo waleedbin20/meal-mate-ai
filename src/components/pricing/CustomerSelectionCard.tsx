@@ -37,6 +37,7 @@ export const CustomerSelectionCard = ({
   onSave,
 }: CustomerSelectionCardProps) => {
   const [hasSelectedCustomer, setHasSelectedCustomer] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const calculateNewPrice = (price: number | null) => {
     if (price === null || !selectedCustomer) return null;
@@ -63,6 +64,15 @@ export const CustomerSelectionCard = ({
     const numValue = parseFloat(value);
     if (!isNaN(numValue)) {
       handlePercentageChange(value);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await onSave();
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -173,10 +183,18 @@ export const CustomerSelectionCard = ({
               {hasChanges && (
                 <div className="flex justify-end mt-4">
                   <Button 
-                    onClick={onSave}
+                    onClick={handleSave}
                     className="bg-purple-600 hover:bg-purple-700"
+                    disabled={isSaving}
                   >
-                    Save Changes
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Changes'
+                    )}
                   </Button>
                 </div>
               )}
@@ -191,3 +209,4 @@ export const CustomerSelectionCard = ({
     </Card>
   );
 };
+
