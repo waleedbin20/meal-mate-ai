@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { PriceData, CustomerData } from "./types";
 import { PriceTable } from "./PriceTable";
+import { useState } from "react";
 
 interface CustomerSelectionCardProps {
   prices: PriceData[];
@@ -35,10 +36,17 @@ export const CustomerSelectionCard = ({
   setIsOpen,
   onSave,
 }: CustomerSelectionCardProps) => {
+  const [hasSelectedCustomer, setHasSelectedCustomer] = useState(false);
+
   const calculateAdjustedPrice = (price: number | null) => {
     if (price === null) return null;
     const multiplier = 1 + (selectedCustomer.basePercentage / 100);
     return (price * multiplier).toFixed(2);
+  };
+
+  const handleCustomerSelect = (customerId: string) => {
+    onCustomerChange(customerId);
+    setHasSelectedCustomer(true);
   };
 
   const handlePercentageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,9 +85,10 @@ export const CustomerSelectionCard = ({
               <label className="block text-sm font-medium text-gray-700 mb-2">Customer Selection</label>
               <select
                 className="w-full md:w-64 rounded-md border border-gray-300 p-2 text-sm"
-                value={selectedCustomer.id}
-                onChange={(e) => onCustomerChange(e.target.value)}
+                value={hasSelectedCustomer ? selectedCustomer.id : ''}
+                onChange={(e) => handleCustomerSelect(e.target.value)}
               >
+                <option value="" disabled>Select a customer</option>
                 {mockCustomers.map((customer) => (
                   <option key={customer.id} value={customer.id}>
                     {customer.name}
@@ -87,35 +96,37 @@ export const CustomerSelectionCard = ({
                 ))}
               </select>
             </div>
-            <div className="flex flex-col w-full md:w-auto">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Base Percentage</label>
-              <div className="flex items-center gap-2">
-                {editingPercentage ? (
-                  <Input
-                    type="text"
-                    value={selectedCustomer.basePercentage}
-                    onChange={handlePercentageInputChange}
-                    className="w-20 text-sm"
-                    onBlur={() => setEditingPercentage(false)}
-                    autoFocus
-                  />
-                ) : (
-                  <div
-                    className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded text-sm"
-                    onClick={() => setEditingPercentage(true)}
-                  >
-                    {selectedCustomer.basePercentage}%
-                  </div>
-                )}
+            {hasSelectedCustomer && (
+              <div className="flex flex-col w-full md:w-auto">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Base Percentage</label>
+                <div className="flex items-center gap-2">
+                  {editingPercentage ? (
+                    <Input
+                      type="text"
+                      value={selectedCustomer.basePercentage}
+                      onChange={handlePercentageInputChange}
+                      className="w-20 text-sm"
+                      onBlur={() => setEditingPercentage(false)}
+                      autoFocus
+                    />
+                  ) : (
+                    <div
+                      className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded text-sm"
+                      onClick={() => setEditingPercentage(true)}
+                    >
+                      {selectedCustomer.basePercentage}%
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {isLoading ? (
             <div className="flex justify-center py-8">
               <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
             </div>
-          ) : (
+          ) : hasSelectedCustomer && prices.length > 0 ? (
             <>
               <PriceTable 
                 prices={prices}
@@ -133,9 +144,14 @@ export const CustomerSelectionCard = ({
                 </div>
               )}
             </>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              Please select a customer to view prices
+            </div>
           )}
         </div>
       )}
     </Card>
   );
 };
+
