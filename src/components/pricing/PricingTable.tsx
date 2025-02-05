@@ -35,13 +35,15 @@ export const PricingTable = () => {
   const { data: prices = [], isLoading: isLoadingBasePrices, error: basePricesError } = useQuery({
     queryKey: ['basePrices'],
     queryFn: fetchBasePrices,
-    onError: (error) => {
-      console.error('Error fetching base prices:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch base prices. Please try again.",
-        variant: "destructive",
-      });
+    meta: {
+      onError: (error: Error) => {
+        console.error('Error fetching base prices:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch base prices. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   });
 
@@ -49,13 +51,15 @@ export const PricingTable = () => {
     queryKey: ['customerPrices', selectedCustomer.id],
     queryFn: () => fetchCustomerPrices(selectedCustomer.id),
     enabled: !!selectedCustomer.id,
-    onError: (error) => {
-      console.error('Error fetching customer prices:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch customer prices. Please try again.",
-        variant: "destructive",
-      });
+    meta: {
+      onError: (error: Error) => {
+        console.error('Error fetching customer prices:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch customer prices. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   });
 
