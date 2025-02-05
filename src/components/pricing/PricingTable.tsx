@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -94,10 +93,18 @@ export const PricingTable = () => {
   const handlePriceChange = (index: number, field: keyof PriceData, value: string) => {
     console.log('Handling price change:', { index, field, value });
     const newPrices = [...prices];
+    const parsedValue = value === "" ? null : parseFloat(value);
+    
     newPrices[index] = {
       ...newPrices[index],
-      [field]: value === "" ? null : parseFloat(value),
+      [field]: parsedValue,
     };
+
+    // If it's Mini Meal Extra and the unit price is being changed, update standard price too
+    if (newPrices[index].category === 'Mini Meal Extra' && field === 'unitPrice') {
+      newPrices[index].standardPrice = parsedValue;
+    }
+
     queryClient.setQueryData(['basePrices'], newPrices);
     setHasBasePriceChanges(true);
   };

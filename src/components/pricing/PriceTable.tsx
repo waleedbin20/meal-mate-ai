@@ -22,6 +22,10 @@ export const PriceTable = ({
 
   console.log('PriceTable rendering with prices:', prices);
 
+  const isMiniMealExtra = (category: string) => {
+    return category.toLowerCase() === 'mini meal extra';
+  };
+
   return (
     <div className="overflow-x-auto -mx-4 md:-mx-6">
       <div className="inline-block min-w-full align-middle px-4 md:px-6">
@@ -49,7 +53,12 @@ export const PriceTable = ({
                         <Input
                           type="number"
                           value={price.unitPrice ?? ''}
-                          onChange={(e) => onPriceChange?.(index, "unitPrice", e.target.value)}
+                          onChange={(e) => {
+                            onPriceChange?.(index, "unitPrice", e.target.value);
+                            if (isMiniMealExtra(price.category)) {
+                              onPriceChange?.(index, "standardPrice", e.target.value);
+                            }
+                          }}
                           className="w-16 md:w-24 text-xs md:text-sm"
                           step="0.01"
                         />
@@ -61,6 +70,7 @@ export const PriceTable = ({
                           onChange={(e) => onPriceChange?.(index, "standardPrice", e.target.value)}
                           className="w-16 md:w-24 text-xs md:text-sm"
                           step="0.01"
+                          disabled={isMiniMealExtra(price.category)}
                         />
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
