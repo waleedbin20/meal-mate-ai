@@ -70,9 +70,9 @@ export const PricingTable = () => {
 
   const updatePricesMutation = useMutation({
     mutationFn: (updatedPrices: PriceData[]) => {
-      // For base prices, always use customer ID 999
-      const customerId = !selectedCustomer ? 999 : selectedCustomer.id;
-      console.log('Updating prices for customer ID:', customerId);
+      // For base prices (when no customer is selected), use customer ID 999
+      const customerId = selectedCustomer ? selectedCustomer.id : 999;
+      console.log(`Updating prices for customer ID: ${customerId}`);
       return updatePricing(updatedPrices, customerId);
     },
     onSuccess: () => {
@@ -111,31 +111,6 @@ export const PricingTable = () => {
 
     queryClient.setQueryData(['basePrices'], newPrices);
     setHasBasePriceChanges(true);
-  };
-
-  const handleCustomerChange = (customerId: string) => {
-    console.log('Handling customer change:', customerId);
-    const customer = customerId ? mockCustomers.find((c) => c.id === parseInt(customerId)) : null;
-    setSelectedCustomer(customer);
-    setHasCustomerPriceChanges(false);
-  };
-
-  const handlePercentageChange = (value: string) => {
-    if (!selectedCustomer) return;
-    
-    const newCustomer = { ...selectedCustomer };
-    
-    if (value === '' || value === '-') {
-      newCustomer.basePercentage = value === '' ? 0 : -0;
-    } else {
-      const numValue = parseFloat(value);
-      if (!isNaN(numValue)) {
-        newCustomer.basePercentage = numValue;
-      }
-    }
-    
-    setSelectedCustomer(newCustomer);
-    setHasCustomerPriceChanges(true);
   };
 
   const handleSave = () => {
