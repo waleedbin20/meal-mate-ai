@@ -26,7 +26,7 @@ const mockCustomers: CustomerData[] = [
 ];
 
 export const PricingTable = () => {
-  const [selectedCustomer, setSelectedCustomer] = useState<CustomerData>(mockCustomers[0]);
+  const [selectedCustomer, setSelectedCustomer] = useState<CustomerData | null>(null);
   const [hasBasePriceChanges, setHasBasePriceChanges] = useState(false);
   const [hasCustomerPriceChanges, setHasCustomerPriceChanges] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -53,9 +53,9 @@ export const PricingTable = () => {
   });
 
   const { data: customerPrices = [], isLoading: isLoadingCustomerPrices, error: customerPricesError } = useQuery({
-    queryKey: ['customerPrices', selectedCustomer.id],
-    queryFn: () => fetchCustomerPrices(selectedCustomer.id),
-    enabled: isCustomerSelectOpen && !!selectedCustomer.id,
+    queryKey: ['customerPrices', selectedCustomer?.id],
+    queryFn: () => selectedCustomer ? fetchCustomerPrices(selectedCustomer.id) : Promise.resolve([]),
+    enabled: isCustomerSelectOpen && !!selectedCustomer?.id,
     meta: {
       onError: (error: Error) => {
         console.error('Error fetching customer prices:', error);
@@ -110,6 +110,8 @@ export const PricingTable = () => {
   };
 
   const handlePercentageChange = (value: string) => {
+    if (!selectedCustomer) return;
+    
     const newCustomer = { ...selectedCustomer };
     
     if (value === '' || value === '-') {
@@ -146,10 +148,10 @@ export const PricingTable = () => {
   }, [isBasePricesOpen, queryClient]);
 
   useEffect(() => {
-    if (isCustomerSelectOpen && selectedCustomer.id) {
+    if (isCustomerSelectOpen && selectedCustomer?.id) {
       queryClient.invalidateQueries({ queryKey: ['customerPrices', selectedCustomer.id] });
     }
-  }, [isCustomerSelectOpen, selectedCustomer.id, queryClient]);
+  }, [isCustomerSelectOpen, selectedCustomer?.id, queryClient]);
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -165,7 +167,7 @@ export const PricingTable = () => {
 
       <CustomerSelectionCard
         prices={customerPrices}
-        selectedCustomer={selectedCustomer}
+        selectedCustomer={selectedCustomer || mockCustomers[0]} // Provide a default for props
         mockCustomers={mockCustomers}
         onCustomerChange={handleCustomerChange}
         editingPercentage={editingPercentage}

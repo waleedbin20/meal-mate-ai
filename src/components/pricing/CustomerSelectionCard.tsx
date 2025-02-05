@@ -45,8 +45,10 @@ export const CustomerSelectionCard = ({
   };
 
   const handleCustomerSelect = (customerId: string) => {
-    onCustomerChange(customerId);
-    setHasSelectedCustomer(true);
+    if (customerId) {
+      onCustomerChange(customerId);
+      setHasSelectedCustomer(true);
+    }
   };
 
   const handlePercentageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +90,7 @@ export const CustomerSelectionCard = ({
                 value={hasSelectedCustomer ? selectedCustomer.id : ''}
                 onChange={(e) => handleCustomerSelect(e.target.value)}
               >
-                <option value="" disabled>Select a customer</option>
+                <option value="">Select a customer</option>
                 {mockCustomers.map((customer) => (
                   <option key={customer.id} value={customer.id}>
                     {customer.name}
