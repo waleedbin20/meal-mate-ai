@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -55,7 +56,7 @@ export const PricingTable = () => {
   const { data: customerPrices = [], isLoading: isLoadingCustomerPrices, error: customerPricesError } = useQuery({
     queryKey: ['customerPrices', selectedCustomer?.id],
     queryFn: () => selectedCustomer ? fetchCustomerPrices(selectedCustomer.id) : Promise.resolve([]),
-    enabled: isCustomerSelectOpen && !!selectedCustomer?.id,
+    enabled: !!selectedCustomer?.id,
     meta: {
       onError: (error: Error) => {
         console.error('Error fetching customer prices:', error);
@@ -69,7 +70,10 @@ export const PricingTable = () => {
   });
 
   const updatePricesMutation = useMutation({
-    mutationFn: (updatedPrices: PriceData[]) => updatePricing(updatedPrices, selectedCustomer.id),
+    mutationFn: (updatedPrices: PriceData[]) => {
+      if (!selectedCustomer) throw new Error('No customer selected');
+      return updatePricing(updatedPrices, selectedCustomer.id);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['basePrices'] });
       queryClient.invalidateQueries({ queryKey: ['customerPrices'] });
@@ -100,7 +104,6 @@ export const PricingTable = () => {
       [field]: parsedValue,
     };
 
-    // If it's Mini Meal Extra and the unit price is being changed, update standard price too
     if (newPrices[index].category === 'Mini Meal Extra' && field === 'unitPrice') {
       newPrices[index].standardPrice = parsedValue;
     }
@@ -114,9 +117,6 @@ export const PricingTable = () => {
     const customer = customerId ? mockCustomers.find((c) => c.id === parseInt(customerId)) : null;
     setSelectedCustomer(customer);
     setHasCustomerPriceChanges(false);
-    if (customer) {
-      queryClient.invalidateQueries({ queryKey: ['customerPrices', parseInt(customerId)] });
-    }
   };
 
   const handlePercentageChange = (value: string) => {
@@ -141,17 +141,18 @@ export const PricingTable = () => {
     updatePricesMutation.mutate(prices);
   };
 
+  // Effect to fetch customer prices when customer changes
   useEffect(() => {
-    if (isBasePricesOpen) {
-      queryClient.invalidateQueries({ queryKey: ['basePrices'] });
-    }
-  }, [isBasePricesOpen, queryClient]);
-
-  useEffect(() => {
-    if (isCustomerSelectOpen && selectedCustomer?.id) {
+    if (selectedCustomer?.id) {
       queryClient.invalidateQueries({ queryKey: ['customerPrices', selectedCustomer.id] });
     }
-  }, [isCustomerSelectOpen, selectedCustomer?.id, queryClient]);
+  }, [selectedCustomer?.id, queryClient]);
+
+  console.log('PricingTable render:', { 
+    selectedCustomer, 
+    customerPricesLength: customerPrices.length,
+    isLoadingCustomerPrices
+  });
 
   return (
     <div className="space-y-4 md:space-y-6">
