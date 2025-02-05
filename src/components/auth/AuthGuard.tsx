@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -9,10 +8,20 @@ interface AuthGuardProps {
   children: React.ReactNode;
 }
 
+const AUTH_STORAGE_KEY = "pricing_auth";
+
 const AuthGuard = ({ children }: AuthGuardProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Check session storage on component mount
+    const storedAuth = sessionStorage.getItem(AUTH_STORAGE_KEY);
+    if (storedAuth === "true") {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +38,8 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
 
     if (password === correctPassword) {
       setIsAuthenticated(true);
+      // Store authentication state in session storage
+      sessionStorage.setItem(AUTH_STORAGE_KEY, "true");
       toast.success("Authentication successful");
     } else {
       toast.error("Invalid password");
@@ -42,7 +53,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
   }
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
+    <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
       <Card className="w-full max-w-md p-6 space-y-6 m-4">
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold text-purple-600">Authentication Required</h1>
