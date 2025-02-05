@@ -3,7 +3,7 @@ import { PriceData } from "@/components/pricing/types";
 
 export interface MealPricing {
   customerId: number;
-  mealType: 'Unit' | 'Standard' | 'Dessert' | 'Breakfast' | 'Snacks';
+  mealType: string;
   level3: number;
   level4: number;
   level5: number;
@@ -54,7 +54,7 @@ export const updatePricing = async (prices: PriceData[], customerId?: number): P
     customerId: customerId || 999,
     mealType: getMealType(price),
     level3: price.unitPrice,
-    level4: price.unitPrice,
+    level4: price.standardPrice,
     level5: price.unitPrice,
     level6: price.unitPrice,
     allergenFree: price.unitPrice,
@@ -79,60 +79,74 @@ export const updatePricing = async (prices: PriceData[], customerId?: number): P
   }
 };
 
-const getMealType = (price: PriceData): MealPricing['mealType'] => {
-  if (price.snackPrice !== null) return 'Snacks';
-  if (price.breakfastPrice !== null) return 'Breakfast';
-  if (price.dessertPrice !== null) return 'Dessert';
-  if (price.standardPrice !== null) return 'Standard';
-  return 'Unit';
+const getMealType = (price: PriceData): string => {
+  switch (price.category.toLowerCase()) {
+    case 'level 3':
+    case 'level 4':
+    case 'level 5':
+    case 'level 6':
+    case 'allergen free':
+    case 'finger foods':
+    case 'mini meal extra':
+    case 'caribbean':
+    case 'halal':
+    case 'kosher':
+      return 'BaseUnit';
+    case 'breakfast':
+      return 'BaseBreakfast';
+    case 'dessert':
+      return 'BaseDessert';
+    case 'snack':
+      return 'BaseSnack';
+    default:
+      return 'BaseUnit';
+  }
 };
 
 const mapApiResponseToPriceData = (apiResponse: MealPricing[]): PriceData[] => {
-  const groupedByCategory = apiResponse.reduce((acc, curr) => {
-    const categories = [
-      { name: 'Level 3', value: curr.level3 },
-      { name: 'Level 4', value: curr.level4 },
-      { name: 'Level 5', value: curr.level5 },
-      { name: 'Level 6', value: curr.level6 },
-      { name: 'Allergen Free', value: curr.allergenFree },
-      { name: 'Finger Foods', value: curr.fingerFoods },
-      { name: 'Mini Meal Extra', value: curr.miniMealExtra },
-      { name: 'Caribbean', value: curr.caribbean },
-      { name: 'Halal', value: curr.halal },
-      { name: 'Kosher', value: curr.kosher }
-    ];
+  const categories = [
+    'Level 3',
+    'Level 4',
+    'Level 5',
+    'Level 6',
+    'Allergen Free',
+    'Finger Foods',
+    'Mini Meal Extra',
+    'Caribbean',
+    'Halal',
+    'Kosher'
+  ];
 
-    categories.forEach(({ name, value }) => {
-      if (!acc[name]) {
-        acc[name] = {
-          category: name,
-          unitPrice: 0,
-          standardPrice: 0,
-          breakfastPrice: null,
-          dessertPrice: null,
-          snackPrice: null
-        };
+  return categories.map(category => {
+    const baseUnit = apiResponse.find(item => item.mealType === 'BaseUnit');
+    const baseBreakfast = apiResponse.find(item => item.mealType === 'BaseBreakfast');
+    const baseDessert = apiResponse.find(item => item.mealType === 'BaseDessert');
+    const baseSnack = apiResponse.find(item => item.mealType === 'BaseSnack');
+
+    const getPriceForCategory = (item: MealPricing | undefined, category: string): number => {
+      if (!item) return 0;
+      switch (category.toLowerCase()) {
+        case 'level 3': return item.level3;
+        case 'level 4': return item.level4;
+        case 'level 5': return item.level5;
+        case 'level 6': return item.level6;
+        case 'allergen free': return item.allergenFree;
+        case 'finger foods': return item.fingerFoods;
+        case 'mini meal extra': return item.miniMealExtra;
+        case 'caribbean': return item.caribbean;
+        case 'halal': return item.halal;
+        case 'kosher': return item.kosher;
+        default: return 0;
       }
+    };
 
-      switch (curr.mealType) {
-        case 'Unit':
-          acc[name].unitPrice = value;
-          acc[name].standardPrice = name === 'Mini Meal Extra' ? value : value * 2;
-          break;
-        case 'Breakfast':
-          acc[name].breakfastPrice = value;
-          break;
-        case 'Dessert':
-          acc[name].dessertPrice = value;
-          break;
-        case 'Snacks':
-          acc[name].snackPrice = value;
-          break;
-      }
-    });
-
-    return acc;
-  }, {} as Record<string, PriceData>);
-
-  return Object.values(groupedByCategory);
+    return {
+      category,
+      unitPrice: getPriceForCategory(baseUnit, category),
+      standardPrice: getPriceForCategory(baseUnit, category) * 2,
+      breakfastPrice: baseBreakfast ? getPriceForCategory(baseBreakfast, category) : null,
+      dessertPrice: baseDessert ? getPriceForCategory(baseDessert, category) : null,
+      snackPrice: baseSnack ? getPriceForCategory(baseSnack, category) : null,
+    };
+  });
 };
