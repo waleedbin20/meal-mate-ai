@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -87,6 +88,7 @@ export const PricingTable = () => {
       setShowConfirmDialog(false);
     },
     onError: (error) => {
+      console.error('Error updating prices:', error);
       toast({
         title: "Error",
         description: "Failed to update prices. Please try again.",
@@ -111,6 +113,31 @@ export const PricingTable = () => {
 
     queryClient.setQueryData(['basePrices'], newPrices);
     setHasBasePriceChanges(true);
+  };
+
+  const handleCustomerChange = (customerId: string) => {
+    console.log('Handling customer change:', customerId);
+    const customer = customerId ? mockCustomers.find((c) => c.id === parseInt(customerId)) : null;
+    setSelectedCustomer(customer);
+    setHasCustomerPriceChanges(false);
+  };
+
+  const handlePercentageChange = (value: string) => {
+    if (!selectedCustomer) return;
+    
+    const newCustomer = { ...selectedCustomer };
+    
+    if (value === '' || value === '-') {
+      newCustomer.basePercentage = value === '' ? 0 : -0;
+    } else {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        newCustomer.basePercentage = numValue;
+      }
+    }
+    
+    setSelectedCustomer(newCustomer);
+    setHasCustomerPriceChanges(true);
   };
 
   const handleSave = () => {
