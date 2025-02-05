@@ -53,7 +53,7 @@ export const PricingTable = () => {
     }
   });
 
-  const { data: customerPrices, isLoading: isLoadingCustomerPrices, error: customerPricesError } = useQuery({
+  const { data: customerPrices = [], isLoading: isLoadingCustomerPrices, error: customerPricesError } = useQuery({
     queryKey: ['customerPrices', selectedCustomer.id],
     queryFn: () => fetchCustomerPrices(selectedCustomer.id),
     enabled: isCustomerSelectOpen && !!selectedCustomer.id,
@@ -103,7 +103,6 @@ export const PricingTable = () => {
   };
 
   const handlePercentageChange = (value: string) => {
-    console.log('Handling percentage change:', value);
     const newCustomer = { ...selectedCustomer };
     
     if (value === '' || value === '-') {
@@ -133,6 +132,18 @@ export const PricingTable = () => {
     updatePricesMutation.mutate(prices);
   };
 
+  useEffect(() => {
+    if (isBasePricesOpen) {
+      queryClient.invalidateQueries({ queryKey: ['basePrices'] });
+    }
+  }, [isBasePricesOpen, queryClient]);
+
+  useEffect(() => {
+    if (isCustomerSelectOpen && selectedCustomer.id) {
+      queryClient.invalidateQueries({ queryKey: ['customerPrices', selectedCustomer.id] });
+    }
+  }, [isCustomerSelectOpen, selectedCustomer.id, queryClient]);
+
   return (
     <div className="space-y-4 md:space-y-6">
       <BasePricesCard
@@ -146,7 +157,7 @@ export const PricingTable = () => {
       />
 
       <CustomerSelectionCard
-        prices={customerPrices || prices}
+        prices={customerPrices}
         selectedCustomer={selectedCustomer}
         mockCustomers={mockCustomers}
         onCustomerChange={handleCustomerChange}

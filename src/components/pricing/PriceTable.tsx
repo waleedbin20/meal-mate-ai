@@ -15,7 +15,7 @@ export const PriceTable = ({
   onPriceChange,
   calculateAdjustedPrice 
 }: PriceTableProps) => {
-  if (!Array.isArray(prices)) {
+  if (!prices || !Array.isArray(prices)) {
     console.error('PriceTable received invalid prices:', prices);
     return null;
   }
@@ -96,9 +96,9 @@ export const PriceTable = ({
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
                         <div className="space-y-1">
                           <div className="text-sm md:text-base font-medium">
-                            £{price.unitPrice?.toFixed(2) ?? '-'}
+                            £{typeof price.unitPrice === 'number' ? price.unitPrice.toFixed(2) : '-'}
                           </div>
-                          {calculateAdjustedPrice && (
+                          {calculateAdjustedPrice && typeof price.unitPrice === 'number' && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
                               Adjusted: £{calculateAdjustedPrice(price.unitPrice)}
                             </div>
@@ -108,9 +108,9 @@ export const PriceTable = ({
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
                         <div className="space-y-1">
                           <div className="text-sm md:text-base font-medium">
-                            £{price.standardPrice?.toFixed(2) ?? '-'}
+                            £{typeof price.standardPrice === 'number' ? price.standardPrice.toFixed(2) : '-'}
                           </div>
-                          {calculateAdjustedPrice && (
+                          {calculateAdjustedPrice && typeof price.standardPrice === 'number' && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
                               Adjusted: £{calculateAdjustedPrice(price.standardPrice)}
                             </div>
@@ -118,46 +118,40 @@ export const PriceTable = ({
                         </div>
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                        {price.breakfastPrice !== null && (
-                          <div className="space-y-1">
-                            <div className="text-sm md:text-base font-medium">
-                              £{price.breakfastPrice?.toFixed(2) ?? '-'}
-                            </div>
-                            {calculateAdjustedPrice && (
-                              <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                                Adjusted: £{calculateAdjustedPrice(price.breakfastPrice)}
-                              </div>
-                            )}
+                        <div className="space-y-1">
+                          <div className="text-sm md:text-base font-medium">
+                            £{typeof price.breakfastPrice === 'number' ? price.breakfastPrice.toFixed(2) : '-'}
                           </div>
-                        )}
+                          {calculateAdjustedPrice && typeof price.breakfastPrice === 'number' && (
+                            <div className="text-[10px] md:text-xs text-[#9F9EA1]">
+                              Adjusted: £{calculateAdjustedPrice(price.breakfastPrice)}
+                            </div>
+                          )}
+                        </div>
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                        {price.dessertPrice !== null && (
-                          <div className="space-y-1">
-                            <div className="text-sm md:text-base font-medium">
-                              £{price.dessertPrice?.toFixed(2) ?? '-'}
-                            </div>
-                            {calculateAdjustedPrice && (
-                              <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                                Adjusted: £{calculateAdjustedPrice(price.dessertPrice)}
-                              </div>
-                            )}
+                        <div className="space-y-1">
+                          <div className="text-sm md:text-base font-medium">
+                            £{typeof price.dessertPrice === 'number' ? price.dessertPrice.toFixed(2) : '-'}
                           </div>
-                        )}
+                          {calculateAdjustedPrice && typeof price.dessertPrice === 'number' && (
+                            <div className="text-[10px] md:text-xs text-[#9F9EA1]">
+                              Adjusted: £{calculateAdjustedPrice(price.dessertPrice)}
+                            </div>
+                          )}
+                        </div>
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                        {price.snackPrice !== null && (
-                          <div className="space-y-1">
-                            <div className="text-sm md:text-base font-medium">
-                              £{price.snackPrice?.toFixed(2) ?? '-'}
-                            </div>
-                            {calculateAdjustedPrice && (
-                              <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                                Adjusted: £{calculateAdjustedPrice(price.snackPrice)}
-                              </div>
-                            )}
+                        <div className="space-y-1">
+                          <div className="text-sm md:text-base font-medium">
+                            £{typeof price.snackPrice === 'number' ? price.snackPrice.toFixed(2) : '-'}
                           </div>
-                        )}
+                          {calculateAdjustedPrice && typeof price.snackPrice === 'number' && (
+                            <div className="text-[10px] md:text-xs text-[#9F9EA1]">
+                              Adjusted: £{calculateAdjustedPrice(price.snackPrice)}
+                            </div>
+                          )}
+                        </div>
                       </td>
                     </>
                   )}
@@ -170,3 +164,4 @@ export const PriceTable = ({
     </div>
   );
 };
+
