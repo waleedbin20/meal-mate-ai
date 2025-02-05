@@ -8,7 +8,7 @@ import { PriceTable } from "./PriceTable";
 import { useState } from "react";
 
 interface CustomerSelectionCardProps {
-  prices: PriceData[];
+  prices: PriceData[]; // prices from API for selected customer
   selectedCustomer: CustomerData | null;
   mockCustomers: CustomerData[];
   onCustomerChange: (customerId: string) => void;
@@ -20,6 +20,7 @@ interface CustomerSelectionCardProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   onSave: () => void;
+  basePrices: PriceData[]; // Added prop for base prices
 }
 
 export const CustomerSelectionCard = ({
@@ -35,14 +36,15 @@ export const CustomerSelectionCard = ({
   isOpen,
   setIsOpen,
   onSave,
+  basePrices,
 }: CustomerSelectionCardProps) => {
   const [hasSelectedCustomer, setHasSelectedCustomer] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const calculateNewPrice = (price: number | null) => {
-    if (price === null || !selectedCustomer) return null;
+  const calculateNewPrice = (basePrice: number | null) => {
+    if (basePrice === null || !selectedCustomer) return null;
     const percentage = selectedCustomer.basePercentage / 100;
-    return price + (price * percentage);
+    return basePrice + (basePrice * percentage);
   };
 
   const calculateAdjustedPrice = (price: number | null) => {
@@ -76,28 +78,33 @@ export const CustomerSelectionCard = ({
     }
   };
 
-  // Apply the pricing rules to transform the prices
-  const transformedPrices = prices.map(price => {
-    if (!selectedCustomer) return price;
-
-    const isMiniMealExtra = price.category.toLowerCase() === 'mini meal extra';
-    const newUnitPrice = calculateNewPrice(price.unitPrice);
+  // Transform base prices using the customer's percentage
+  const transformedPrices = basePrices.map((basePrice, index) => {
+    const apiPrice = prices[index] || {};
+    const isMiniMealExtra = basePrice.category.toLowerCase() === 'mini meal extra';
     
+    // Calculate new prices based on base prices
+    const newUnitPrice = calculateNewPrice(basePrice.unitPrice);
+    const newBreakfastPrice = calculateNewPrice(basePrice.breakfastPrice);
+    const newDessertPrice = calculateNewPrice(basePrice.dessertPrice);
+    const newSnackPrice = calculateNewPrice(basePrice.snackPrice);
+    const newStandardPrice = isMiniMealExtra 
+      ? newUnitPrice 
+      : calculateNewPrice(basePrice.standardPrice);
+
     return {
-      ...price,
-      unitPrice: newUnitPrice !== null ? parseFloat(newUnitPrice.toFixed(2)) : price.unitPrice,
-      standardPrice: isMiniMealExtra 
-        ? (newUnitPrice !== null ? parseFloat(newUnitPrice.toFixed(2)) : price.standardPrice)
-        : (price.standardPrice !== null ? parseFloat(calculateNewPrice(price.standardPrice)?.toFixed(2) || '0') : price.standardPrice),
-      breakfastPrice: price.breakfastPrice !== null 
-        ? parseFloat(calculateNewPrice(price.breakfastPrice)?.toFixed(2) || '0') 
-        : price.breakfastPrice,
-      dessertPrice: price.dessertPrice !== null 
-        ? parseFloat(calculateNewPrice(price.dessertPrice)?.toFixed(2) || '0') 
-        : price.dessertPrice,
-      snackPrice: price.snackPrice !== null 
-        ? parseFloat(calculateNewPrice(price.snackPrice)?.toFixed(2) || '0') 
-        : price.snackPrice,
+      ...basePrice,
+      unitPrice: newUnitPrice !== null ? parseFloat(newUnitPrice.toFixed(2)) : null,
+      standardPrice: newStandardPrice !== null ? parseFloat(newStandardPrice.toFixed(2)) : null,
+      breakfastPrice: newBreakfastPrice !== null ? parseFloat(newBreakfastPrice.toFixed(2)) : null,
+      dessertPrice: newDessertPrice !== null ? parseFloat(newDessertPrice.toFixed(2)) : null,
+      snackPrice: newSnackPrice !== null ? parseFloat(newSnackPrice.toFixed(2)) : null,
+      // Store original API prices for "Old Price" display
+      originalUnitPrice: apiPrice.unitPrice,
+      originalStandardPrice: apiPrice.standardPrice,
+      originalBreakfastPrice: apiPrice.breakfastPrice,
+      originalDessertPrice: apiPrice.dessertPrice,
+      originalSnackPrice: apiPrice.snackPrice,
     };
   });
 
@@ -179,6 +186,7 @@ export const CustomerSelectionCard = ({
                 prices={transformedPrices}
                 isEditable={false}
                 calculateAdjustedPrice={calculateAdjustedPrice}
+                showOriginalPrices={true}
               />
               {hasChanges && (
                 <div className="flex justify-end mt-4">
@@ -209,4 +217,3 @@ export const CustomerSelectionCard = ({
     </Card>
   );
 };
-

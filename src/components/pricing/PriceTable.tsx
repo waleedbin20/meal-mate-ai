@@ -7,20 +7,20 @@ interface PriceTableProps {
   isEditable: boolean;
   onPriceChange?: (index: number, field: keyof PriceData, value: string) => void;
   calculateAdjustedPrice?: (price: number | null) => string | null;
+  showOriginalPrices?: boolean;
 }
 
 export const PriceTable = ({ 
   prices, 
   isEditable,
   onPriceChange,
-  calculateAdjustedPrice 
+  calculateAdjustedPrice,
+  showOriginalPrices = false
 }: PriceTableProps) => {
   if (!prices || !Array.isArray(prices)) {
     console.error('PriceTable received invalid prices:', prices);
     return null;
   }
-
-  console.log('PriceTable rendering with prices:', prices);
 
   const isMiniMealExtra = (category: string) => {
     return category.toLowerCase() === 'mini meal extra';
@@ -53,30 +53,19 @@ export const PriceTable = ({
                         <Input
                           type="number"
                           value={price.unitPrice ?? ''}
-                          onChange={(e) => {
-                            onPriceChange?.(index, "unitPrice", e.target.value);
-                            if (isMiniMealExtra(price.category)) {
-                              onPriceChange?.(index, "standardPrice", e.target.value);
-                            }
-                          }}
+                          onChange={(e) => onPriceChange?.(index, "unitPrice", e.target.value)}
                           className="w-16 md:w-24 text-xs md:text-sm"
                           step="0.01"
                         />
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                        <div className="space-y-1">
-                          <Input
-                            type="number"
-                            value={isMiniMealExtra(price.category) ? (price.unitPrice ?? '') : (price.standardPrice ?? '')}
-                            className="w-16 md:w-24 text-xs md:text-sm bg-gray-100"
-                            disabled={true}
-                          />
-                          <div className="text-[10px] text-gray-500">
-                            {isMiniMealExtra(price.category) 
-                              ? "Same as unit price"
-                              : "2 × unit price"}
-                          </div>
-                        </div>
+                        <Input
+                          type="number"
+                          value={price.standardPrice ?? ''}
+                          onChange={(e) => onPriceChange?.(index, "standardPrice", e.target.value)}
+                          className="w-16 md:w-24 text-xs md:text-sm"
+                          step="0.01"
+                        />
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
                         <Input
@@ -113,9 +102,9 @@ export const PriceTable = ({
                           <div className="text-sm md:text-base font-medium">
                             £{typeof price.unitPrice === 'number' ? price.unitPrice.toFixed(2) : '-'}
                           </div>
-                          {calculateAdjustedPrice && typeof price.unitPrice === 'number' && (
+                          {showOriginalPrices && (price as any).originalUnitPrice !== undefined && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Old Price: £{calculateAdjustedPrice(price.unitPrice)}
+                              Old Price: £{typeof (price as any).originalUnitPrice === 'number' ? (price as any).originalUnitPrice.toFixed(2) : '-'}
                             </div>
                           )}
                         </div>
@@ -125,9 +114,9 @@ export const PriceTable = ({
                           <div className="text-sm md:text-base font-medium">
                             £{typeof price.standardPrice === 'number' ? price.standardPrice.toFixed(2) : '-'}
                           </div>
-                          {calculateAdjustedPrice && typeof price.standardPrice === 'number' && (
+                          {showOriginalPrices && (price as any).originalStandardPrice !== undefined && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Old Price: £{calculateAdjustedPrice(price.standardPrice)}
+                              Old Price: £{typeof (price as any).originalStandardPrice === 'number' ? (price as any).originalStandardPrice.toFixed(2) : '-'}
                             </div>
                           )}
                         </div>
@@ -137,9 +126,9 @@ export const PriceTable = ({
                           <div className="text-sm md:text-base font-medium">
                             £{typeof price.breakfastPrice === 'number' ? price.breakfastPrice.toFixed(2) : '-'}
                           </div>
-                          {calculateAdjustedPrice && typeof price.breakfastPrice === 'number' && (
+                          {showOriginalPrices && (price as any).originalBreakfastPrice !== undefined && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Old Price: £{calculateAdjustedPrice(price.breakfastPrice)}
+                              Old Price: £{typeof (price as any).originalBreakfastPrice === 'number' ? (price as any).originalBreakfastPrice.toFixed(2) : '-'}
                             </div>
                           )}
                         </div>
@@ -149,9 +138,9 @@ export const PriceTable = ({
                           <div className="text-sm md:text-base font-medium">
                             £{typeof price.dessertPrice === 'number' ? price.dessertPrice.toFixed(2) : '-'}
                           </div>
-                          {calculateAdjustedPrice && typeof price.dessertPrice === 'number' && (
+                          {showOriginalPrices && (price as any).originalDessertPrice !== undefined && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Old Price: £{calculateAdjustedPrice(price.dessertPrice)}
+                              Old Price: £{typeof (price as any).originalDessertPrice === 'number' ? (price as any).originalDessertPrice.toFixed(2) : '-'}
                             </div>
                           )}
                         </div>
@@ -161,9 +150,9 @@ export const PriceTable = ({
                           <div className="text-sm md:text-base font-medium">
                             £{typeof price.snackPrice === 'number' ? price.snackPrice.toFixed(2) : '-'}
                           </div>
-                          {calculateAdjustedPrice && typeof price.snackPrice === 'number' && (
+                          {showOriginalPrices && (price as any).originalSnackPrice !== undefined && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Old Price: £{calculateAdjustedPrice(price.snackPrice)}
+                              Old Price: £{typeof (price as any).originalSnackPrice === 'number' ? (price as any).originalSnackPrice.toFixed(2) : '-'}
                             </div>
                           )}
                         </div>
@@ -179,4 +168,3 @@ export const PriceTable = ({
     </div>
   );
 };
-

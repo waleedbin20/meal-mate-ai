@@ -144,9 +144,20 @@ export const PricingTable = () => {
       console.log('Updating base prices with customer ID 999');
       updatePricesMutation.mutate(prices);
     } else {
-      // Customer prices update
+      // Customer prices update - use transformed prices based on base prices
       console.log('Updating customer prices for ID:', selectedCustomer.id);
-      updatePricesMutation.mutate(customerPrices);
+      const transformedPrices = prices.map(basePrice => {
+        const percentage = selectedCustomer.basePercentage / 100;
+        return {
+          ...basePrice,
+          unitPrice: basePrice.unitPrice !== null ? parseFloat((basePrice.unitPrice + (basePrice.unitPrice * percentage)).toFixed(2)) : null,
+          standardPrice: basePrice.standardPrice !== null ? parseFloat((basePrice.standardPrice + (basePrice.standardPrice * percentage)).toFixed(2)) : null,
+          breakfastPrice: basePrice.breakfastPrice !== null ? parseFloat((basePrice.breakfastPrice + (basePrice.breakfastPrice * percentage)).toFixed(2)) : null,
+          dessertPrice: basePrice.dessertPrice !== null ? parseFloat((basePrice.dessertPrice + (basePrice.dessertPrice * percentage)).toFixed(2)) : null,
+          snackPrice: basePrice.snackPrice !== null ? parseFloat((basePrice.snackPrice + (basePrice.snackPrice * percentage)).toFixed(2)) : null,
+        };
+      });
+      updatePricesMutation.mutate(transformedPrices);
     }
   };
 
@@ -188,6 +199,7 @@ export const PricingTable = () => {
         isOpen={isCustomerSelectOpen}
         setIsOpen={setIsCustomerSelectOpen}
         onSave={() => setShowConfirmDialog(true)}
+        basePrices={prices}
       />
 
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
