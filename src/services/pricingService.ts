@@ -47,23 +47,8 @@ export const fetchCustomerPrices = async (customerId: number): Promise<PriceData
   }
 };
 
-export const updatePricing = async (prices: PriceData[], customerId?: number): Promise<void> => {
-  const endpoint = customerId ? `${BASE_URL}/pricing/customer/${customerId}` : `${BASE_URL}/pricing/customer/999`;
-
-  const payload = prices.map(price => ({
-    customerId: customerId || 999,
-    mealType: getMealType(price.category),
-    level3: price.unitPrice,
-    level4: price.standardPrice,
-    level5: price.unitPrice,
-    level6: price.unitPrice,
-    allergenFree: price.unitPrice,
-    fingerFoods: price.unitPrice,
-    miniMealExtra: price.unitPrice,
-    caribbean: price.unitPrice,
-    halal: price.unitPrice,
-    kosher: price.unitPrice
-  }));
+export const updatePricing = async (payload: MealPricing[], customerId: number): Promise<void> => {
+  const endpoint = `${BASE_URL}/pricing/customer/${customerId}`;
 
   console.log('Updating prices with payload:', payload);
 
@@ -79,26 +64,6 @@ export const updatePricing = async (prices: PriceData[], customerId?: number): P
   if (!response.ok) {
     throw new Error('Failed to update prices');
   }
-};
-
-const getMealType = (category: string): string => {
-  const categoryMap: { [key: string]: string } = {
-    'Level 3': 'Unit',
-    'Level 4': 'Unit',
-    'Level 5': 'Unit',
-    'Level 6': 'Unit',
-    'Allergen Free': 'Unit',
-    'Finger Foods': 'Unit',
-    'Mini Meal Extra': 'Unit',
-    'Caribbean': 'Unit',
-    'Halal': 'Unit',
-    'Kosher': 'Unit',
-    'Breakfast': 'Breakfast',
-    'Dessert': 'Dessert',
-    'Snack': 'Snacks'
-  };
-
-  return categoryMap[category] || 'Unit';
 };
 
 const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceData[] => {
@@ -118,44 +83,46 @@ const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceD
   ];
 
   const unit = apiResponse.data.find(item => item.mealType === 'Unit');
+  const standard = apiResponse.data.find(item => item.mealType === 'Standard');
   const breakfast = apiResponse.data.find(item => item.mealType === 'Breakfast');
   const dessert = apiResponse.data.find(item => item.mealType === 'Dessert');
   const snack = apiResponse.data.find(item => item.mealType === 'Snacks');
 
   console.log('Found meal types:', {
     unit: !!unit,
+    standard: !!standard,
     breakfast: !!breakfast,
     dessert: !!dessert,
     snack: !!snack
   });
 
-  const getPriceForCategory = (item: MealPricing | undefined, category: string): number => {
+  const getPriceForCategory = (item: MealPricing | undefined, field: keyof Omit<MealPricing, 'customerId' | 'mealType'>): number => {
     if (!item) return 0;
-    switch (category.toLowerCase()) {
-      case 'level 3': return item.level3;
-      case 'level 4': return item.level4;
-      case 'level 5': return item.level5;
-      case 'level 6': return item.level6;
-      case 'allergen free': return item.allergenFree;
-      case 'finger foods': return item.fingerFoods;
-      case 'mini meal extra': return item.miniMealExtra;
-      case 'caribbean': return item.caribbean;
-      case 'halal': return item.halal;
-      case 'kosher': return item.kosher;
-      default: return 0;
-    }
+    return item[field] ?? 0;
   };
 
-  const result = categories.map(category => ({
+  return categories.map(category => ({
     category,
-    unitPrice: getPriceForCategory(unit, category),
-    standardPrice: getPriceForCategory(unit, category) * 2,
-    breakfastPrice: breakfast ? getPriceForCategory(breakfast, category) : null,
-    dessertPrice: dessert ? getPriceForCategory(dessert, category) : null,
-    snackPrice: snack ? getPriceForCategory(snack, category) : null,
+    unitPrice: getPriceForCategory(unit, getLevelField(category)),
+    standardPrice: getPriceForCategory(standard, getLevelField(category)),
+    breakfastPrice: breakfast ? getPriceForCategory(breakfast, getLevelField(category)) : null,
+    dessertPrice: dessert ? getPriceForCategory(dessert, getLevelField(category)) : null,
+    snackPrice: snack ? getPriceForCategory(snack, getLevelField(category)) : null,
   }));
-
-  console.log('Mapped result:', result);
-  return result;
 };
 
+const getLevelField = (category: string): keyof Omit<MealPricing, 'customerId' | 'mealType'> => {
+  const map: { [key: string]: keyof Omit<MealPricing, 'customerId' | 'mealType'> } = {
+    'Level 3': 'level3',
+    'Level 4': 'level4',
+    'Level 5': 'level5',
+    'Level 6': 'level6',
+    'Allergen Free': 'allergenFree',
+    'Finger Foods': 'fingerFoods',
+    'Mini Meal Extra': 'miniMealExtra',
+    'Caribbean': 'caribbean',
+    'Halal': 'halal',
+    'Kosher': 'kosher'
+  };
+  return map[category] || 'level3';
+};

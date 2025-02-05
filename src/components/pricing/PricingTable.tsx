@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -69,12 +68,43 @@ export const PricingTable = () => {
     }
   });
 
+  const transformPricesToPayload = (prices: PriceData[], customerId: number) => {
+    const mealTypes = ["Unit", "Standard", "Breakfast", "Dessert", "Snacks"];
+    
+    return mealTypes.map(mealType => ({
+      customerId,
+      mealType,
+      level3: prices[0]?.[getMealTypeField(mealType)] ?? 0,
+      level4: prices[1]?.[getMealTypeField(mealType)] ?? 0,
+      level5: prices[2]?.[getMealTypeField(mealType)] ?? 0,
+      level6: prices[3]?.[getMealTypeField(mealType)] ?? 0,
+      allergenFree: prices[4]?.[getMealTypeField(mealType)] ?? 0,
+      fingerFoods: prices[5]?.[getMealTypeField(mealType)] ?? 0,
+      miniMealExtra: prices[6]?.[getMealTypeField(mealType)] ?? 0,
+      caribbean: prices[7]?.[getMealTypeField(mealType)] ?? 0,
+      halal: prices[8]?.[getMealTypeField(mealType)] ?? 0,
+      kosher: prices[9]?.[getMealTypeField(mealType)] ?? 0,
+    }));
+  };
+
+  const getMealTypeField = (mealType: string): keyof PriceData => {
+    switch (mealType) {
+      case "Unit": return "unitPrice";
+      case "Standard": return "standardPrice";
+      case "Breakfast": return "breakfastPrice";
+      case "Dessert": return "dessertPrice";
+      case "Snacks": return "snackPrice";
+      default: return "unitPrice";
+    }
+  };
+
   const updatePricesMutation = useMutation({
-    mutationFn: (updatedPrices: PriceData[]) => {
-      // For base prices (when no customer is selected), use customer ID 999
-      const customerId = selectedCustomer ? selectedCustomer.id : 999;
+    mutationFn: (data: { prices: PriceData[], customerId: number }) => {
+      const { prices, customerId } = data;
       console.log(`Updating prices for customer ID: ${customerId}`);
-      return updatePricing(updatedPrices, customerId);
+      const transformedPayload = transformPricesToPayload(prices, customerId);
+      console.log('Transformed payload:', transformedPayload);
+      return updatePricing(transformedPayload, customerId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['basePrices'] });
@@ -140,41 +170,31 @@ export const PricingTable = () => {
     setHasCustomerPriceChanges(true);
   };
 
-  const handleSave = () => {
-    if (!selectedCustomer) {
-      // Base prices update
-      console.log('Updating base prices with customer ID 999');
-      updatePricesMutation.mutate(prices);
-    } else {
-      // Customer prices update - use transformed prices based on base prices
-      console.log('Updating customer prices for ID:', selectedCustomer.id);
-      const transformedPrices = prices.map(basePrice => {
-        const percentage = selectedCustomer.basePercentage / 100;
-        return {
-          ...basePrice,
-          unitPrice: basePrice.unitPrice !== null ? parseFloat((basePrice.unitPrice + (basePrice.unitPrice * percentage)).toFixed(2)) : null,
-          standardPrice: basePrice.standardPrice !== null ? parseFloat((basePrice.standardPrice + (basePrice.standardPrice * percentage)).toFixed(2)) : null,
-          breakfastPrice: basePrice.breakfastPrice !== null ? parseFloat((basePrice.breakfastPrice + (basePrice.breakfastPrice * percentage)).toFixed(2)) : null,
-          dessertPrice: basePrice.dessertPrice !== null ? parseFloat((basePrice.dessertPrice + (basePrice.dessertPrice * percentage)).toFixed(2)) : null,
-          snackPrice: basePrice.snackPrice !== null ? parseFloat((basePrice.snackPrice + (basePrice.snackPrice * percentage)).toFixed(2)) : null,
-        };
-      });
-      updatePricesMutation.mutate(transformedPrices);
-    }
+  const handleBasePriceSave = () => {
+    updatePricesMutation.mutate({ prices, customerId: 999 });
   };
 
-  // Effect to fetch customer prices when customer changes
+  const handleCustomerPriceSave = () => {
+    if (!selectedCustomer) return;
+    const transformedPrices = prices.map(basePrice => {
+      const percentage = selectedCustomer.basePercentage / 100;
+      return {
+        ...basePrice,
+        unitPrice: basePrice.unitPrice !== null ? parseFloat((basePrice.unitPrice + (basePrice.unitPrice * percentage)).toFixed(2)) : null,
+        standardPrice: basePrice.standardPrice !== null ? parseFloat((basePrice.standardPrice + (basePrice.standardPrice * percentage)).toFixed(2)) : null,
+        breakfastPrice: basePrice.breakfastPrice !== null ? parseFloat((basePrice.breakfastPrice + (basePrice.breakfastPrice * percentage)).toFixed(2)) : null,
+        dessertPrice: basePrice.dessertPrice !== null ? parseFloat((basePrice.dessertPrice + (basePrice.dessertPrice * percentage)).toFixed(2)) : null,
+        snackPrice: basePrice.snackPrice !== null ? parseFloat((basePrice.snackPrice + (basePrice.snackPrice * percentage)).toFixed(2)) : null,
+      };
+    });
+    updatePricesMutation.mutate({ prices: transformedPrices, customerId: selectedCustomer.id });
+  };
+
   useEffect(() => {
     if (selectedCustomer?.id) {
       queryClient.invalidateQueries({ queryKey: ['customerPrices', selectedCustomer.id] });
     }
   }, [selectedCustomer?.id, queryClient]);
-
-  console.log('PricingTable render:', { 
-    selectedCustomer, 
-    customerPricesLength: customerPrices.length,
-    isLoadingCustomerPrices
-  });
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -185,7 +205,7 @@ export const PricingTable = () => {
         hasChanges={hasBasePriceChanges}
         isOpen={isBasePricesOpen}
         setIsOpen={setIsBasePricesOpen}
-        onSave={() => setShowConfirmDialog(true)}
+        onSave={handleBasePriceSave}
       />
 
       <CustomerSelectionCard
@@ -200,7 +220,7 @@ export const PricingTable = () => {
         hasChanges={hasCustomerPriceChanges}
         isOpen={isCustomerSelectOpen}
         setIsOpen={setIsCustomerSelectOpen}
-        onSave={() => setShowConfirmDialog(true)}
+        onSave={handleCustomerPriceSave}
         basePrices={prices}
       />
 
@@ -214,7 +234,9 @@ export const PricingTable = () => {
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-col-reverse sm:flex-row gap-2">
             <AlertDialogCancel className="mt-2 sm:mt-0">Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleSave}>Save Changes</AlertDialogAction>
+            <AlertDialogAction onClick={selectedCustomer ? handleCustomerPriceSave : handleBasePriceSave}>
+              Save Changes
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
