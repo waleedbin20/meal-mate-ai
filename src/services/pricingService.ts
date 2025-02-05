@@ -82,6 +82,7 @@ const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceD
     'Kosher'
   ];
 
+  // Find meal type data
   const unit = apiResponse.data.find(item => item.mealType === 'Unit');
   const standard = apiResponse.data.find(item => item.mealType === 'Standard');
   const breakfast = apiResponse.data.find(item => item.mealType === 'Breakfast');
@@ -96,19 +97,23 @@ const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceD
     snack: !!snack
   });
 
-  const getPriceForCategory = (item: MealPricing | undefined, field: keyof Omit<MealPricing, 'customerId' | 'mealType'>): number => {
-    if (!item) return 0;
-    return item[field] ?? 0;
+  const getPriceForCategory = (item: MealPricing | undefined, field: keyof Omit<MealPricing, 'customerId' | 'mealType'>): number | null => {
+    if (!item) return null;
+    const value = item[field];
+    return value === 0 ? null : value;
   };
 
-  return categories.map(category => ({
-    category,
-    unitPrice: getPriceForCategory(unit, getLevelField(category)),
-    standardPrice: getPriceForCategory(standard, getLevelField(category)),
-    breakfastPrice: breakfast ? getPriceForCategory(breakfast, getLevelField(category)) : null,
-    dessertPrice: dessert ? getPriceForCategory(dessert, getLevelField(category)) : null,
-    snackPrice: snack ? getPriceForCategory(snack, getLevelField(category)) : null,
-  }));
+  return categories.map(category => {
+    const levelField = getLevelField(category);
+    return {
+      category,
+      unitPrice: getPriceForCategory(unit, levelField),
+      standardPrice: getPriceForCategory(standard, levelField),
+      breakfastPrice: getPriceForCategory(breakfast, levelField),
+      dessertPrice: getPriceForCategory(dessert, levelField),
+      snackPrice: getPriceForCategory(snack, levelField),
+    };
+  });
 };
 
 const getLevelField = (category: string): keyof Omit<MealPricing, 'customerId' | 'mealType'> => {
