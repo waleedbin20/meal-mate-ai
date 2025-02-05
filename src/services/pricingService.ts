@@ -22,7 +22,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 export const fetchBasePrices = async (): Promise<PriceData[]> => {
   const response = await fetch(`${BASE_URL}/pricing/baseprice`, {
     headers: {
-      'Authorization': `Bearer ${API_KEY}`
+      'x-api-token': API_KEY
     }
   });
 
@@ -37,7 +37,7 @@ export const fetchBasePrices = async (): Promise<PriceData[]> => {
 export const fetchCustomerPrices = async (customerId: string): Promise<PriceData[]> => {
   const response = await fetch(`${BASE_URL}/pricing?customerId=${customerId}`, {
     headers: {
-      'Authorization': `Bearer ${API_KEY}`
+      'x-api-token': API_KEY
     }
   });
 
@@ -69,7 +69,7 @@ export const updatePricing = async (prices: PriceData[], customerId?: string): P
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`
+      'x-api-token': API_KEY
     },
     body: JSON.stringify(payload)
   });
