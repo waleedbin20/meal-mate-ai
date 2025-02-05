@@ -48,9 +48,11 @@ export const fetchCustomerPrices = async (customerId: number): Promise<PriceData
 };
 
 export const updatePricing = async (prices: PriceData[], customerId?: number): Promise<void> => {
+  const endpoint = customerId ? `${BASE_URL}/pricing/customer/${customerId}` : `${BASE_URL}/pricing/customer/999`;
+
   const payload = prices.map(price => ({
     customerId: customerId || 999,
-    mealType: getMealType(price),
+    mealType: getMealType(price.category),
     level3: price.unitPrice,
     level4: price.standardPrice,
     level5: price.unitPrice,
@@ -63,7 +65,9 @@ export const updatePricing = async (prices: PriceData[], customerId?: number): P
     kosher: price.unitPrice
   }));
 
-  const response = await fetch(`${BASE_URL}/pricing`, {
+  console.log('Updating prices with payload:', payload);
+
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -77,28 +81,24 @@ export const updatePricing = async (prices: PriceData[], customerId?: number): P
   }
 };
 
-const getMealType = (price: PriceData): string => {
-  switch (price.category.toLowerCase()) {
-    case 'level 3':
-    case 'level 4':
-    case 'level 5':
-    case 'level 6':
-    case 'allergen free':
-    case 'finger foods':
-    case 'mini meal extra':
-    case 'caribbean':
-    case 'halal':
-    case 'kosher':
-      return 'Unit';
-    case 'breakfast':
-      return 'Breakfast';
-    case 'dessert':
-      return 'Dessert';
-    case 'snack':
-      return 'Snacks';
-    default:
-      return 'Unit';
-  }
+const getMealType = (category: string): string => {
+  const categoryMap: { [key: string]: string } = {
+    'Level 3': 'Unit',
+    'Level 4': 'Unit',
+    'Level 5': 'Unit',
+    'Level 6': 'Unit',
+    'Allergen Free': 'Unit',
+    'Finger Foods': 'Unit',
+    'Mini Meal Extra': 'Unit',
+    'Caribbean': 'Unit',
+    'Halal': 'Unit',
+    'Kosher': 'Unit',
+    'Breakfast': 'Breakfast',
+    'Dessert': 'Dessert',
+    'Snack': 'Snacks'
+  };
+
+  return categoryMap[category] || 'Unit';
 };
 
 const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceData[] => {
@@ -158,3 +158,4 @@ const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceD
   console.log('Mapped result:', result);
   return result;
 };
+
