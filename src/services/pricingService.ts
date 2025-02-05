@@ -105,10 +105,25 @@ const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceD
 
   return categories.map(category => {
     const levelField = getLevelField(category);
+    const unitPrice = getPriceForCategory(unit, levelField);
+    
+    // For Mini Meal Extra, standard price should be same as unit price
+    const isMiniMealExtra = category === 'Mini Meal Extra';
+    
+    // Calculate standard price: if there's a standard price in API use it, otherwise calculate it from unit price
+    let standardPrice: number | null;
+    if (standard) {
+      standardPrice = getPriceForCategory(standard, levelField);
+    } else if (unitPrice !== null) {
+      standardPrice = isMiniMealExtra ? unitPrice : unitPrice * 2;
+    } else {
+      standardPrice = null;
+    }
+
     return {
       category,
-      unitPrice: getPriceForCategory(unit, levelField),
-      standardPrice: getPriceForCategory(standard, levelField),
+      unitPrice,
+      standardPrice,
       breakfastPrice: getPriceForCategory(breakfast, levelField),
       dessertPrice: getPriceForCategory(dessert, levelField),
       snackPrice: getPriceForCategory(snack, levelField),
@@ -131,3 +146,4 @@ const getLevelField = (category: string): keyof Omit<MealPricing, 'customerId' |
   };
   return map[category] || 'level3';
 };
+
