@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -71,20 +72,26 @@ export const PricingTable = () => {
   const transformPricesToPayload = (prices: PriceData[], customerId: number) => {
     const mealTypes = ["Unit", "Standard", "Breakfast", "Dessert", "Snacks"];
     
-    return mealTypes.map(mealType => ({
-      customerId,
-      mealType,
-      level3: prices[0]?.[getMealTypeField(mealType)] ?? 0,
-      level4: prices[1]?.[getMealTypeField(mealType)] ?? 0,
-      level5: prices[2]?.[getMealTypeField(mealType)] ?? 0,
-      level6: prices[3]?.[getMealTypeField(mealType)] ?? 0,
-      allergenFree: prices[4]?.[getMealTypeField(mealType)] ?? 0,
-      fingerFoods: prices[5]?.[getMealTypeField(mealType)] ?? 0,
-      miniMealExtra: prices[6]?.[getMealTypeField(mealType)] ?? 0,
-      caribbean: prices[7]?.[getMealTypeField(mealType)] ?? 0,
-      halal: prices[8]?.[getMealTypeField(mealType)] ?? 0,
-      kosher: prices[9]?.[getMealTypeField(mealType)] ?? 0,
-    }));
+    return mealTypes.map(mealType => {
+      const getPriceValue = (value: number | null): number => {
+        return value === null ? 0 : Number(value.toFixed(2));
+      };
+
+      return {
+        customerId,
+        mealType,
+        level3: getPriceValue(prices[0]?.[getMealTypeField(mealType)]),
+        level4: getPriceValue(prices[1]?.[getMealTypeField(mealType)]),
+        level5: getPriceValue(prices[2]?.[getMealTypeField(mealType)]),
+        level6: getPriceValue(prices[3]?.[getMealTypeField(mealType)]),
+        allergenFree: getPriceValue(prices[4]?.[getMealTypeField(mealType)]),
+        fingerFoods: getPriceValue(prices[5]?.[getMealTypeField(mealType)]),
+        miniMealExtra: getPriceValue(prices[6]?.[getMealTypeField(mealType)]),
+        caribbean: getPriceValue(prices[7]?.[getMealTypeField(mealType)]),
+        halal: getPriceValue(prices[8]?.[getMealTypeField(mealType)]),
+        kosher: getPriceValue(prices[9]?.[getMealTypeField(mealType)]),
+      };
+    });
   };
 
   const getMealTypeField = (mealType: string): keyof PriceData => {
@@ -171,7 +178,10 @@ export const PricingTable = () => {
   };
 
   const handleBasePriceSave = () => {
-    updatePricesMutation.mutate({ prices, customerId: 999 });
+    console.log('Saving base prices...');
+    const customerId = 999; // Always use 999 for base prices
+    console.log('Using customer ID:', customerId);
+    updatePricesMutation.mutate({ prices, customerId });
   };
 
   const handleCustomerPriceSave = () => {
@@ -243,3 +253,4 @@ export const PricingTable = () => {
     </div>
   );
 };
+
