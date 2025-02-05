@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -19,10 +18,10 @@ import { fetchBasePrices, fetchCustomerPrices, updatePricing } from "@/services/
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const mockCustomers: CustomerData[] = [
-  { id: "2406", name: "National", basePercentage: 10 },
-  { id: "2468", name: "Regional", basePercentage: 15 },
-  { id: "2408", name: "Independent", basePercentage: 20 },
-  { id: "2407", name: "Small Groups", basePercentage: 25 }
+  { id: 2406, name: "National", basePercentage: 10 },
+  { id: 2468, name: "Regional", basePercentage: 15 },
+  { id: 2408, name: "Independent", basePercentage: 20 },
+  { id: 2407, name: "Small Groups", basePercentage: 25 }
 ];
 
 export const PricingTable = () => {
@@ -87,7 +86,7 @@ export const PricingTable = () => {
   };
 
   const handleCustomerChange = (customerId: string) => {
-    const customer = mockCustomers.find((c) => c.id === customerId);
+    const customer = mockCustomers.find((c) => c.id === parseInt(customerId));
     if (customer) setSelectedCustomer(customer);
   };
 

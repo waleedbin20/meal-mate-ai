@@ -1,3 +1,4 @@
+
 import { PriceData } from "@/components/pricing/types";
 
 export interface MealPricing {
@@ -33,7 +34,7 @@ export const fetchBasePrices = async (): Promise<PriceData[]> => {
   return mapApiResponseToPriceData(data);
 };
 
-export const fetchCustomerPrices = async (customerId: string): Promise<PriceData[]> => {
+export const fetchCustomerPrices = async (customerId: number): Promise<PriceData[]> => {
   const response = await fetch(`${BASE_URL}/pricing?customerId=${customerId}`, {
     headers: {
       'x-api-key': API_KEY
@@ -48,9 +49,9 @@ export const fetchCustomerPrices = async (customerId: string): Promise<PriceData
   return mapApiResponseToPriceData(data);
 };
 
-export const updatePricing = async (prices: PriceData[], customerId?: string): Promise<void> => {
+export const updatePricing = async (prices: PriceData[], customerId?: number): Promise<void> => {
   const payload = prices.map(price => ({
-    customerId: customerId ? parseInt(customerId) : 999,
+    customerId: customerId || 999,
     mealType: getMealType(price),
     level3: price.unitPrice,
     level4: price.unitPrice,

@@ -9,7 +9,8 @@ export interface PriceData {
 }
 
 export interface CustomerData {
-  id: string;
+  id: number;
   name: string;
   basePercentage: number;
 }
+
