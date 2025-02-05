@@ -45,7 +45,7 @@ export const CustomerSelectionCard = ({
   };
 
   const calculateAdjustedPrice = (price: number | null) => {
-    if (price === null || !selectedCustomer) return null;
+    if (price === null) return null;
     return price.toFixed(2);
   };
 
