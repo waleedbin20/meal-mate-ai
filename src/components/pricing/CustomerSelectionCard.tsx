@@ -80,7 +80,15 @@ export const CustomerSelectionCard = ({
 
   // Transform base prices using the customer's percentage
   const transformedPrices = basePrices.map((basePrice, index) => {
-    const apiPrice = prices[index] || {};
+    const apiPrice = prices[index] as PriceData || {
+      unitPrice: null,
+      standardPrice: null,
+      breakfastPrice: null,
+      dessertPrice: null,
+      snackPrice: null,
+      category: ''
+    };
+    
     const isMiniMealExtra = basePrice.category.toLowerCase() === 'mini meal extra';
     
     // Calculate new prices based on base prices
