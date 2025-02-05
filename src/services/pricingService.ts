@@ -40,22 +40,32 @@ export const fetchBasePrices = async (): Promise<PriceData[]> => {
 
 export const fetchCustomerPrices = async (customerId: number): Promise<PriceData[]> => {
   console.log('Fetching customer prices for ID:', customerId);
-  const response = await fetch(`${BASE_URL}/pricing/customer/${customerId}`, {
-    headers: {
-      'x-api-key': API_KEY
+  try {
+    const response = await fetch(`${BASE_URL}/pricing/customer/${customerId}`, {
+      headers: {
+        'x-api-key': API_KEY
+      }
+    });
+
+    if (!response.ok) {
+      // If customer prices are not found, fall back to base prices
+      if (response.status === 404) {
+        console.log('Customer prices not found, falling back to base prices');
+        return fetchBasePrices();
+      }
+      throw new Error('Failed to fetch customer prices');
     }
-  });
 
-  if (!response.ok) {
-    console.error('Failed to fetch customer prices:', response.status, response.statusText);
-    throw new Error('Failed to fetch customer prices');
+    const data = await response.json();
+    console.log('Customer prices data:', data);
+    const mappedData = mapApiResponseToPriceData(data);
+    console.log('Mapped customer prices:', mappedData);
+    return mappedData;
+  } catch (error) {
+    console.error('Error fetching customer prices:', error);
+    // Fall back to base prices on any error
+    return fetchBasePrices();
   }
-
-  const data = await response.json();
-  console.log('Customer prices data:', data);
-  const mappedData = mapApiResponseToPriceData(data);
-  console.log('Mapped customer prices:', mappedData);
-  return mappedData;
 };
 
 export const updatePricing = async (prices: PriceData[], customerId?: number): Promise<void> => {
@@ -112,7 +122,7 @@ const getMealType = (price: PriceData): string => {
   }
 };
 
-const mapApiResponseToPriceData = (apiResponse: MealPricing[]): PriceData[] => {
+const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceData[] => {
   console.log('Starting to map API response:', apiResponse);
   
   const categories = [
@@ -128,10 +138,10 @@ const mapApiResponseToPriceData = (apiResponse: MealPricing[]): PriceData[] => {
     'Kosher'
   ];
 
-  const baseUnit = apiResponse.find(item => item.mealType === 'BaseUnit');
-  const baseBreakfast = apiResponse.find(item => item.mealType === 'BaseBreakfast');
-  const baseDessert = apiResponse.find(item => item.mealType === 'BaseDessert');
-  const baseSnack = apiResponse.find(item => item.mealType === 'BaseSnack');
+  const baseUnit = apiResponse.data.find(item => item.mealType === 'BaseUnit');
+  const baseBreakfast = apiResponse.data.find(item => item.mealType === 'BaseBreakfast');
+  const baseDessert = apiResponse.data.find(item => item.mealType === 'BaseDessert');
+  const baseSnack = apiResponse.data.find(item => item.mealType === 'BaseSnack');
 
   console.log('Found meal types:', {
     baseUnit: !!baseUnit,
