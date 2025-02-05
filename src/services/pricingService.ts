@@ -1,3 +1,4 @@
+
 import { PriceData } from "@/components/pricing/types";
 
 export interface MealPricing {
@@ -48,7 +49,6 @@ export const fetchCustomerPrices = async (customerId: number): Promise<PriceData
     });
 
     if (!response.ok) {
-      // If customer prices are not found, fall back to base prices
       if (response.status === 404) {
         console.log('Customer prices not found, falling back to base prices');
         return fetchBasePrices();
@@ -63,7 +63,6 @@ export const fetchCustomerPrices = async (customerId: number): Promise<PriceData
     return mappedData;
   } catch (error) {
     console.error('Error fetching customer prices:', error);
-    // Fall back to base prices on any error
     return fetchBasePrices();
   }
 };
@@ -110,15 +109,15 @@ const getMealType = (price: PriceData): string => {
     case 'caribbean':
     case 'halal':
     case 'kosher':
-      return 'BaseUnit';
+      return 'Unit';
     case 'breakfast':
-      return 'BaseBreakfast';
+      return 'Breakfast';
     case 'dessert':
-      return 'BaseDessert';
+      return 'Dessert';
     case 'snack':
-      return 'BaseSnack';
+      return 'Snacks';
     default:
-      return 'BaseUnit';
+      return 'Unit';
   }
 };
 
@@ -138,16 +137,16 @@ const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceD
     'Kosher'
   ];
 
-  const baseUnit = apiResponse.data.find(item => item.mealType === 'BaseUnit');
-  const baseBreakfast = apiResponse.data.find(item => item.mealType === 'BaseBreakfast');
-  const baseDessert = apiResponse.data.find(item => item.mealType === 'BaseDessert');
-  const baseSnack = apiResponse.data.find(item => item.mealType === 'BaseSnack');
+  const unit = apiResponse.data.find(item => item.mealType === 'Unit');
+  const breakfast = apiResponse.data.find(item => item.mealType === 'Breakfast');
+  const dessert = apiResponse.data.find(item => item.mealType === 'Dessert');
+  const snack = apiResponse.data.find(item => item.mealType === 'Snacks');
 
   console.log('Found meal types:', {
-    baseUnit: !!baseUnit,
-    baseBreakfast: !!baseBreakfast,
-    baseDessert: !!baseDessert,
-    baseSnack: !!baseSnack
+    unit: !!unit,
+    breakfast: !!breakfast,
+    dessert: !!dessert,
+    snack: !!snack
   });
 
   const getPriceForCategory = (item: MealPricing | undefined, category: string): number => {
@@ -169,11 +168,11 @@ const mapApiResponseToPriceData = (apiResponse: { data: MealPricing[] }): PriceD
 
   const result = categories.map(category => ({
     category,
-    unitPrice: getPriceForCategory(baseUnit, category),
-    standardPrice: getPriceForCategory(baseUnit, category) * 2,
-    breakfastPrice: baseBreakfast ? getPriceForCategory(baseBreakfast, category) : null,
-    dessertPrice: baseDessert ? getPriceForCategory(baseDessert, category) : null,
-    snackPrice: baseSnack ? getPriceForCategory(baseSnack, category) : null,
+    unitPrice: getPriceForCategory(unit, category),
+    standardPrice: getPriceForCategory(unit, category) * 2,
+    breakfastPrice: breakfast ? getPriceForCategory(breakfast, category) : null,
+    dessertPrice: dessert ? getPriceForCategory(dessert, category) : null,
+    snackPrice: snack ? getPriceForCategory(snack, category) : null,
   }));
 
   console.log('Mapped result:', result);
