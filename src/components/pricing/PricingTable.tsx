@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -71,8 +70,10 @@ export const PricingTable = () => {
 
   const updatePricesMutation = useMutation({
     mutationFn: (updatedPrices: PriceData[]) => {
-      if (!selectedCustomer) throw new Error('No customer selected');
-      return updatePricing(updatedPrices, selectedCustomer.id);
+      // For base prices, always use customer ID 999
+      const customerId = !selectedCustomer ? 999 : selectedCustomer.id;
+      console.log('Updating prices for customer ID:', customerId);
+      return updatePricing(updatedPrices, customerId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['basePrices'] });
@@ -138,7 +139,15 @@ export const PricingTable = () => {
   };
 
   const handleSave = () => {
-    updatePricesMutation.mutate(prices);
+    if (!selectedCustomer) {
+      // Base prices update
+      console.log('Updating base prices with customer ID 999');
+      updatePricesMutation.mutate(prices);
+    } else {
+      // Customer prices update
+      console.log('Updating customer prices for ID:', selectedCustomer.id);
+      updatePricesMutation.mutate(customerPrices);
+    }
   };
 
   // Effect to fetch customer prices when customer changes
