@@ -38,10 +38,15 @@ export const CustomerSelectionCard = ({
 }: CustomerSelectionCardProps) => {
   const [hasSelectedCustomer, setHasSelectedCustomer] = useState(false);
 
+  const calculateNewPrice = (price: number | null) => {
+    if (price === null || !selectedCustomer) return null;
+    const percentage = selectedCustomer.basePercentage / 100;
+    return (price + (price * percentage)).toFixed(2);
+  };
+
   const calculateAdjustedPrice = (price: number | null) => {
     if (price === null || !selectedCustomer) return null;
-    const multiplier = 1 + (selectedCustomer.basePercentage / 100);
-    return (price * multiplier).toFixed(2);
+    return price.toFixed(2);
   };
 
   const handleCustomerSelect = (customerId: string) => {
@@ -60,6 +65,31 @@ export const CustomerSelectionCard = ({
       handlePercentageChange(value);
     }
   };
+
+  // Apply the pricing rules to transform the prices
+  const transformedPrices = prices.map(price => {
+    if (!selectedCustomer) return price;
+
+    const isMiniMealExtra = price.category.toLowerCase() === 'mini meal extra';
+    const newUnitPrice = calculateNewPrice(price.unitPrice);
+    
+    return {
+      ...price,
+      unitPrice: newUnitPrice ? parseFloat(newUnitPrice) : price.unitPrice,
+      standardPrice: isMiniMealExtra 
+        ? (newUnitPrice ? parseFloat(newUnitPrice) : price.standardPrice)
+        : (price.standardPrice !== null ? parseFloat(calculateNewPrice(price.standardPrice) || '0') : price.standardPrice),
+      breakfastPrice: price.breakfastPrice !== null 
+        ? parseFloat(calculateNewPrice(price.breakfastPrice) || '0') 
+        : price.breakfastPrice,
+      dessertPrice: price.dessertPrice !== null 
+        ? parseFloat(calculateNewPrice(price.dessertPrice) || '0') 
+        : price.dessertPrice,
+      snackPrice: price.snackPrice !== null 
+        ? parseFloat(calculateNewPrice(price.snackPrice) || '0') 
+        : price.snackPrice,
+    };
+  });
 
   console.log('CustomerSelectionCard render:', { 
     hasSelectedCustomer, 
@@ -133,10 +163,10 @@ export const CustomerSelectionCard = ({
             <div className="flex justify-center py-8">
               <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
             </div>
-          ) : hasSelectedCustomer && prices.length > 0 ? (
+          ) : hasSelectedCustomer && transformedPrices.length > 0 ? (
             <>
               <PriceTable 
-                prices={prices}
+                prices={transformedPrices}
                 isEditable={false}
                 calculateAdjustedPrice={calculateAdjustedPrice}
               />
@@ -161,3 +191,4 @@ export const CustomerSelectionCard = ({
     </Card>
   );
 };
+

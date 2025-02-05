@@ -115,7 +115,7 @@ export const PriceTable = ({
                           </div>
                           {calculateAdjustedPrice && typeof price.unitPrice === 'number' && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Adjusted: £{calculateAdjustedPrice(price.unitPrice)}
+                              Old Price: £{calculateAdjustedPrice(price.unitPrice)}
                             </div>
                           )}
                         </div>
@@ -127,7 +127,7 @@ export const PriceTable = ({
                           </div>
                           {calculateAdjustedPrice && typeof price.standardPrice === 'number' && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Adjusted: £{calculateAdjustedPrice(price.standardPrice)}
+                              Old Price: £{calculateAdjustedPrice(price.standardPrice)}
                             </div>
                           )}
                         </div>
@@ -139,7 +139,7 @@ export const PriceTable = ({
                           </div>
                           {calculateAdjustedPrice && typeof price.breakfastPrice === 'number' && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Adjusted: £{calculateAdjustedPrice(price.breakfastPrice)}
+                              Old Price: £{calculateAdjustedPrice(price.breakfastPrice)}
                             </div>
                           )}
                         </div>
@@ -151,7 +151,7 @@ export const PriceTable = ({
                           </div>
                           {calculateAdjustedPrice && typeof price.dessertPrice === 'number' && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Adjusted: £{calculateAdjustedPrice(price.dessertPrice)}
+                              Old Price: £{calculateAdjustedPrice(price.dessertPrice)}
                             </div>
                           )}
                         </div>
@@ -163,7 +163,7 @@ export const PriceTable = ({
                           </div>
                           {calculateAdjustedPrice && typeof price.snackPrice === 'number' && (
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Adjusted: £{calculateAdjustedPrice(price.snackPrice)}
+                              Old Price: £{calculateAdjustedPrice(price.snackPrice)}
                             </div>
                           )}
                         </div>
