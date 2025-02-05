@@ -1,8 +1,8 @@
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { PriceData, CustomerData } from "./types";
 import { PriceTable } from "./PriceTable";
 
@@ -14,6 +14,11 @@ interface CustomerSelectionCardProps {
   editingPercentage: boolean;
   setEditingPercentage: (value: boolean) => void;
   handlePercentageChange: (value: string) => void;
+  isLoading: boolean;
+  hasChanges: boolean;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  onSave: () => void;
 }
 
 export const CustomerSelectionCard = ({
@@ -24,9 +29,12 @@ export const CustomerSelectionCard = ({
   editingPercentage,
   setEditingPercentage,
   handlePercentageChange,
+  isLoading,
+  hasChanges,
+  isOpen,
+  setIsOpen,
+  onSave,
 }: CustomerSelectionCardProps) => {
-  const [isCustomerSelectOpen, setIsCustomerSelectOpen] = useState(false);
-
   const calculateAdjustedPrice = (price: number | null) => {
     if (price === null) return null;
     const multiplier = 1 + (selectedCustomer.basePercentage / 100);
@@ -49,20 +57,20 @@ export const CustomerSelectionCard = ({
     <Card className="p-4 md:p-6 bg-white shadow-sm border border-gray-200">
       <div 
         className="flex justify-between items-center cursor-pointer"
-        onClick={() => setIsCustomerSelectOpen(!isCustomerSelectOpen)}
+        onClick={() => setIsOpen(!isOpen)}
       >
         <div>
           <h2 className="text-lg md:text-xl font-semibold text-purple-700">Customer Selection</h2>
           <p className="text-xs md:text-sm text-gray-500">Select customer and view adjusted prices</p>
         </div>
-        {isCustomerSelectOpen ? (
+        {isOpen ? (
           <ChevronUp className="h-5 w-5 md:h-6 md:w-6 text-purple-600" />
         ) : (
           <ChevronDown className="h-5 w-5 md:h-6 md:w-6 text-purple-600" />
         )}
       </div>
 
-      {isCustomerSelectOpen && (
+      {isOpen && (
         <div className="mt-4 md:mt-6">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 mb-6">
             <div className="flex flex-col w-full md:w-auto">
@@ -103,11 +111,29 @@ export const CustomerSelectionCard = ({
             </div>
           </div>
 
-          <PriceTable 
-            prices={prices}
-            isEditable={false}
-            calculateAdjustedPrice={calculateAdjustedPrice}
-          />
+          {isLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+            </div>
+          ) : (
+            <>
+              <PriceTable 
+                prices={prices}
+                isEditable={false}
+                calculateAdjustedPrice={calculateAdjustedPrice}
+              />
+              {hasChanges && (
+                <div className="flex justify-end mt-4">
+                  <Button 
+                    onClick={onSave}
+                    className="bg-purple-600 hover:bg-purple-700"
+                  >
+                    Save Changes
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
     </Card>

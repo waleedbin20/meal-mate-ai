@@ -1,6 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,15 +28,19 @@ const mockCustomers: CustomerData[] = [
 
 export const PricingTable = () => {
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerData>(mockCustomers[0]);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [hasBasePriceChanges, setHasBasePriceChanges] = useState(false);
+  const [hasCustomerPriceChanges, setHasCustomerPriceChanges] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [editingPercentage, setEditingPercentage] = useState(false);
+  const [isBasePricesOpen, setIsBasePricesOpen] = useState(false);
+  const [isCustomerSelectOpen, setIsCustomerSelectOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: prices = [], isLoading: isLoadingBasePrices, error: basePricesError } = useQuery({
     queryKey: ['basePrices'],
     queryFn: fetchBasePrices,
+    enabled: isBasePricesOpen,
     meta: {
       onError: (error: Error) => {
         console.error('Error fetching base prices:', error);
@@ -50,7 +56,7 @@ export const PricingTable = () => {
   const { data: customerPrices, isLoading: isLoadingCustomerPrices, error: customerPricesError } = useQuery({
     queryKey: ['customerPrices', selectedCustomer.id],
     queryFn: () => fetchCustomerPrices(selectedCustomer.id),
-    enabled: !!selectedCustomer.id,
+    enabled: isCustomerSelectOpen && !!selectedCustomer.id,
     meta: {
       onError: (error: Error) => {
         console.error('Error fetching customer prices:', error);
@@ -72,7 +78,8 @@ export const PricingTable = () => {
         title: "Success",
         description: "Prices have been updated successfully",
       });
-      setHasChanges(false);
+      setHasBasePriceChanges(false);
+      setHasCustomerPriceChanges(false);
       setShowConfirmDialog(false);
     },
     onError: (error) => {
@@ -92,7 +99,7 @@ export const PricingTable = () => {
       [field]: value === "" ? null : parseFloat(value),
     };
     queryClient.setQueryData(['basePrices'], newPrices);
-    setHasChanges(true);
+    setHasBasePriceChanges(true);
   };
 
   const handlePercentageChange = (value: string) => {
@@ -109,7 +116,7 @@ export const PricingTable = () => {
     }
     
     setSelectedCustomer(newCustomer);
-    setHasChanges(true);
+    setHasCustomerPriceChanges(true);
   };
 
   const handleCustomerChange = (customerId: string) => {
@@ -117,6 +124,7 @@ export const PricingTable = () => {
     const customer = mockCustomers.find((c) => c.id === parseInt(customerId));
     if (customer) {
       setSelectedCustomer(customer);
+      setHasCustomerPriceChanges(false);
       queryClient.invalidateQueries({ queryKey: ['customerPrices', parseInt(customerId)] });
     }
   };
@@ -125,25 +133,16 @@ export const PricingTable = () => {
     updatePricesMutation.mutate(prices);
   };
 
-  if (isLoadingBasePrices || isLoadingCustomerPrices) {
-    return <div>Loading...</div>;
-  }
-
-  if (basePricesError || customerPricesError) {
-    return <div>Error loading prices. Please try again.</div>;
-  }
-
-  console.log('Rendering PricingTable with:', {
-    prices,
-    customerPrices,
-    selectedCustomer
-  });
-
   return (
     <div className="space-y-4 md:space-y-6">
       <BasePricesCard
         prices={prices}
         onPriceChange={handlePriceChange}
+        isLoading={isLoadingBasePrices}
+        hasChanges={hasBasePriceChanges}
+        isOpen={isBasePricesOpen}
+        setIsOpen={setIsBasePricesOpen}
+        onSave={() => setShowConfirmDialog(true)}
       />
 
       <CustomerSelectionCard
@@ -154,18 +153,12 @@ export const PricingTable = () => {
         editingPercentage={editingPercentage}
         setEditingPercentage={setEditingPercentage}
         handlePercentageChange={handlePercentageChange}
+        isLoading={isLoadingCustomerPrices}
+        hasChanges={hasCustomerPriceChanges}
+        isOpen={isCustomerSelectOpen}
+        setIsOpen={setIsCustomerSelectOpen}
+        onSave={() => setShowConfirmDialog(true)}
       />
-
-      {hasChanges && (
-        <div className="flex justify-end mt-4 md:mt-6">
-          <Button 
-            onClick={() => setShowConfirmDialog(true)}
-            className="bg-purple-600 hover:bg-purple-700 w-full md:w-auto"
-          >
-            Save Changes
-          </Button>
-        </div>
-      )}
 
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <AlertDialogContent>
