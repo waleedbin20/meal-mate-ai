@@ -20,7 +20,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 export const fetchBasePrices = async (): Promise<PriceData[]> => {
-  const response = await fetch(`${BASE_URL}/baseprice`, {
+  const response = await fetch(`${BASE_URL}/pricing/baseprice`, {
     headers: {
       'Authorization': `Bearer ${API_KEY}`
     }
@@ -136,3 +136,4 @@ const mapApiResponseToPriceData = (apiResponse: MealPricing[]): PriceData[] => {
 
   return Object.values(groupedByCategory);
 };
+
