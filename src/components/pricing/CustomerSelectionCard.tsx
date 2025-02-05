@@ -41,7 +41,7 @@ export const CustomerSelectionCard = ({
   const calculateNewPrice = (price: number | null) => {
     if (price === null || !selectedCustomer) return null;
     const percentage = selectedCustomer.basePercentage / 100;
-    return (price + (price * percentage)).toFixed(2);
+    return price + (price * percentage);
   };
 
   const calculateAdjustedPrice = (price: number | null) => {
@@ -75,18 +75,18 @@ export const CustomerSelectionCard = ({
     
     return {
       ...price,
-      unitPrice: newUnitPrice ? parseFloat(newUnitPrice) : price.unitPrice,
+      unitPrice: newUnitPrice !== null ? parseFloat(newUnitPrice.toFixed(2)) : price.unitPrice,
       standardPrice: isMiniMealExtra 
-        ? (newUnitPrice ? parseFloat(newUnitPrice) : price.standardPrice)
-        : (price.standardPrice !== null ? parseFloat(calculateNewPrice(price.standardPrice) || '0') : price.standardPrice),
+        ? (newUnitPrice !== null ? parseFloat(newUnitPrice.toFixed(2)) : price.standardPrice)
+        : (price.standardPrice !== null ? parseFloat(calculateNewPrice(price.standardPrice)?.toFixed(2) || '0') : price.standardPrice),
       breakfastPrice: price.breakfastPrice !== null 
-        ? parseFloat(calculateNewPrice(price.breakfastPrice) || '0') 
+        ? parseFloat(calculateNewPrice(price.breakfastPrice)?.toFixed(2) || '0') 
         : price.breakfastPrice,
       dessertPrice: price.dessertPrice !== null 
-        ? parseFloat(calculateNewPrice(price.dessertPrice) || '0') 
+        ? parseFloat(calculateNewPrice(price.dessertPrice)?.toFixed(2) || '0') 
         : price.dessertPrice,
       snackPrice: price.snackPrice !== null 
-        ? parseFloat(calculateNewPrice(price.snackPrice) || '0') 
+        ? parseFloat(calculateNewPrice(price.snackPrice)?.toFixed(2) || '0') 
         : price.snackPrice,
     };
   });
@@ -191,4 +191,3 @@ export const CustomerSelectionCard = ({
     </Card>
   );
 };
-
