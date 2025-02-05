@@ -9,7 +9,7 @@ import { useState } from "react";
 
 interface CustomerSelectionCardProps {
   prices: PriceData[];
-  selectedCustomer: CustomerData;
+  selectedCustomer: CustomerData | null;
   mockCustomers: CustomerData[];
   onCustomerChange: (customerId: string) => void;
   editingPercentage: boolean;
@@ -39,16 +39,14 @@ export const CustomerSelectionCard = ({
   const [hasSelectedCustomer, setHasSelectedCustomer] = useState(false);
 
   const calculateAdjustedPrice = (price: number | null) => {
-    if (price === null) return null;
+    if (price === null || !selectedCustomer) return null;
     const multiplier = 1 + (selectedCustomer.basePercentage / 100);
     return (price * multiplier).toFixed(2);
   };
 
   const handleCustomerSelect = (customerId: string) => {
-    if (customerId) {
-      onCustomerChange(customerId);
-      setHasSelectedCustomer(true);
-    }
+    onCustomerChange(customerId);
+    setHasSelectedCustomer(!!customerId);
   };
 
   const handlePercentageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +60,13 @@ export const CustomerSelectionCard = ({
       handlePercentageChange(value);
     }
   };
+
+  console.log('CustomerSelectionCard render:', { 
+    hasSelectedCustomer, 
+    selectedCustomer, 
+    pricesLength: prices.length,
+    isLoading 
+  });
 
   return (
     <Card className="p-4 md:p-6 bg-white shadow-sm border border-gray-200">
@@ -87,7 +92,7 @@ export const CustomerSelectionCard = ({
               <label className="block text-sm font-medium text-gray-700 mb-2">Customer Selection</label>
               <select
                 className="w-full md:w-64 rounded-md border border-gray-300 p-2 text-sm"
-                value={hasSelectedCustomer ? selectedCustomer.id : ''}
+                value={selectedCustomer?.id || ''}
                 onChange={(e) => handleCustomerSelect(e.target.value)}
               >
                 <option value="">Select a customer</option>
@@ -98,7 +103,7 @@ export const CustomerSelectionCard = ({
                 ))}
               </select>
             </div>
-            {hasSelectedCustomer && (
+            {hasSelectedCustomer && selectedCustomer && (
               <div className="flex flex-col w-full md:w-auto">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Base Percentage</label>
                 <div className="flex items-center gap-2">
@@ -156,4 +161,3 @@ export const CustomerSelectionCard = ({
     </Card>
   );
 };
-

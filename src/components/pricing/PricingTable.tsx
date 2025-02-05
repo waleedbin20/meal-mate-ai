@@ -109,6 +109,16 @@ export const PricingTable = () => {
     setHasBasePriceChanges(true);
   };
 
+  const handleCustomerChange = (customerId: string) => {
+    console.log('Handling customer change:', customerId);
+    const customer = customerId ? mockCustomers.find((c) => c.id === parseInt(customerId)) : null;
+    setSelectedCustomer(customer);
+    setHasCustomerPriceChanges(false);
+    if (customer) {
+      queryClient.invalidateQueries({ queryKey: ['customerPrices', parseInt(customerId)] });
+    }
+  };
+
   const handlePercentageChange = (value: string) => {
     if (!selectedCustomer) return;
     
@@ -125,16 +135,6 @@ export const PricingTable = () => {
     
     setSelectedCustomer(newCustomer);
     setHasCustomerPriceChanges(true);
-  };
-
-  const handleCustomerChange = (customerId: string) => {
-    console.log('Handling customer change:', customerId);
-    const customer = mockCustomers.find((c) => c.id === parseInt(customerId));
-    if (customer) {
-      setSelectedCustomer(customer);
-      setHasCustomerPriceChanges(false);
-      queryClient.invalidateQueries({ queryKey: ['customerPrices', parseInt(customerId)] });
-    }
   };
 
   const handleSave = () => {
@@ -167,7 +167,7 @@ export const PricingTable = () => {
 
       <CustomerSelectionCard
         prices={customerPrices}
-        selectedCustomer={selectedCustomer || mockCustomers[0]} // Provide a default for props
+        selectedCustomer={selectedCustomer}
         mockCustomers={mockCustomers}
         onCustomerChange={handleCustomerChange}
         editingPercentage={editingPercentage}
