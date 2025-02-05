@@ -37,7 +37,7 @@ export const PricingTable = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: prices = [], isLoading: isLoadingBasePrices, error: basePricesError } = useQuery({
+  const { data: prices = [], isLoading: isLoadingBasePrices, error: basePricesError, refetch: refetchBasePrices } = useQuery({
     queryKey: ['basePrices'],
     queryFn: fetchBasePrices,
     enabled: isBasePricesOpen,
@@ -53,7 +53,7 @@ export const PricingTable = () => {
     }
   });
 
-  const { data: customerPrices = [], isLoading: isLoadingCustomerPrices, error: customerPricesError } = useQuery({
+  const { data: customerPrices = [], isLoading: isLoadingCustomerPrices, error: customerPricesError, refetch: refetchCustomerPrices } = useQuery({
     queryKey: ['customerPrices', selectedCustomer?.id],
     queryFn: () => selectedCustomer ? fetchCustomerPrices(selectedCustomer.id) : Promise.resolve([]),
     enabled: !!selectedCustomer?.id,
@@ -118,8 +118,18 @@ export const PricingTable = () => {
       return updatePricing(transformedPayload, customerId);
     },
     onSuccess: () => {
+      // Invalidate and refetch both queries
       queryClient.invalidateQueries({ queryKey: ['basePrices'] });
       queryClient.invalidateQueries({ queryKey: ['customerPrices'] });
+      
+      // Force immediate refetch
+      if (isBasePricesOpen) {
+        refetchBasePrices();
+      }
+      if (selectedCustomer) {
+        refetchCustomerPrices();
+      }
+
       toast({
         title: "Success",
         description: "Prices have been updated successfully",
