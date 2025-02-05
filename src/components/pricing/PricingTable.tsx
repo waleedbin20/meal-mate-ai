@@ -31,6 +31,9 @@ export const PricingTable = () => {
   const [hasBasePriceChanges, setHasBasePriceChanges] = useState(false);
   const [hasCustomerPriceChanges, setHasCustomerPriceChanges] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [editingPercentage, setEditingPercentage] = useState(false);
   const [isBasePricesOpen, setIsBasePricesOpen] = useState(false);
   const [isCustomerSelectOpen, setIsCustomerSelectOpen] = useState(false);
@@ -130,6 +133,7 @@ export const PricingTable = () => {
         refetchCustomerPrices();
       }
 
+      setShowSuccessDialog(true);
       toast({
         title: "Success",
         description: "Prices have been updated successfully",
@@ -140,6 +144,8 @@ export const PricingTable = () => {
     },
     onError: (error) => {
       console.error('Error updating prices:', error);
+      setErrorMessage("Failed to update prices. Please try again.");
+      setShowErrorDialog(true);
       toast({
         title: "Error",
         description: "Failed to update prices. Please try again.",
@@ -260,6 +266,38 @@ export const PricingTable = () => {
             <AlertDialogCancel className="mt-2 sm:mt-0">Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={selectedCustomer ? handleCustomerPriceSave : handleBasePriceSave}>
               Save Changes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Success</AlertDialogTitle>
+            <AlertDialogDescription>
+              Changes have been saved successfully.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowSuccessDialog(false)}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>
+              {errorMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowErrorDialog(false)}>
+              OK
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
