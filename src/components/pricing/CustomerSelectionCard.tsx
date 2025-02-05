@@ -29,7 +29,20 @@ export const CustomerSelectionCard = ({
 
   const calculateAdjustedPrice = (price: number | null) => {
     if (price === null) return null;
-    return (price * (1 + selectedCustomer.basePercentage / 100)).toFixed(2);
+    const multiplier = 1 + (selectedCustomer.basePercentage / 100);
+    return (price * multiplier).toFixed(2);
+  };
+
+  const handlePercentageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === '' || value === '-') {
+      handlePercentageChange(value);
+      return;
+    }
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue)) {
+      handlePercentageChange(value);
+    }
   };
 
   return (
@@ -71,9 +84,9 @@ export const CustomerSelectionCard = ({
               <div className="flex items-center gap-2">
                 {editingPercentage ? (
                   <Input
-                    type="number"
+                    type="text"
                     value={selectedCustomer.basePercentage}
-                    onChange={(e) => handlePercentageChange(e.target.value)}
+                    onChange={handlePercentageInputChange}
                     className="w-20 text-sm"
                     onBlur={() => setEditingPercentage(false)}
                     autoFocus

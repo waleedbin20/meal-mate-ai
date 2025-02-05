@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -75,14 +76,19 @@ export const PricingTable = () => {
   };
 
   const handlePercentageChange = (value: string) => {
-    const newPercentage = parseFloat(value);
-    if (!isNaN(newPercentage)) {
-      setSelectedCustomer({
-        ...selectedCustomer,
-        basePercentage: newPercentage,
-      });
-      setHasChanges(true);
+    const newCustomer = { ...selectedCustomer };
+    
+    if (value === '' || value === '-') {
+      newCustomer.basePercentage = value === '' ? 0 : -0;
+    } else {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        newCustomer.basePercentage = numValue;
+      }
     }
+    
+    setSelectedCustomer(newCustomer);
+    setHasChanges(true);
   };
 
   const handleCustomerChange = (customerId: string) => {
