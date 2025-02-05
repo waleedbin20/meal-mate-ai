@@ -20,23 +20,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 export const fetchBasePrices = async (): Promise<PriceData[]> => {
-  console.log('Fetching base prices...');
-  const response = await fetch(`${BASE_URL}/pricing/baseprice`, {
-    headers: {
-      'x-api-key': API_KEY
-    }
-  });
-
-  if (!response.ok) {
-    console.error('Failed to fetch base prices:', response.status, response.statusText);
-    throw new Error('Failed to fetch base prices');
-  }
-
-  const data = await response.json();
-  console.log('Base prices data:', data);
-  const mappedData = mapApiResponseToPriceData(data);
-  console.log('Mapped base prices:', mappedData);
-  return mappedData;
+  return fetchCustomerPrices(999); // Use customer ID 999 for base prices
 };
 
 export const fetchCustomerPrices = async (customerId: number): Promise<PriceData[]> => {
@@ -49,11 +33,7 @@ export const fetchCustomerPrices = async (customerId: number): Promise<PriceData
     });
 
     if (!response.ok) {
-      if (response.status === 404) {
-        console.log('Customer prices not found, falling back to base prices');
-        return fetchBasePrices();
-      }
-      throw new Error('Failed to fetch customer prices');
+      throw new Error('Failed to fetch prices');
     }
 
     const data = await response.json();
@@ -62,8 +42,8 @@ export const fetchCustomerPrices = async (customerId: number): Promise<PriceData
     console.log('Mapped customer prices:', mappedData);
     return mappedData;
   } catch (error) {
-    console.error('Error fetching customer prices:', error);
-    return fetchBasePrices();
+    console.error('Error fetching prices:', error);
+    throw error;
   }
 };
 
