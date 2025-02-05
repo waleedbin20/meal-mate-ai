@@ -35,7 +35,7 @@ export const fetchBasePrices = async (): Promise<PriceData[]> => {
 };
 
 export const fetchCustomerPrices = async (customerId: number): Promise<PriceData[]> => {
-  const response = await fetch(`${BASE_URL}/pricing?customerId=${customerId}`, {
+  const response = await fetch(`${BASE_URL}/pricing/customer/${customerId}`, {
     headers: {
       'x-api-key': API_KEY
     }
@@ -150,3 +150,4 @@ const mapApiResponseToPriceData = (apiResponse: MealPricing[]): PriceData[] => {
     };
   });
 };
+
