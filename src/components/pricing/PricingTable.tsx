@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -33,15 +32,31 @@ export const PricingTable = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: prices = [], isLoading: isLoadingBasePrices } = useQuery({
+  const { data: prices = [], isLoading: isLoadingBasePrices, error: basePricesError } = useQuery({
     queryKey: ['basePrices'],
-    queryFn: fetchBasePrices
+    queryFn: fetchBasePrices,
+    onError: (error) => {
+      console.error('Error fetching base prices:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch base prices. Please try again.",
+        variant: "destructive",
+      });
+    }
   });
 
-  const { data: customerPrices, isLoading: isLoadingCustomerPrices } = useQuery({
+  const { data: customerPrices, isLoading: isLoadingCustomerPrices, error: customerPricesError } = useQuery({
     queryKey: ['customerPrices', selectedCustomer.id],
     queryFn: () => fetchCustomerPrices(selectedCustomer.id),
-    enabled: !!selectedCustomer.id
+    enabled: !!selectedCustomer.id,
+    onError: (error) => {
+      console.error('Error fetching customer prices:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch customer prices. Please try again.",
+        variant: "destructive",
+      });
+    }
   });
 
   const updatePricesMutation = useMutation({
@@ -66,6 +81,7 @@ export const PricingTable = () => {
   });
 
   const handlePriceChange = (index: number, field: keyof PriceData, value: string) => {
+    console.log('Handling price change:', { index, field, value });
     const newPrices = [...prices];
     newPrices[index] = {
       ...newPrices[index],
@@ -76,6 +92,7 @@ export const PricingTable = () => {
   };
 
   const handlePercentageChange = (value: string) => {
+    console.log('Handling percentage change:', value);
     const newCustomer = { ...selectedCustomer };
     
     if (value === '' || value === '-') {
@@ -92,8 +109,12 @@ export const PricingTable = () => {
   };
 
   const handleCustomerChange = (customerId: string) => {
+    console.log('Handling customer change:', customerId);
     const customer = mockCustomers.find((c) => c.id === parseInt(customerId));
-    if (customer) setSelectedCustomer(customer);
+    if (customer) {
+      setSelectedCustomer(customer);
+      queryClient.invalidateQueries({ queryKey: ['customerPrices', parseInt(customerId)] });
+    }
   };
 
   const handleSave = () => {
@@ -103,6 +124,16 @@ export const PricingTable = () => {
   if (isLoadingBasePrices || isLoadingCustomerPrices) {
     return <div>Loading...</div>;
   }
+
+  if (basePricesError || customerPricesError) {
+    return <div>Error loading prices. Please try again.</div>;
+  }
+
+  console.log('Rendering PricingTable with:', {
+    prices,
+    customerPrices,
+    selectedCustomer
+  });
 
   return (
     <div className="space-y-4 md:space-y-6">

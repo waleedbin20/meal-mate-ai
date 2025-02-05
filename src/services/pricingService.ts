@@ -1,4 +1,3 @@
-
 import { PriceData } from "@/components/pricing/types";
 
 export interface MealPricing {
@@ -20,6 +19,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 export const fetchBasePrices = async (): Promise<PriceData[]> => {
+  console.log('Fetching base prices...');
   const response = await fetch(`${BASE_URL}/pricing/baseprice`, {
     headers: {
       'x-api-key': API_KEY
@@ -27,14 +27,19 @@ export const fetchBasePrices = async (): Promise<PriceData[]> => {
   });
 
   if (!response.ok) {
+    console.error('Failed to fetch base prices:', response.status, response.statusText);
     throw new Error('Failed to fetch base prices');
   }
 
   const data = await response.json();
-  return mapApiResponseToPriceData(data);
+  console.log('Base prices data:', data);
+  const mappedData = mapApiResponseToPriceData(data);
+  console.log('Mapped base prices:', mappedData);
+  return mappedData;
 };
 
 export const fetchCustomerPrices = async (customerId: number): Promise<PriceData[]> => {
+  console.log('Fetching customer prices for ID:', customerId);
   const response = await fetch(`${BASE_URL}/pricing/customer/${customerId}`, {
     headers: {
       'x-api-key': API_KEY
@@ -42,11 +47,15 @@ export const fetchCustomerPrices = async (customerId: number): Promise<PriceData
   });
 
   if (!response.ok) {
+    console.error('Failed to fetch customer prices:', response.status, response.statusText);
     throw new Error('Failed to fetch customer prices');
   }
 
   const data = await response.json();
-  return mapApiResponseToPriceData(data);
+  console.log('Customer prices data:', data);
+  const mappedData = mapApiResponseToPriceData(data);
+  console.log('Mapped customer prices:', mappedData);
+  return mappedData;
 };
 
 export const updatePricing = async (prices: PriceData[], customerId?: number): Promise<void> => {
@@ -104,6 +113,8 @@ const getMealType = (price: PriceData): string => {
 };
 
 const mapApiResponseToPriceData = (apiResponse: MealPricing[]): PriceData[] => {
+  console.log('Starting to map API response:', apiResponse);
+  
   const categories = [
     'Level 3',
     'Level 4',
@@ -117,37 +128,44 @@ const mapApiResponseToPriceData = (apiResponse: MealPricing[]): PriceData[] => {
     'Kosher'
   ];
 
-  return categories.map(category => {
-    const baseUnit = apiResponse.find(item => item.mealType === 'BaseUnit');
-    const baseBreakfast = apiResponse.find(item => item.mealType === 'BaseBreakfast');
-    const baseDessert = apiResponse.find(item => item.mealType === 'BaseDessert');
-    const baseSnack = apiResponse.find(item => item.mealType === 'BaseSnack');
+  const baseUnit = apiResponse.find(item => item.mealType === 'BaseUnit');
+  const baseBreakfast = apiResponse.find(item => item.mealType === 'BaseBreakfast');
+  const baseDessert = apiResponse.find(item => item.mealType === 'BaseDessert');
+  const baseSnack = apiResponse.find(item => item.mealType === 'BaseSnack');
 
-    const getPriceForCategory = (item: MealPricing | undefined, category: string): number => {
-      if (!item) return 0;
-      switch (category.toLowerCase()) {
-        case 'level 3': return item.level3;
-        case 'level 4': return item.level4;
-        case 'level 5': return item.level5;
-        case 'level 6': return item.level6;
-        case 'allergen free': return item.allergenFree;
-        case 'finger foods': return item.fingerFoods;
-        case 'mini meal extra': return item.miniMealExtra;
-        case 'caribbean': return item.caribbean;
-        case 'halal': return item.halal;
-        case 'kosher': return item.kosher;
-        default: return 0;
-      }
-    };
-
-    return {
-      category,
-      unitPrice: getPriceForCategory(baseUnit, category),
-      standardPrice: getPriceForCategory(baseUnit, category) * 2,
-      breakfastPrice: baseBreakfast ? getPriceForCategory(baseBreakfast, category) : null,
-      dessertPrice: baseDessert ? getPriceForCategory(baseDessert, category) : null,
-      snackPrice: baseSnack ? getPriceForCategory(baseSnack, category) : null,
-    };
+  console.log('Found meal types:', {
+    baseUnit: !!baseUnit,
+    baseBreakfast: !!baseBreakfast,
+    baseDessert: !!baseDessert,
+    baseSnack: !!baseSnack
   });
-};
 
+  const getPriceForCategory = (item: MealPricing | undefined, category: string): number => {
+    if (!item) return 0;
+    switch (category.toLowerCase()) {
+      case 'level 3': return item.level3;
+      case 'level 4': return item.level4;
+      case 'level 5': return item.level5;
+      case 'level 6': return item.level6;
+      case 'allergen free': return item.allergenFree;
+      case 'finger foods': return item.fingerFoods;
+      case 'mini meal extra': return item.miniMealExtra;
+      case 'caribbean': return item.caribbean;
+      case 'halal': return item.halal;
+      case 'kosher': return item.kosher;
+      default: return 0;
+    }
+  };
+
+  const result = categories.map(category => ({
+    category,
+    unitPrice: getPriceForCategory(baseUnit, category),
+    standardPrice: getPriceForCategory(baseUnit, category) * 2,
+    breakfastPrice: baseBreakfast ? getPriceForCategory(baseBreakfast, category) : null,
+    dessertPrice: baseDessert ? getPriceForCategory(baseDessert, category) : null,
+    snackPrice: baseSnack ? getPriceForCategory(baseSnack, category) : null,
+  }));
+
+  console.log('Mapped result:', result);
+  return result;
+};
