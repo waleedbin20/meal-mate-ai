@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -15,19 +15,8 @@ import {
 import { BasePricesCard } from "./BasePricesCard";
 import { CustomerSelectionCard } from "./CustomerSelectionCard";
 import { PriceData, CustomerData } from "./types";
-
-const initialPrices: PriceData[] = [
-  { category: "Level 3", unitPrice: 5.99, standardPrice: 5.99, breakfastPrice: null, dessertPrice: null, snackPrice: null },
-  { category: "Level 4", unitPrice: 6.99, standardPrice: 6.99, breakfastPrice: 3.99, dessertPrice: 2.99, snackPrice: 1.99 },
-  { category: "Level 5", unitPrice: 7.99, standardPrice: 7.99, breakfastPrice: null, dessertPrice: 3.99, snackPrice: null },
-  { category: "Level 6", unitPrice: 8.99, standardPrice: 8.99, breakfastPrice: null, dessertPrice: 3.99, snackPrice: null },
-  { category: "Allergen Free", unitPrice: 9.99, standardPrice: 9.99, breakfastPrice: null, dessertPrice: null, snackPrice: null },
-  { category: "Finger Foods", unitPrice: 7.99, standardPrice: 7.99, breakfastPrice: null, dessertPrice: null, snackPrice: null },
-  { category: "Mini Meal Extra", unitPrice: 6.99, standardPrice: 6.99, breakfastPrice: null, dessertPrice: null, snackPrice: null },
-  { category: "Caribbean", unitPrice: 8.99, standardPrice: 8.99, breakfastPrice: null, dessertPrice: null, snackPrice: null },
-  { category: "Halal", unitPrice: 8.99, standardPrice: 8.99, breakfastPrice: null, dessertPrice: null, snackPrice: null },
-  { category: "Kosher", unitPrice: 9.99, standardPrice: 9.99, breakfastPrice: null, dessertPrice: null, snackPrice: null },
-];
+import { fetchBasePrices, fetchCustomerPrices, updatePricing } from "@/services/pricingService";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const mockCustomers: CustomerData[] = [
   { id: "1", name: "National", basePercentage: 10 },
@@ -36,12 +25,44 @@ const mockCustomers: CustomerData[] = [
 ];
 
 export const PricingTable = () => {
-  const [prices, setPrices] = useState<PriceData[]>(initialPrices);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerData>(mockCustomers[0]);
   const [hasChanges, setHasChanges] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [editingPercentage, setEditingPercentage] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: prices = [], isLoading: isLoadingBasePrices } = useQuery({
+    queryKey: ['basePrices'],
+    queryFn: fetchBasePrices
+  });
+
+  const { data: customerPrices, isLoading: isLoadingCustomerPrices } = useQuery({
+    queryKey: ['customerPrices', selectedCustomer.id],
+    queryFn: () => fetchCustomerPrices(selectedCustomer.id),
+    enabled: !!selectedCustomer.id
+  });
+
+  const updatePricesMutation = useMutation({
+    mutationFn: (updatedPrices: PriceData[]) => updatePricing(updatedPrices, selectedCustomer.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['basePrices'] });
+      queryClient.invalidateQueries({ queryKey: ['customerPrices'] });
+      toast({
+        title: "Success",
+        description: "Prices have been updated successfully",
+      });
+      setHasChanges(false);
+      setShowConfirmDialog(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update prices. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
 
   const handlePriceChange = (index: number, field: keyof PriceData, value: string) => {
     const newPrices = [...prices];
@@ -49,7 +70,7 @@ export const PricingTable = () => {
       ...newPrices[index],
       [field]: value === "" ? null : parseFloat(value),
     };
-    setPrices(newPrices);
+    queryClient.setQueryData(['basePrices'], newPrices);
     setHasChanges(true);
   };
 
@@ -70,13 +91,12 @@ export const PricingTable = () => {
   };
 
   const handleSave = () => {
-    toast({
-      title: "Success",
-      description: "Prices have been updated successfully",
-    });
-    setHasChanges(false);
-    setShowConfirmDialog(false);
+    updatePricesMutation.mutate(prices);
   };
+
+  if (isLoadingBasePrices || isLoadingCustomerPrices) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -86,7 +106,7 @@ export const PricingTable = () => {
       />
 
       <CustomerSelectionCard
-        prices={prices}
+        prices={customerPrices || prices}
         selectedCustomer={selectedCustomer}
         mockCustomers={mockCustomers}
         onCustomerChange={handleCustomerChange}
