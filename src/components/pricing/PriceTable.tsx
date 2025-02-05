@@ -64,14 +64,22 @@ export const PriceTable = ({
                         />
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                        <Input
-                          type="number"
-                          value={price.standardPrice ?? ''}
-                          onChange={(e) => onPriceChange?.(index, "standardPrice", e.target.value)}
-                          className="w-16 md:w-24 text-xs md:text-sm"
-                          step="0.01"
-                          disabled={isMiniMealExtra(price.category)}
-                        />
+                        {isMiniMealExtra(price.category) ? (
+                          <Input
+                            type="number"
+                            value={price.unitPrice ?? ''}
+                            className="w-16 md:w-24 text-xs md:text-sm bg-gray-100"
+                            disabled={true}
+                          />
+                        ) : (
+                          <Input
+                            type="number"
+                            value={price.standardPrice ?? ''}
+                            onChange={(e) => onPriceChange?.(index, "standardPrice", e.target.value)}
+                            className="w-16 md:w-24 text-xs md:text-sm"
+                            step="0.01"
+                          />
+                        )}
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
                         <Input
@@ -174,4 +182,3 @@ export const PriceTable = ({
     </div>
   );
 };
-
