@@ -42,8 +42,8 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2] p-4">
-      <Card className="w-full max-w-md p-6 space-y-6">
+    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-[#F6F6F7] to-[#F2FCE2]">
+      <Card className="w-full max-w-md p-6 space-y-6 m-4">
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold text-purple-600">Authentication Required</h1>
           <p className="text-gray-500 text-sm">Please enter the password to access pricing management</p>
