@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { PriceData } from "./types";
 import { PriceTable } from "./PriceTable";
+import { useState } from "react";
 
 interface BasePricesCardProps {
   prices: PriceData[];
@@ -24,6 +25,17 @@ export const BasePricesCard = ({
   setIsOpen,
   onSave
 }: BasePricesCardProps) => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await onSave();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <Card className="p-4 md:p-6 bg-white shadow-sm border border-gray-200">
       <div 
@@ -57,10 +69,18 @@ export const BasePricesCard = ({
               {hasChanges && (
                 <div className="flex justify-end mt-4">
                   <Button 
-                    onClick={onSave}
+                    onClick={handleSave}
                     className="bg-purple-600 hover:bg-purple-700"
+                    disabled={isSaving}
                   >
-                    Save Changes
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Changes'
+                    )}
                   </Button>
                 </div>
               )}
