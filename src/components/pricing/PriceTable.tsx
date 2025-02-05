@@ -15,6 +15,8 @@ export const PriceTable = ({
   onPriceChange,
   calculateAdjustedPrice 
 }: PriceTableProps) => {
+  console.log('PriceTable received prices:', prices); // Added for debugging
+
   return (
     <div className="overflow-x-auto -mx-4 md:-mx-6">
       <div className="inline-block min-w-full align-middle px-4 md:px-6">
@@ -31,7 +33,7 @@ export const PriceTable = ({
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {prices.map((price, index) => (
+              {Array.isArray(prices) && prices.map((price, index) => (
                 <tr key={price.category}>
                   <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm font-medium text-gray-900">
                     {price.category}
@@ -41,7 +43,7 @@ export const PriceTable = ({
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
                         <Input
                           type="number"
-                          value={price.unitPrice || 0}
+                          value={price.unitPrice ?? ''}
                           onChange={(e) => onPriceChange?.(index, "unitPrice", e.target.value)}
                           className="w-16 md:w-24 text-xs md:text-sm"
                           step="0.01"
@@ -50,44 +52,38 @@ export const PriceTable = ({
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
                         <Input
                           type="number"
-                          value={price.standardPrice || 0}
+                          value={price.standardPrice ?? ''}
                           onChange={(e) => onPriceChange?.(index, "standardPrice", e.target.value)}
                           className="w-16 md:w-24 text-xs md:text-sm"
                           step="0.01"
                         />
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                        {price.breakfastPrice !== undefined && (
-                          <Input
-                            type="number"
-                            value={price.breakfastPrice || 0}
-                            onChange={(e) => onPriceChange?.(index, "breakfastPrice", e.target.value)}
-                            className="w-16 md:w-24 text-xs md:text-sm"
-                            step="0.01"
-                          />
-                        )}
+                        <Input
+                          type="number"
+                          value={price.breakfastPrice ?? ''}
+                          onChange={(e) => onPriceChange?.(index, "breakfastPrice", e.target.value)}
+                          className="w-16 md:w-24 text-xs md:text-sm"
+                          step="0.01"
+                        />
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                        {price.dessertPrice !== undefined && (
-                          <Input
-                            type="number"
-                            value={price.dessertPrice || 0}
-                            onChange={(e) => onPriceChange?.(index, "dessertPrice", e.target.value)}
-                            className="w-16 md:w-24 text-xs md:text-sm"
-                            step="0.01"
-                          />
-                        )}
+                        <Input
+                          type="number"
+                          value={price.dessertPrice ?? ''}
+                          onChange={(e) => onPriceChange?.(index, "dessertPrice", e.target.value)}
+                          className="w-16 md:w-24 text-xs md:text-sm"
+                          step="0.01"
+                        />
                       </td>
                       <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                        {price.snackPrice !== undefined && (
-                          <Input
-                            type="number"
-                            value={price.snackPrice || 0}
-                            onChange={(e) => onPriceChange?.(index, "snackPrice", e.target.value)}
-                            className="w-16 md:w-24 text-xs md:text-sm"
-                            step="0.01"
-                          />
-                        )}
+                        <Input
+                          type="number"
+                          value={price.snackPrice ?? ''}
+                          onChange={(e) => onPriceChange?.(index, "snackPrice", e.target.value)}
+                          className="w-16 md:w-24 text-xs md:text-sm"
+                          step="0.01"
+                        />
                       </td>
                     </>
                   ) : (
@@ -98,7 +94,7 @@ export const PriceTable = ({
                             £{calculateAdjustedPrice?.(price.unitPrice)}
                           </div>
                           <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                            Base: £{price.unitPrice}
+                            Base: £{price.unitPrice?.toFixed(2)}
                           </div>
                         </div>
                       </td>
@@ -108,7 +104,7 @@ export const PriceTable = ({
                             £{calculateAdjustedPrice?.(price.standardPrice)}
                           </div>
                           <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                            Base: £{price.standardPrice}
+                            Base: £{price.standardPrice?.toFixed(2)}
                           </div>
                         </div>
                       </td>
@@ -119,7 +115,7 @@ export const PriceTable = ({
                               £{calculateAdjustedPrice?.(price.breakfastPrice)}
                             </div>
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Base: £{price.breakfastPrice}
+                              Base: £{price.breakfastPrice?.toFixed(2)}
                             </div>
                           </div>
                         )}
@@ -131,7 +127,7 @@ export const PriceTable = ({
                               £{calculateAdjustedPrice?.(price.dessertPrice)}
                             </div>
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Base: £{price.dessertPrice}
+                              Base: £{price.dessertPrice?.toFixed(2)}
                             </div>
                           </div>
                         )}
@@ -143,7 +139,7 @@ export const PriceTable = ({
                               £{calculateAdjustedPrice?.(price.snackPrice)}
                             </div>
                             <div className="text-[10px] md:text-xs text-[#9F9EA1]">
-                              Base: £{price.snackPrice}
+                              Base: £{price.snackPrice?.toFixed(2)}
                             </div>
                           </div>
                         )}
@@ -159,3 +155,4 @@ export const PriceTable = ({
     </div>
   );
 };
+
