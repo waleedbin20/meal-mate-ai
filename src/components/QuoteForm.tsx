@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { CareHomeDetails } from "./quote-form/CareHomeDetails";
 import { DiningRoomsSection } from "./quote-form/DiningRoomsSection";
 import { LaborCostFields } from "./quote-form/LaborCostFields";
-import { PricingInformation } from "./quote-form/PricingInformation";
 import { QuoteFormData } from "./quote-form/types";
 import { useToast } from "@/hooks/use-toast";
 import { MenuSelection } from "./quote-form/MenuSelection";
@@ -280,10 +279,6 @@ export const QuoteForm = ({
           <NumberOfDiningRooms form={form} />
 
           <MenuSelection form={form} />
-
-          <div className="space-y-4">
-            <PricingInformation form={form} />
-          </div>
 
           <LaborCostFields form={form} />
 
