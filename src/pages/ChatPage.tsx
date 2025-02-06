@@ -23,17 +23,17 @@ const ChatPage = () => {
     queryKey: ["quoteHistory", id],
     queryFn: async () => (id ? await getQuoteHistoryById(parseInt(id)) : null),
     enabled: !!id,
-    onSuccess: (data) => {
-      if (data && data.length > 0) {
-        const historyMessages = data.map(item => ({
-          content: item.type === 0 ? formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : formatQuoteResponse(mapQuoteHistoryToResponse(item)),
-          isAi: item.type === 1,
-          versionNumber: item.versionNumber
-        }));
-        setMessages(historyMessages);
-      }
-    },
     meta: {
+      onSuccess: (data: any) => {
+        if (data && data.length > 0) {
+          const historyMessages = data.map(item => ({
+            content: item.type === 0 ? formatQuoteRequest(mapQuoteHistoryToFormRequestData(item)) : formatQuoteResponse(mapQuoteHistoryToResponse(item)),
+            isAi: item.type === 1,
+            versionNumber: item.versionNumber
+          }));
+          setMessages(historyMessages);
+        }
+      },
       onError: () => {
         toast({
           title: "Error",
@@ -49,12 +49,12 @@ const ChatPage = () => {
     queryKey: ["quote", id],
     queryFn: async () => (id ? await getQuoteById(parseInt(id)) : null),
     enabled: !!id,
-    onSuccess: (data) => {
-      if (data) {
-        setQuoteData(data);
-      }
-    },
     meta: {
+      onSuccess: (data: any) => {
+        if (data) {
+          setQuoteData(data);
+        }
+      },
       onError: () => {
         toast({
           title: "Error",
